@@ -1,33 +1,56 @@
 package edu.senacsp.astrochimp.entity;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+
 @Entity
+// Representa um material didático publicado por um professor.
+// Pode ser um texto, arquivo, vídeo, imagem ou link compartilhado em uma sala.
 public class Material {
 
+    // Identificador único do material no banco de dados.
+    // Gerado automaticamente pelo banco para facilitar a persistência.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Título do material, obrigatório para identificação visual no sistema.
     @Column(nullable = false)
     private String titulo;
 
+    // Tipo do conteúdo, como PDF, vídeo, texto, imagem ou link.
+    // Ajuda a classificar e tratar o material de forma adequada.
     @Column(nullable = false)
     private String tipo;
 
+    // Conteúdo do material ou URL externa, dependendo do tipo.
+    // O uso de @Lob permite armazenar textos maiores, como descrições extensas.
     @Lob
     private String conteudoOuUrl;
 
+    // Informações extras sobre o material, como detalhes de apresentação ou observações.
     private String detalhe;
 
+    // Indica se o material deve ficar visível publicamente para outros usuários.
     private boolean publico;
 
+    // Flag para marcar material como fixado em destaque.
+    // Pode ser usado para priorizar conteúdos importantes na interface.
     private boolean fixado;
 
+    // Data e hora em que o material foi criado.
+    // Útil para ordenação e histórico de publicação.
     private LocalDateTime criadoEm;
 
+    // Professor responsável pelo material.
+    // Relacionamento muitos-para-um: vários materiais pertencem a um professor.
     @ManyToOne
     private Professor professor;
 
@@ -77,6 +100,14 @@ public class Material {
 
     public void setPublico(boolean publico) {
         this.publico = publico;
+    }
+
+    public boolean isFixado() {
+        return fixado;
+    }
+
+    public void setFixado(boolean fixado) {
+        this.fixado = fixado;
     }
 
     public LocalDateTime getCriadoEm() {

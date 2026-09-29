@@ -1,49 +1,75 @@
 package edu.senacsp.astrochimp.entity;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
 @Entity
+// Representa uma sala de aula virtual vinculada a um professor.
+// Nela acontecem interações como dúvidas, materiais, alunos e quizzes em andamento.
 public class Sala {
 
+    // Identificador único da sala.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Código único usado para acessar a sala.
     @Column(nullable = false, unique = true)
     private String codigo;
 
+    // Nome da aula ou tema da sala.
     private String nomeAula;
 
+    // Status atual da sala, como ativa, encerrada ou pausada.
     @Column(nullable = false)
     private String status;
 
+    // Data de criação da sala.
     private LocalDateTime criadaEm;
 
+    // Data de expiração da sala, quando aplicável.
     private LocalDateTime expiraEm;
 
+    // Tempo do cronômetro da sala em segundos.
     private Integer cronometroSegundos;
 
+    // Momento em que o cronômetro foi iniciado.
     private LocalDateTime cronometroIniciadoEm;
 
+    // Professor responsável pela sala.
     @ManyToOne
     private Professor professor;
 
+    // Quiz que está sendo executado no momento na sala.
     @ManyToOne
     private Quiz quizEmAndamento;
 
+    // Pergunta atual do quiz em andamento.
     @ManyToOne
     private QuizPergunta quizPerguntaAtual;
 
+    // Momento em que a pergunta atual iniciou.
     private LocalDateTime quizPerguntaIniciadaEm;
 
+    // Identificador da sessão do quiz em execução.
     private String quizSessaoId;
 
+    // Dúvidas registradas na sala.
     @OneToMany(mappedBy = "sala")
     private List<Duvida> duvidas;
 
+    // Alunos vinculados à sala.
     @ManyToMany
     @JoinTable(
         name = "sala_aluno",
@@ -51,6 +77,7 @@ public class Sala {
         inverseJoinColumns = @JoinColumn(name = "aluno_id"))
     private List<Aluno> alunos;
 
+    // Materiais disponíveis na sala.
     @ManyToMany
     @JoinTable(
         name = "sala_material",
@@ -58,6 +85,7 @@ public class Sala {
         inverseJoinColumns = @JoinColumn(name = "material_id"))
     private List<Material> materiais;
 
+    // Materiais fixados em destaque para os alunos.
     @ManyToMany
     @JoinTable(
         name = "sala_material_fixado",

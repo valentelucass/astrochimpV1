@@ -1,36 +1,55 @@
 package edu.senacsp.astrochimp.entity;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+
 @Entity
+// Representa uma dúvida enviada por um aluno dentro de uma sala.
+// A dúvida pode ser fixada, votada e acompanha o estado do atendimento.
 public class Duvida {
 
+    // Identificador único da dúvida.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Texto da dúvida, com limite de 280 caracteres.
     @Column(nullable = false, length = 280)
     private String texto;
 
+    // Define se a dúvida foi enviada de forma anônima.
     @Column(nullable = false)
     private boolean anonima;
 
+    // Estado atual da dúvida, como aberta, respondida ou resolvida.
     @Column(nullable = false)
     private String estado;
 
+    // Indica se a dúvida foi fixada para destaque na sala.
     private boolean fixada;
 
+    // Data e hora em que a dúvida foi criada.
     private LocalDateTime criadaEm;
 
+    // Sala em que a dúvida foi registrada.
     @ManyToOne
     private Sala sala;
 
+    // Aluno que enviou a dúvida.
     @ManyToOne
     private Aluno autor;
 
+    // Lista de alunos que votaram na dúvida.
     @ManyToMany
     @JoinTable(
         name = "duvida_voto",

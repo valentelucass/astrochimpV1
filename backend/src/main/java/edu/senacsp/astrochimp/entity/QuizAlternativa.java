@@ -1,24 +1,37 @@
 package edu.senacsp.astrochimp.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
+// Representa uma alternativa possível de resposta de uma pergunta de quiz.
+// A alternativa pode ser marcada como correta e acompanhar a estatística de uso.
 public class QuizAlternativa {
 
+    // Identificador único da alternativa.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Letra identificadora da alternativa, como A, B, C ou D.
     @Column(nullable = false)
     private String letra;
 
+    // Texto exibido para o aluno.
     @Column(nullable = false)
     private String texto;
 
+    // Indica se essa alternativa é a resposta correta.
     private boolean correta;
 
+    // Quantidade total de vezes que essa alternativa foi escolhida.
     private int totalRespostas;
 
+    // Pergunta à qual esta alternativa pertence.
     @ManyToOne
     private QuizPergunta pergunta;
 
