@@ -11,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+// Essa classe não tem muitas explicações, pois é basicamente a mesma coisa que as outras, só que para salas
 @RestController
-@RequestMapping("/api/salas")
+@RequestMapping("/api/salas")   // essa anotação define o caminho base para todos os 
+                                // métodos da classe, ou seja, todos os métodos terão /api/salas no início do caminho
 public class SalaController {
     private final SalaService salas;
 

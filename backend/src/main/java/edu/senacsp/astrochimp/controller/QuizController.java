@@ -27,6 +27,10 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// Essa classe tivemos bastante dificuldade para construir ela, confessamos que tivemos que
+// buscar ajuda, não atoa mostra ser de Controllers a mais complexa e com estruturas maiores
+
 @RestController
 public class QuizController {
 
@@ -36,6 +40,11 @@ public class QuizController {
         this.quizService = quizService;
     }
 
+
+
+    // Aqui mantivemos o mesmo que as outras, mas com algumas diferenças, 
+    // como o ResponseEntity, que é usado para montar a resposta HTTP completa, 
+    // com status, cabeçalhos e corpo da resposta
     @PostMapping("/api/professores/{professorId}/quizzes")
     public ResponseEntity<QuizProfessorDto> criar(
             @PathVariable Long professorId,
@@ -44,10 +53,14 @@ public class QuizController {
         return ResponseEntity.status(HttpStatus.CREATED).body(converterQuizParaDto(quiz));
     }
 
+
+    // Nessa precisamos ter uma lista de quizzes, então 
+    // criamos uma lista de QuizProfessorDto, e para cada quiz que o serviço retorna,
+    // chamamos o método converterQuizParaDto para converter o quiz em um QuizProfessorDto
     @GetMapping("/api/professores/{professorId}/quizzes")
     public List<QuizProfessorDto> listarSalvos(@PathVariable Long professorId) {
         List<QuizProfessorDto> quizzes = new ArrayList<>();
-        for (Quiz quiz : quizService.listarQuizzesDoProfessor(professorId)) {
+        for (Quiz quiz : quizService.listarQuizzesDoProfessor(professorId)) { // aqui temos um for para percorrer a lista de quizzes que o serviço retorna
             quizzes.add(converterQuizParaDto(quiz));
         }
         return quizzes;

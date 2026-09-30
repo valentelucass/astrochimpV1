@@ -11,15 +11,42 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// temos a tag RestController, marca a classe como um controlador de API REST
 @RestController
 public class DuvidaController {
     private final DuvidaService duvidas;
 
+    // aqui criamos um construtor para injetar a dependência do serviço de dúvidas
     public DuvidaController(DuvidaService duvidas) {
         this.duvidas = duvidas;
     }
 
-    @PostMapping("/api/salas/{salaId}/duvidas")
+    // PostMapping é uma anotação que mapeia requisições HTTP POST para o método
+    // criar
+    // Não irei me extender para as outras como GetMapping, PatchMapping, etc
+    // Pois todos são similares, mudando apenas o verbo HTTP e o caminho da
+    // requisição
+    //@PostMapping("/api/salas/{salaId}/duvidas")
+
+    // ResponseEntity serve para montar a resposta HHTP completa com dados, codigo
+    // de status e cabeçalhos
+    // dentro do parametro utilizados sempre um PathVariable para pegar nesse caso o
+    // ID da sala
+    // Usamos o ResquestHeader para pegar o token do aluno que está fazendo a
+    // requisição
+    // E por fim o RequestBody para pegar os dados da dúvida que estão sendo
+    // enviados no corpo da requisição
+    /*
+     * 
+     * duvidas.criar(salaId, token, pedido) chama o método que cria a dúvida e
+     * retorna a dúvida criada.
+     * .body(...) coloca essa dúvida no corpo da resposta.
+     * HttpStatus.CREATED define o status 201, que significa “criado com sucesso”.
+     * return envia essa resposta.
+     * 
+     */
+
+    @PostMapping("/api/salas/{salaId}/duvidas") // dentro do paramtro temos as rotas
     public ResponseEntity<DuvidaDto> criar(
             @PathVariable Long salaId,
             @RequestHeader("X-Aluno-Token") String token,
@@ -27,6 +54,9 @@ public class DuvidaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(duvidas.criar(salaId, token, pedido));
     }
 
+
+    // Percebe-se que o retorno do restante dos metodos nao tem mais ResponseEntity, 
+    // pois não precisamos mais montar a resposta HTTP completa, apenas o corpo da resposta.
     @GetMapping("/api/salas/{salaId}/duvidas")
     public List<DuvidaDto> listarAluno(
             @PathVariable Long salaId,
