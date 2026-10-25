@@ -4,13 +4,6 @@ public class IniciarCronometroDto {
 
     private Integer segundos;
 
-    public IniciarCronometroDto() {
-    }
-
-    public IniciarCronometroDto(Integer segundos) {
-        this.segundos = segundos;
-    }
-
     public Integer getSegundos() {
         return segundos;
     }

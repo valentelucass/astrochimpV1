@@ -7,16 +7,6 @@ public class CadastrarProfessorDto {
     private String senha;
     private String slugPerfilPublico;
 
-    public CadastrarProfessorDto() {
-    }
-
-    public CadastrarProfessorDto(String nome, String email, String senha, String slugPerfilPublico) {
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.slugPerfilPublico = slugPerfilPublico;
-    }
-
     public String getNome() {
         return nome;
     }

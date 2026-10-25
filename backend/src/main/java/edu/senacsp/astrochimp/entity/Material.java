@@ -24,8 +24,6 @@ public class Material {
 
     private boolean publico;
 
-    private boolean fixado;
-
     private LocalDateTime criadoEm;
 
     @ManyToOne

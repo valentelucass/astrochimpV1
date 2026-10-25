@@ -18,19 +18,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
 public class SalaService {
-    private final SalaRepository salas;
-    private final AlunoRepository alunos;
-    private final AcessoService acesso;
+    private final SalaRepository salaRepository;
+    private final AlunoRepository alunoRepository;
+    private final AcessoService acessoService;
 
-    public SalaService(SalaRepository salas, AlunoRepository alunos, AcessoService acesso) {
-        this.salas = salas;
-        this.alunos = alunos;
-        this.acesso = acesso;
+    public SalaService(SalaRepository salaRepository, AlunoRepository alunoRepository, AcessoService acessoService) {
+        this.salaRepository = salaRepository;
+        this.alunoRepository = alunoRepository;
+        this.acessoService = acessoService;
     }
 
     @Transactional
@@ -38,11 +37,11 @@ public class SalaService {
         if (pedido == null || pedido.getProfessorId() == null || pedido.getNomeAula() == null || pedido.getNomeAula().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor e nome da aula são obrigatórios");
         }
-        Professor professor = acesso.professor(pedido.getProfessorId());
+        Professor professor = acessoService.professor(pedido.getProfessorId());
         String codigo;
         do {
             codigo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
-        } while (salas.findByCodigo(codigo).isPresent());
+        } while (salaRepository.findByCodigo(codigo).isPresent());
         Sala sala = new Sala();
         sala.setCodigo(codigo);
         sala.setNomeAula(pedido.getNomeAula().trim());
@@ -50,16 +49,16 @@ public class SalaService {
         sala.setCriadaEm(LocalDateTime.now());
         sala.setExpiraEm(sala.getCriadaEm().plusHours(4));
         sala.setProfessor(professor);
-        return resposta(salas.save(sala));
+        return resposta(salaRepository.save(sala));
     }
 
     @Transactional(readOnly = true)
-    public SalaDto buscar(Long id, String tokenAluno) {
-        Sala sala = acesso.sala(id);
+    public SalaDto buscar(Long salaId, String tokenAluno) {
+        Sala sala = acessoService.sala(salaId);
         if (tokenAluno != null && !tokenAluno.isBlank()) {
-            acesso.alunoDaSala(id, tokenAluno);
+            acessoService.alunoDaSala(salaId, tokenAluno);
         } else {
-            acesso.salaDoProfessor(id);
+            acessoService.salaDoProfessor(salaId);
         }
         return resposta(sala);
     }
@@ -69,58 +68,61 @@ public class SalaService {
         if (pedido == null || pedido.getCodigo() == null || pedido.getNomeAluno() == null || pedido.getNomeAluno().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Código e nome do aluno são obrigatórios");
         }
-        Sala sala = salas.findByCodigo(pedido.getCodigo().trim().toUpperCase())
+        Sala sala = salaRepository.findByCodigo(pedido.getCodigo().trim().toUpperCase())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Código de sala não encontrado"));
-        acesso.exigirSalaAtiva(sala);
+        acessoService.exigirSalaAtiva(sala);
         Aluno aluno = new Aluno();
         aluno.setNome(pedido.getNomeAluno().trim());
         aluno.setToken(UUID.randomUUID().toString());
-        alunos.save(aluno);
-        if (sala.getAlunos() == null) sala.setAlunos(new ArrayList<>());
+        alunoRepository.save(aluno);
         sala.getAlunos().add(aluno);
-        salas.save(sala);
+        salaRepository.save(sala);
         return new EntradaSalaDto(resposta(sala), aluno.getId(), aluno.getToken());
     }
 
     @Transactional
-    public SalaDto encerrar(Long id) {
-        Sala sala = acesso.salaDoProfessor(id);
+    public SalaDto encerrar(Long salaId) {
+        Sala sala = acessoService.salaDoProfessor(salaId);
         sala.setStatus("encerrada");
         sala.setCronometroIniciadoEm(null);
+        sala.setCronometroSegundos(null);
         sala.setQuizEmAndamento(null);
         sala.setQuizPerguntaAtual(null);
         sala.setQuizPerguntaIniciadaEm(null);
         sala.setQuizSessaoId(null);
-        return resposta(salas.save(sala));
+        return resposta(salaRepository.save(sala));
     }
 
     @Transactional
-    public CronometroDto iniciarCronometro(Long id, IniciarCronometroDto pedido) {
-        Sala sala = acesso.salaDoProfessor(id);
-        acesso.exigirSalaAtiva(sala);
+    public CronometroDto iniciarCronometro(Long salaId, IniciarCronometroDto pedido) {
+        Sala sala = acessoService.salaDoProfessor(salaId);
+        acessoService.exigirSalaAtiva(sala);
         if (pedido == null || pedido.getSegundos() == null || pedido.getSegundos() <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duração deve ser maior que zero");
         }
         sala.setCronometroSegundos(pedido.getSegundos());
         sala.setCronometroIniciadoEm(LocalDateTime.now());
-        salas.save(sala);
+        salaRepository.save(sala);
         return cronometro(sala);
     }
 
     @Transactional(readOnly = true)
-    public CronometroDto consultarCronometro(Long id, String tokenAluno) {
-        Sala sala = acesso.sala(id);
-        if (tokenAluno != null && !tokenAluno.isBlank()) acesso.alunoDaSala(id, tokenAluno);
-        else acesso.salaDoProfessor(id);
+    public CronometroDto consultarCronometro(Long salaId, String tokenAluno) {
+        Sala sala = acessoService.sala(salaId);
+        if (tokenAluno != null && !tokenAluno.isBlank()) {
+            acessoService.alunoDaSala(salaId, tokenAluno);
+        } else {
+            acessoService.salaDoProfessor(salaId);
+        }
         return cronometro(sala);
     }
 
     @Transactional
-    public CronometroDto pararCronometro(Long id) {
-        Sala sala = acesso.salaDoProfessor(id);
+    public CronometroDto pararCronometro(Long salaId) {
+        Sala sala = acessoService.salaDoProfessor(salaId);
         sala.setCronometroIniciadoEm(null);
         sala.setCronometroSegundos(null);
-        salas.save(sala);
+        salaRepository.save(sala);
         return cronometro(sala);
     }
 
@@ -128,9 +130,9 @@ public class SalaService {
         if (sala.getCronometroIniciadoEm() == null || sala.getCronometroSegundos() == null) {
             return new CronometroDto(null, 0, false);
         }
-        long decorrido = Duration.between(sala.getCronometroIniciadoEm(), LocalDateTime.now()).getSeconds();
-        int restante = (int) Math.max(0, sala.getCronometroSegundos() - decorrido);
-        return new CronometroDto(sala.getCronometroSegundos(), restante, restante > 0);
+        long segundosDecorridos = Duration.between(sala.getCronometroIniciadoEm(), LocalDateTime.now()).getSeconds();
+        int segundosRestantes = (int) Math.max(0, sala.getCronometroSegundos() - segundosDecorridos);
+        return new CronometroDto(sala.getCronometroSegundos(), segundosRestantes, segundosRestantes > 0);
     }
 
     private SalaDto resposta(Sala sala) {

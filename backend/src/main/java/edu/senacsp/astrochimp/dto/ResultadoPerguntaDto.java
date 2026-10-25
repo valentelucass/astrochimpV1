@@ -1,5 +1,6 @@
 package edu.senacsp.astrochimp.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultadoPerguntaDto {
@@ -7,7 +8,7 @@ public class ResultadoPerguntaDto {
     private Long perguntaId;
     private String enunciado;
     private long totalRespondentes;
-    private List<ResultadoAlternativaDto> resultados;
+    private List<ResultadoAlternativaDto> resultados = new ArrayList<>();
 
     public ResultadoPerguntaDto() {
     }

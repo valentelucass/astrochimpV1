@@ -3,6 +3,7 @@ package edu.senacsp.astrochimp.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,28 +43,28 @@ public class Sala {
     private String quizSessaoId;
 
     @OneToMany(mappedBy = "sala")
-    private List<Duvida> duvidas;
+    private List<Duvida> duvidas = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
         name = "sala_aluno",
         joinColumns = @JoinColumn(name = "sala_id"),
         inverseJoinColumns = @JoinColumn(name = "aluno_id"))
-    private List<Aluno> alunos;
+    private List<Aluno> alunos = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
         name = "sala_material",
         joinColumns = @JoinColumn(name = "sala_id"),
         inverseJoinColumns = @JoinColumn(name = "material_id"))
-    private List<Material> materiais;
+    private List<Material> materiais = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
         name = "sala_material_fixado",
         joinColumns = @JoinColumn(name = "sala_id"),
         inverseJoinColumns = @JoinColumn(name = "material_id"))
-    private List<Material> materiaisFixados;
+    private List<Material> materiaisFixados = new ArrayList<>();
 
     public Long getId() {
         return id;

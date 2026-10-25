@@ -3,6 +3,7 @@ package edu.senacsp.astrochimp.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class Duvida {
         name = "duvida_voto",
         joinColumns = @JoinColumn(name = "duvida_id"),
         inverseJoinColumns = @JoinColumn(name = "aluno_id"))
-    private List<Aluno> votos;
+    private List<Aluno> alunosQueVotaram = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -102,11 +103,11 @@ public class Duvida {
         this.autor = autor;
     }
 
-    public List<Aluno> getVotos() {
-        return votos;
+    public List<Aluno> getAlunosQueVotaram() {
+        return alunosQueVotaram;
     }
 
-    public void setVotos(List<Aluno> votos) {
-        this.votos = votos;
+    public void setAlunosQueVotaram(List<Aluno> alunosQueVotaram) {
+        this.alunosQueVotaram = alunosQueVotaram;
     }
 }

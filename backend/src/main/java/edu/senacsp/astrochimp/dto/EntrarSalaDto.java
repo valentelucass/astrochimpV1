@@ -5,14 +5,6 @@ public class EntrarSalaDto {
     private String codigo;
     private String nomeAluno;
 
-    public EntrarSalaDto() {
-    }
-
-    public EntrarSalaDto(String codigo, String nomeAluno) {
-        this.codigo = codigo;
-        this.nomeAluno = nomeAluno;
-    }
-
     public String getCodigo() {
         return codigo;
     }

@@ -1,5 +1,7 @@
 package edu.senacsp.astrochimp.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class PerfilProfessorDto {
 
     private Long id;
@@ -9,6 +11,7 @@ public class PerfilProfessorDto {
     private String fotoUrl;
     private String slugPerfilPublico;
 
+    @JsonCreator
     public PerfilProfessorDto() {
     }
 

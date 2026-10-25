@@ -1,9 +1,6 @@
 package edu.senacsp.astrochimp.service;
 
-import edu.senacsp.astrochimp.dto.CriarMaterialDto;
-import edu.senacsp.astrochimp.dto.FixarMaterialDto;
 import edu.senacsp.astrochimp.dto.MaterialDto;
-import edu.senacsp.astrochimp.dto.PublicarMaterialDto;
 import edu.senacsp.astrochimp.entity.Material;
 import edu.senacsp.astrochimp.entity.Professor;
 import edu.senacsp.astrochimp.entity.Sala;
@@ -28,22 +25,22 @@ import java.util.UUID;
 
 @Service
 public class MaterialService {
-    private final MaterialRepository materiais;
-    private final SalaRepository salas;
-    private final AcessoService acesso;
+    private final MaterialRepository materialRepository;
+    private final SalaRepository salaRepository;
+    private final AcessoService acessoService;
     private final Path pastaArquivos;
 
-    public MaterialService(MaterialRepository materiais, SalaRepository salas, AcessoService acesso,
+    public MaterialService(MaterialRepository materialRepository, SalaRepository salaRepository, AcessoService acessoService,
                            @Value("${astrochimp.upload-dir:uploads}") String pasta) {
-        this.materiais = materiais;
-        this.salas = salas;
-        this.acesso = acesso;
+        this.materialRepository = materialRepository;
+        this.salaRepository = salaRepository;
+        this.acessoService = acessoService;
         this.pastaArquivos = Path.of(pasta).toAbsolutePath().normalize();
     }
 
     @Transactional
-    public MaterialDto criar(Long professorId, CriarMaterialDto pedido) {
-        Professor professor = acesso.professor(professorId);
+    public MaterialDto criar(Long professorId, MaterialDto pedido) {
+        Professor professor = acessoService.professor(professorId);
         if (pedido == null || vazio(pedido.getTitulo()) || vazio(pedido.getConteudoOuUrl()) ||
             !("link".equals(pedido.getTipo()) || "codigo".equals(pedido.getTipo()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe título, tipo link/codigo e conteúdo");
@@ -55,18 +52,20 @@ public class MaterialService {
         material.setDetalhe(pedido.getDetalhe());
         material.setProfessor(professor);
         material.setCriadoEm(LocalDateTime.now());
-        return resposta(materiais.save(material), false);
+        return resposta(materialRepository.save(material), false);
     }
 
     @Transactional
     public MaterialDto enviarArquivo(Long professorId, String titulo, MultipartFile arquivo) {
-        Professor professor = acesso.professor(professorId);
+        Professor professor = acessoService.professor(professorId);
         if (vazio(titulo) || arquivo == null || arquivo.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Título e arquivo são obrigatórios");
         }
         String original = arquivo.getOriginalFilename() == null ? "documento" : arquivo.getOriginalFilename();
         String nomeSeguro = original.replaceAll("[^a-zA-Z0-9._-]", "_");
-        if (nomeSeguro.length() > 80) nomeSeguro = nomeSeguro.substring(nomeSeguro.length() - 80);
+        if (nomeSeguro.length() > 80) {
+            nomeSeguro = nomeSeguro.substring(nomeSeguro.length() - 80);
+        }
         Path destino = pastaArquivos.resolve(UUID.randomUUID() + "_" + nomeSeguro).normalize();
         try {
             Files.createDirectories(pastaArquivos);
@@ -81,101 +80,117 @@ public class MaterialService {
         material.setDetalhe(nomeSeguro);
         material.setProfessor(professor);
         material.setCriadoEm(LocalDateTime.now());
-        return resposta(materiais.save(material), false);
+        return resposta(materialRepository.save(material), false);
     }
 
     @Transactional(readOnly = true)
     public List<MaterialDto> listarProfessor(Long professorId) {
-        acesso.professor(professorId);
-        List<MaterialDto> lista = new ArrayList<>();
-        for (Material material : materiais.findByProfessorId(professorId)) lista.add(resposta(material, false));
-        return lista;
+        acessoService.professor(professorId);
+        List<MaterialDto> materiais = new ArrayList<>();
+        for (Material material : materialRepository.findByProfessorId(professorId)) {
+            materiais.add(resposta(material, false));
+        }
+        return materiais;
     }
 
     @Transactional
     public MaterialDto publicarNaSala(Long salaId, Long materialId) {
-        Sala sala = acesso.salaDoProfessor(salaId);
-        acesso.exigirSalaAtiva(sala);
+        Sala sala = acessoService.salaDoProfessor(salaId);
+        acessoService.exigirSalaAtiva(sala);
         Material material = buscar(materialId);
         if (!material.getProfessor().getId().equals(sala.getProfessor().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Material pertence a outro professor");
         }
-        if (sala.getMateriais() == null) sala.setMateriais(new ArrayList<>());
-        if (sala.getMateriais().stream().anyMatch(m -> m.getId().equals(materialId))) {
+        if (contemMaterial(sala.getMateriais(), materialId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Material já publicado nesta sala");
         }
         sala.getMateriais().add(material);
-        salas.save(sala);
+        salaRepository.save(sala);
         return resposta(material, false);
     }
 
     @Transactional
     public MaterialDto enviarArquivoParaSala(Long salaId, String titulo, MultipartFile arquivo) {
-        Sala sala = acesso.salaDoProfessor(salaId);
-        acesso.exigirSalaAtiva(sala);
-        MaterialDto material = enviarArquivo(sala.getProfessor().getId(), titulo, arquivo);
-        return publicarNaSala(salaId, material.getId());
+        Sala sala = acessoService.salaDoProfessor(salaId);
+        acessoService.exigirSalaAtiva(sala);
+        MaterialDto materialDto = enviarArquivo(sala.getProfessor().getId(), titulo, arquivo);
+        return publicarNaSala(salaId, materialDto.getId());
     }
 
     @Transactional(readOnly = true)
     public List<MaterialDto> listarSala(Long salaId, String tokenAluno) {
-        Sala sala = acesso.sala(salaId);
-        if (tokenAluno != null && !tokenAluno.isBlank()) acesso.alunoDaSala(salaId, tokenAluno);
-        else acesso.salaDoProfessor(salaId);
-        List<MaterialDto> lista = new ArrayList<>();
-        if (sala.getMateriais() != null) {
-            for (Material material : sala.getMateriais()) {
-                if (estaFixado(sala, material.getId())) lista.add(resposta(material, true));
-            }
-            for (Material material : sala.getMateriais()) {
-                if (!estaFixado(sala, material.getId())) lista.add(resposta(material, false));
+        Sala sala = acessoService.sala(salaId);
+        if (tokenAluno != null && !tokenAluno.isBlank()) {
+            acessoService.alunoDaSala(salaId, tokenAluno);
+        } else {
+            acessoService.salaDoProfessor(salaId);
+        }
+        List<MaterialDto> fixados = new ArrayList<>();
+        List<MaterialDto> naoFixados = new ArrayList<>();
+        for (Material material : sala.getMateriais()) {
+            boolean fixado = contemMaterial(sala.getMateriaisFixados(), material.getId());
+            if (fixado) {
+                fixados.add(resposta(material, true));
+            } else {
+                naoFixados.add(resposta(material, false));
             }
         }
-        return lista;
+        fixados.addAll(naoFixados);
+        return fixados;
     }
 
     @Transactional
-    public MaterialDto fixar(Long salaId, Long materialId, FixarMaterialDto pedido) {
-        Sala sala = acesso.salaDoProfessor(salaId);
-        if (pedido == null || sala.getMateriais() == null ||
-            sala.getMateriais().stream().noneMatch(m -> m.getId().equals(materialId))) {
+    public MaterialDto fixar(Long salaId, Long materialId, MaterialDto pedido) {
+        Sala sala = acessoService.salaDoProfessor(salaId);
+        if (pedido == null || !contemMaterial(sala.getMateriais(), materialId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Material não publicado nesta sala");
         }
-        if (sala.getMateriaisFixados() == null) sala.setMateriaisFixados(new ArrayList<>());
-        if (pedido.isFixado() && !estaFixado(sala, materialId)) sala.getMateriaisFixados().add(buscar(materialId));
-        if (!pedido.isFixado()) sala.getMateriaisFixados().removeIf(m -> m.getId().equals(materialId));
-        salas.save(sala);
-        return resposta(buscar(materialId), pedido.isFixado());
+        Material material = buscar(materialId);
+        if (pedido.isFixado()) {
+            if (!contemMaterial(sala.getMateriaisFixados(), materialId)) {
+                sala.getMateriaisFixados().add(material);
+            }
+        } else {
+            sala.getMateriaisFixados().remove(material);
+        }
+        salaRepository.save(sala);
+        return resposta(material, pedido.isFixado());
     }
 
     @Transactional
     public MaterialDto tornarPublico(
             Long professorId,
             Long materialId,
-            PublicarMaterialDto pedido) {
-        acesso.professor(professorId);
+            MaterialDto pedido) {
+        acessoService.professor(professorId);
         Material material = buscar(materialId);
         if (!material.getProfessor().getId().equals(professorId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Material pertence a outro professor");
         }
-        if (pedido == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe publico");
+        if (pedido == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe publico");
+        }
         material.setPublico(pedido.isPublico());
-        return resposta(materiais.save(material), false);
+        return resposta(materialRepository.save(material), false);
     }
 
     @Transactional(readOnly = true)
-    public ArquivoResponse baixar(Long materialId, Long salaId, String tokenAluno) {
+    public ArquivoDownload baixar(Long materialId, Long salaId, String tokenAluno) {
         Material material = buscar(materialId);
         if (!"arquivo".equals(material.getTipo())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Material não é arquivo");
         }
         if (!material.isPublico()) {
-            if (salaId == null) acesso.professor(material.getProfessor().getId());
-            else {
-                Sala sala = acesso.sala(salaId);
-                if (tokenAluno != null && !tokenAluno.isBlank()) acesso.alunoDaSala(salaId, tokenAluno);
-                else acesso.salaDoProfessor(salaId);
-                if (sala.getMateriais() == null || sala.getMateriais().stream().noneMatch(m -> m.getId().equals(materialId))) {
+            if (salaId == null) {
+                acessoService.professor(material.getProfessor().getId());
+            } else {
+                Sala sala = acessoService.sala(salaId);
+                if (tokenAluno != null && !tokenAluno.isBlank()) {
+                    acessoService.alunoDaSala(salaId, tokenAluno);
+                } else {
+                    acessoService.salaDoProfessor(salaId);
+                }
+                if (!contemMaterial(sala.getMateriais(), materialId)) {
                     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Arquivo não está nesta sala");
                 }
             }
@@ -184,19 +199,40 @@ public class MaterialService {
         if (!caminho.startsWith(pastaArquivos) || !Files.exists(caminho)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Arquivo não encontrado no servidor");
         }
-        return new ArquivoResponse(new FileSystemResource(caminho), material.getDetalhe());
+        return new ArquivoDownload(new FileSystemResource(caminho), material.getDetalhe());
     }
 
-    public record ArquivoResponse(Resource arquivo, String nome) {}
+    // Guarda o arquivo e o nome que o controller usa no cabeçalho do download.
+    public static class ArquivoDownload {
+        private final Resource arquivo;
+        private final String nomeArquivo;
 
-    private Material buscar(Long id) {
-        return materiais.findById(id)
+        public ArquivoDownload(Resource arquivo, String nomeArquivo) {
+            this.arquivo = arquivo;
+            this.nomeArquivo = nomeArquivo;
+        }
+
+        public Resource getArquivo() {
+            return arquivo;
+        }
+
+        public String getNomeArquivo() {
+            return nomeArquivo;
+        }
+    }
+
+    private Material buscar(Long materialId) {
+        return materialRepository.findById(materialId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material não encontrado"));
     }
 
-    private boolean estaFixado(Sala sala, Long materialId) {
-        return sala.getMateriaisFixados() != null &&
-            sala.getMateriaisFixados().stream().anyMatch(m -> m.getId().equals(materialId));
+    private boolean contemMaterial(List<Material> materiais, Long materialId) {
+        for (Material material : materiais) {
+            if (material.getId().equals(materialId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private MaterialDto resposta(Material material, boolean fixado) {

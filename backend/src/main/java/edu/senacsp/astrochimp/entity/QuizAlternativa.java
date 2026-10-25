@@ -17,8 +17,6 @@ public class QuizAlternativa {
 
     private boolean correta;
 
-    private int totalRespostas;
-
     @ManyToOne
     private QuizPergunta pergunta;
 
@@ -52,14 +50,6 @@ public class QuizAlternativa {
 
     public void setCorreta(boolean correta) {
         this.correta = correta;
-    }
-
-    public int getTotalRespostas() {
-        return totalRespostas;
-    }
-
-    public void setTotalRespostas(int totalRespostas) {
-        this.totalRespostas = totalRespostas;
     }
 
     public QuizPergunta getPergunta() {

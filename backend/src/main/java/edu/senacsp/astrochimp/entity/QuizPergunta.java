@@ -2,6 +2,7 @@ package edu.senacsp.astrochimp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,8 @@ public class QuizPergunta {
     private Quiz quiz;
 
     @OneToMany(mappedBy = "pergunta", cascade = CascadeType.ALL)
-    private List<QuizAlternativa> alternativas;
+    @OrderBy("letra ASC")
+    private List<QuizAlternativa> alternativas = new ArrayList<>();
 
     public Long getId() {
         return id;

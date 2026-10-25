@@ -2,6 +2,7 @@ package edu.senacsp.astrochimp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,13 +28,13 @@ public class Professor {
     private String slugPerfilPublico;
 
     @OneToMany(mappedBy = "professor")
-    private List<Sala> salas;
+    private List<Sala> salas = new ArrayList<>();
 
     @OneToMany(mappedBy = "professor")
-    private List<Material> materiais;
+    private List<Material> materiais = new ArrayList<>();
 
     @OneToMany(mappedBy = "professor")
-    private List<Quiz> quizzes;
+    private List<Quiz> quizzes = new ArrayList<>();
 
     public Long getId() {
         return id;

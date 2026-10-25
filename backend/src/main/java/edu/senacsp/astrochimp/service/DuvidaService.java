@@ -1,9 +1,6 @@
 package edu.senacsp.astrochimp.service;
 
-import edu.senacsp.astrochimp.dto.AlterarEstadoDuvidaDto;
-import edu.senacsp.astrochimp.dto.CriarDuvidaDto;
 import edu.senacsp.astrochimp.dto.DuvidaDto;
-import edu.senacsp.astrochimp.dto.FixarDuvidaDto;
 import edu.senacsp.astrochimp.entity.Aluno;
 import edu.senacsp.astrochimp.entity.Duvida;
 import edu.senacsp.astrochimp.entity.Sala;
@@ -15,24 +12,23 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class DuvidaService {
-    private final DuvidaRepository duvidas;
-    private final AcessoService acesso;
+    private final DuvidaRepository duvidaRepository;
+    private final AcessoService acessoService;
 
-    public DuvidaService(DuvidaRepository duvidas, AcessoService acesso) {
-        this.duvidas = duvidas;
-        this.acesso = acesso;
+    public DuvidaService(DuvidaRepository duvidaRepository, AcessoService acessoService) {
+        this.duvidaRepository = duvidaRepository;
+        this.acessoService = acessoService;
     }
 
     @Transactional
-    public DuvidaDto criar(Long salaId, String token, CriarDuvidaDto pedido) {
-        Sala sala = acesso.sala(salaId);
-        acesso.exigirSalaAtiva(sala);
-        Aluno aluno = acesso.alunoDaSala(salaId, token);
+    public DuvidaDto criar(Long salaId, String tokenAluno, DuvidaDto pedido) {
+        Sala sala = acessoService.sala(salaId);
+        acessoService.exigirSalaAtiva(sala);
+        Aluno aluno = acessoService.alunoDaSala(salaId, tokenAluno);
         if (pedido == null || pedido.getTexto() == null || pedido.getTexto().isBlank() || pedido.getTexto().length() > 280) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dúvida deve ter entre 1 e 280 caracteres");
         }
@@ -43,61 +39,62 @@ public class DuvidaService {
         duvida.setAnonima(pedido.isAnonima());
         duvida.setEstado("pendente");
         duvida.setCriadaEm(LocalDateTime.now());
-        duvida.setVotos(new ArrayList<>());
-        return resposta(duvidas.save(duvida), false);
+        return resposta(duvidaRepository.save(duvida), false);
     }
 
     @Transactional(readOnly = true)
-    public List<DuvidaDto> listar(Long salaId, String token, boolean paraProfessor) {
-        if (paraProfessor) acesso.salaDoProfessor(salaId);
-        else acesso.alunoDaSala(salaId, token);
-        List<Duvida> lista = new ArrayList<>(duvidas.findBySalaId(salaId));
-        lista.sort(Comparator.comparing(Duvida::isFixada).reversed()
-            .thenComparing(Comparator.comparingInt((Duvida d) -> d.getVotos().size()).reversed())
-            .thenComparing(Duvida::getCriadaEm));
-        List<DuvidaDto> respostas = new ArrayList<>();
-        for (Duvida duvida : lista) respostas.add(resposta(duvida, paraProfessor));
-        return respostas;
+    public List<DuvidaDto> listar(Long salaId, String tokenAluno, boolean paraProfessor) {
+        if (paraProfessor) {
+            acessoService.salaDoProfessor(salaId);
+        } else {
+            acessoService.alunoDaSala(salaId, tokenAluno);
+        }
+        List<DuvidaDto> duvidas = new ArrayList<>();
+        for (Duvida duvida : duvidaRepository.listarPorSala(salaId)) {
+            duvidas.add(resposta(duvida, paraProfessor));
+        }
+        return duvidas;
     }
 
     @Transactional
-    public DuvidaDto votar(Long id, String token) {
-        Duvida duvida = buscar(id);
-        acesso.exigirSalaAtiva(duvida.getSala());
-        Aluno aluno = acesso.alunoDaSala(duvida.getSala().getId(), token);
-        if (duvida.getVotos() == null) duvida.setVotos(new ArrayList<>());
-        for (Aluno votante : duvida.getVotos()) {
+    public DuvidaDto votar(Long duvidaId, String tokenAluno) {
+        Duvida duvida = buscar(duvidaId);
+        acessoService.exigirSalaAtiva(duvida.getSala());
+        Aluno aluno = acessoService.alunoDaSala(duvida.getSala().getId(), tokenAluno);
+        for (Aluno votante : duvida.getAlunosQueVotaram()) {
             if (votante.getId().equals(aluno.getId())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Aluno já votou nesta dúvida");
             }
         }
-        duvida.getVotos().add(aluno);
-        return resposta(duvidas.save(duvida), false);
+        duvida.getAlunosQueVotaram().add(aluno);
+        return resposta(duvidaRepository.save(duvida), false);
     }
 
     @Transactional
-    public DuvidaDto mudarEstado(Long id, AlterarEstadoDuvidaDto pedido) {
-        Duvida duvida = buscar(id);
-        acesso.salaDoProfessor(duvida.getSala().getId());
+    public DuvidaDto mudarEstado(Long duvidaId, DuvidaDto pedido) {
+        Duvida duvida = buscar(duvidaId);
+        acessoService.salaDoProfessor(duvida.getSala().getId());
         if (pedido == null || !("pendente".equals(pedido.getEstado()) || "respondida".equals(pedido.getEstado())
             || "arquivada".equals(pedido.getEstado()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estado inválido");
         }
         duvida.setEstado(pedido.getEstado());
-        return resposta(duvidas.save(duvida), true);
+        return resposta(duvidaRepository.save(duvida), true);
     }
 
     @Transactional
-    public DuvidaDto fixar(Long id, FixarDuvidaDto pedido) {
-        Duvida duvida = buscar(id);
-        acesso.salaDoProfessor(duvida.getSala().getId());
-        if (pedido == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe fixada");
+    public DuvidaDto fixar(Long duvidaId, DuvidaDto pedido) {
+        Duvida duvida = buscar(duvidaId);
+        acessoService.salaDoProfessor(duvida.getSala().getId());
+        if (pedido == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe fixada");
+        }
         duvida.setFixada(pedido.isFixada());
-        return resposta(duvidas.save(duvida), true);
+        return resposta(duvidaRepository.save(duvida), true);
     }
 
-    private Duvida buscar(Long id) {
-        return duvidas.findById(id)
+    private Duvida buscar(Long duvidaId) {
+        return duvidaRepository.findById(duvidaId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Dúvida não encontrada"));
     }
 
@@ -107,6 +104,6 @@ public class DuvidaService {
             mostrarAutor ? duvida.getAutor().getId() : null,
             mostrarAutor ? duvida.getAutor().getNome() : null,
             duvida.getEstado(), duvida.isFixada(),
-            duvida.getVotos() == null ? 0 : duvida.getVotos().size(), duvida.getCriadaEm());
+            duvida.getAlunosQueVotaram().size(), duvida.getCriadaEm());
     }
 }

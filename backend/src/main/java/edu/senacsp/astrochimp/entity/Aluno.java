@@ -2,6 +2,7 @@ package edu.senacsp.astrochimp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class Aluno {
     private String token;
 
     @ManyToMany(mappedBy = "alunos")
-    private List<Sala> salas;
+    private List<Sala> salas = new ArrayList<>();
 
     public Long getId() {
         return id;

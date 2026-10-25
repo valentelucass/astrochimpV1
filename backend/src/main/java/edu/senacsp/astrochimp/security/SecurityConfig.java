@@ -33,8 +33,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(ProfessorRepository repository) {
-        return email -> repository.findByEmail(email)
+    public UserDetailsService userDetailsService(ProfessorRepository professorRepository) {
+        return email -> professorRepository.findByEmail(email)
             .map(professor -> User.withUsername(professor.getEmail())
                 .password(professor.getSenha()).roles("PROFESSOR").build())
             .orElseThrow(() -> new UsernameNotFoundException("Professor não encontrado"));

@@ -1,5 +1,6 @@
 package edu.senacsp.astrochimp.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PerfilPublicoProfessorDto {
@@ -9,7 +10,7 @@ public class PerfilPublicoProfessorDto {
     private String descricao;
     private String fotoUrl;
     private String slugPerfilPublico;
-    private List<MaterialDto> materiais;
+    private List<MaterialDto> materiais = new ArrayList<>();
 
     public PerfilPublicoProfessorDto() {
     }

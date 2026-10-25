@@ -1,5 +1,7 @@
 package edu.senacsp.astrochimp.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.time.LocalDateTime;
 
 public class MaterialDto {
@@ -13,6 +15,7 @@ public class MaterialDto {
     private boolean fixado;
     private LocalDateTime criadoEm;
 
+    @JsonCreator
     public MaterialDto() {
     }
 

@@ -1,26 +1,44 @@
 package edu.senacsp.astrochimp.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class CriarPerguntaDto {
+public class PerguntaDto {
 
+    private Long id;
     private String enunciado;
     private String dificuldade;
     private int tempoLimiteSegundos;
-    private List<CriarAlternativaDto> alternativas;
+    private int ordem;
+    private List<AlternativaDto> alternativas = new ArrayList<>();
 
-    public CriarPerguntaDto() {
+    @JsonCreator
+    public PerguntaDto() {
     }
 
-    public CriarPerguntaDto(
+    public PerguntaDto(
+            Long id,
             String enunciado,
             String dificuldade,
             int tempoLimiteSegundos,
-            List<CriarAlternativaDto> alternativas) {
+            int ordem,
+            List<AlternativaDto> alternativas) {
+        this.id = id;
         this.enunciado = enunciado;
         this.dificuldade = dificuldade;
         this.tempoLimiteSegundos = tempoLimiteSegundos;
+        this.ordem = ordem;
         this.alternativas = alternativas;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEnunciado() {
@@ -47,11 +65,19 @@ public class CriarPerguntaDto {
         this.tempoLimiteSegundos = tempoLimiteSegundos;
     }
 
-    public List<CriarAlternativaDto> getAlternativas() {
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
+    }
+
+    public List<AlternativaDto> getAlternativas() {
         return alternativas;
     }
 
-    public void setAlternativas(List<CriarAlternativaDto> alternativas) {
+    public void setAlternativas(List<AlternativaDto> alternativas) {
         this.alternativas = alternativas;
     }
 }

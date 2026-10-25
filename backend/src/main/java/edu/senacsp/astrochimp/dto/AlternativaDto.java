@@ -1,16 +1,19 @@
 package edu.senacsp.astrochimp.dto;
 
-public class AlternativaProfessorDto {
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+public class AlternativaDto {
 
     private Long id;
     private String letra;
     private String texto;
     private boolean correta;
 
-    public AlternativaProfessorDto() {
+    @JsonCreator
+    public AlternativaDto() {
     }
 
-    public AlternativaProfessorDto(Long id, String letra, String texto, boolean correta) {
+    public AlternativaDto(Long id, String letra, String texto, boolean correta) {
         this.id = id;
         this.letra = letra;
         this.texto = texto;

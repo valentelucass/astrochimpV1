@@ -3,6 +3,7 @@ package edu.senacsp.astrochimp.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,7 +24,8 @@ public class Quiz {
     private Professor professor;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
-    private List<QuizPergunta> perguntas;
+    @OrderBy("ordem ASC")
+    private List<QuizPergunta> perguntas = new ArrayList<>();
 
     public Long getId() {
         return id;

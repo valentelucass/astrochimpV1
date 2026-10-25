@@ -1,5 +1,7 @@
 package edu.senacsp.astrochimp.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.time.LocalDateTime;
 
 public class DuvidaDto {
@@ -14,6 +16,7 @@ public class DuvidaDto {
     private int votos;
     private LocalDateTime criadaEm;
 
+    @JsonCreator
     public DuvidaDto() {
     }
 

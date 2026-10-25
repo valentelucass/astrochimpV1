@@ -1,86 +1,53 @@
 package edu.senacsp.astrochimp.controller;
 
-import edu.senacsp.astrochimp.dto.AlterarEstadoDuvidaDto;
-import edu.senacsp.astrochimp.dto.CriarDuvidaDto;
 import edu.senacsp.astrochimp.dto.DuvidaDto;
-import edu.senacsp.astrochimp.dto.FixarDuvidaDto;
 import edu.senacsp.astrochimp.service.DuvidaService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// temos a tag RestController, marca a classe como um controlador de API REST
 @RestController
 public class DuvidaController {
-    private final DuvidaService duvidas;
+    private final DuvidaService duvidaService;
 
-    // aqui criamos um construtor para injetar a dependência do serviço de dúvidas
-    public DuvidaController(DuvidaService duvidas) {
-        this.duvidas = duvidas;
+    public DuvidaController(DuvidaService duvidaService) {
+        this.duvidaService = duvidaService;
     }
 
-    // PostMapping é uma anotação que mapeia requisições HTTP POST para o método
-    // criar
-    // Não irei me extender para as outras como GetMapping, PatchMapping, etc
-    // Pois todos são similares, mudando apenas o verbo HTTP e o caminho da
-    // requisição
-    //@PostMapping("/api/salas/{salaId}/duvidas")
-
-    // ResponseEntity serve para montar a resposta HHTP completa com dados, codigo
-    // de status e cabeçalhos
-    // dentro do parametro utilizados sempre um PathVariable para pegar nesse caso o
-    // ID da sala
-    // Usamos o ResquestHeader para pegar o token do aluno que está fazendo a
-    // requisição
-    // E por fim o RequestBody para pegar os dados da dúvida que estão sendo
-    // enviados no corpo da requisição
-    /*
-     * 
-     * duvidas.criar(salaId, token, pedido) chama o método que cria a dúvida e
-     * retorna a dúvida criada.
-     * .body(...) coloca essa dúvida no corpo da resposta.
-     * HttpStatus.CREATED define o status 201, que significa “criado com sucesso”.
-     * return envia essa resposta.
-     * 
-     */
-
-    @PostMapping("/api/salas/{salaId}/duvidas") // dentro do paramtro temos as rotas
-    public ResponseEntity<DuvidaDto> criar(
+    @PostMapping("/api/salas/{salaId}/duvidas")
+    @ResponseStatus(HttpStatus.CREATED)
+    public DuvidaDto criar(
             @PathVariable Long salaId,
-            @RequestHeader("X-Aluno-Token") String token,
-            @RequestBody CriarDuvidaDto pedido) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(duvidas.criar(salaId, token, pedido));
+            @RequestHeader("X-Aluno-Token") String tokenAluno,
+            @RequestBody DuvidaDto pedido) {
+        return duvidaService.criar(salaId, tokenAluno, pedido);
     }
 
-
-    // Percebe-se que o retorno do restante dos metodos nao tem mais ResponseEntity, 
-    // pois não precisamos mais montar a resposta HTTP completa, apenas o corpo da resposta.
     @GetMapping("/api/salas/{salaId}/duvidas")
     public List<DuvidaDto> listarAluno(
             @PathVariable Long salaId,
-            @RequestHeader("X-Aluno-Token") String token) {
-        return duvidas.listar(salaId, token, false);
+            @RequestHeader("X-Aluno-Token") String tokenAluno) {
+        return duvidaService.listar(salaId, tokenAluno, false);
     }
 
     @GetMapping("/api/salas/{salaId}/duvidas/professor")
     public List<DuvidaDto> listarProfessor(@PathVariable Long salaId) {
-        return duvidas.listar(salaId, null, true);
+        return duvidaService.listar(salaId, null, true);
     }
 
     @PostMapping("/api/duvidas/{id}/votos")
-    public DuvidaDto votar(@PathVariable Long id, @RequestHeader("X-Aluno-Token") String token) {
-        return duvidas.votar(id, token);
+    public DuvidaDto votar(@PathVariable("id") Long duvidaId, @RequestHeader("X-Aluno-Token") String tokenAluno) {
+        return duvidaService.votar(duvidaId, tokenAluno);
     }
 
     @PatchMapping("/api/duvidas/{id}/estado")
-    public DuvidaDto mudarEstado(@PathVariable Long id, @RequestBody AlterarEstadoDuvidaDto pedido) {
-        return duvidas.mudarEstado(id, pedido);
+    public DuvidaDto mudarEstado(@PathVariable("id") Long duvidaId, @RequestBody DuvidaDto pedido) {
+        return duvidaService.mudarEstado(duvidaId, pedido);
     }
 
     @PatchMapping("/api/duvidas/{id}/fixacao")
-    public DuvidaDto fixar(@PathVariable Long id, @RequestBody FixarDuvidaDto pedido) {
-        return duvidas.fixar(id, pedido);
+    public DuvidaDto fixar(@PathVariable("id") Long duvidaId, @RequestBody DuvidaDto pedido) {
+        return duvidaService.fixar(duvidaId, pedido);
     }
 }
