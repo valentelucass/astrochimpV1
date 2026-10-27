@@ -148,6 +148,8 @@ Os pacotes de Android e iOS foram gerados, mas a execução em aparelho físico 
 
 ## Documentação complementar
 
+- [Documentação do sistema em PDF](AstroChimp-Documentacao.pdf)
+- [Documentação do sistema em texto](DOCUMENTACAO.md)
 - [Backend: estrutura, configuração e rotas](backend/README.md)
 - [Aplicativo: telas, pastas e execução](frontend/README.md)
 - [Documentação do React Native](https://reactnative.dev/docs/getting-started)
