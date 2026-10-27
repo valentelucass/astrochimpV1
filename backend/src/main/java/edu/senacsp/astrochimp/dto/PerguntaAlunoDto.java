@@ -5,8 +5,12 @@ import java.util.List;
 
 public class PerguntaAlunoDto {
 
+    // Envia ao aluno os ids do quiz e da pergunta atual, enunciado, dificuldade, posição no quiz, quantidade de
+    // perguntas, tempo restante e alternativas sem gabarito; não inclui as próximas perguntas.
     private Long quizId;
     private Long perguntaId;
+    // Identifica a rodada para a tela liberar uma nova resposta quando o professor repetir o mesmo quiz.
+    private String rodadaId;
     private String enunciado;
     private String dificuldade;
     private int numeroPergunta;
@@ -36,6 +40,7 @@ public class PerguntaAlunoDto {
         this.alternativas = alternativas;
     }
 
+    // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     public Long getQuizId() {
         return quizId;
     }
@@ -50,6 +55,14 @@ public class PerguntaAlunoDto {
 
     public void setPerguntaId(Long perguntaId) {
         this.perguntaId = perguntaId;
+    }
+
+    public String getRodadaId() {
+        return rodadaId;
+    }
+
+    public void setRodadaId(String rodadaId) {
+        this.rodadaId = rodadaId;
     }
 
     public String getEnunciado() {

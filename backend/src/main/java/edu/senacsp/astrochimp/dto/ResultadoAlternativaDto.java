@@ -2,6 +2,8 @@ package edu.senacsp.astrochimp.dto;
 
 public class ResultadoAlternativaDto {
 
+    // Envia ao professor letra, texto e quantidade de respostas desta alternativa na rodada em andamento da sala,
+    // identificada por quizSessaoId; não lista nomes, ids ou tokens dos alunos.
     private String letra;
     private String texto;
     private long totalRespostas;
@@ -15,6 +17,7 @@ public class ResultadoAlternativaDto {
         this.totalRespostas = totalRespostas;
     }
 
+    // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     public String getLetra() {
         return letra;
     }

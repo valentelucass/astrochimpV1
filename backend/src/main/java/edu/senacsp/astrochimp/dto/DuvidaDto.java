@@ -1,21 +1,33 @@
 package edu.senacsp.astrochimp.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
 public class DuvidaDto {
 
+    // Recebe do aluno texto e anonimato e do professor estado ou fixação, conforme a operação; devolve a dúvida com a
+    // quantidade de votos, sem listar votantes. O service oculta id e nome do autor anônimo nas respostas aos alunos,
+    // mas permite que o professor veja o autor.
+    // Id, autor, votos e data só saem no JSON; um pedido não pode escolher quem escreveu ou quantos votos recebeu.
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String texto;
     private boolean anonima;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long autorId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String autorNome;
     private String estado;
-    private boolean fixada;
+    // Boolean fica null se fixada não vier no pedido; false significa que o professor pediu para desafixar a dúvida.
+    private Boolean fixada;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int votos;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime criadaEm;
 
+    // Usa este construtor vazio ao ler o JSON de uma dúvida e depois preenche os campos pelos setters.
     @JsonCreator
     public DuvidaDto() {
     }
@@ -41,6 +53,8 @@ public class DuvidaDto {
         this.criadaEm = criadaEm;
     }
 
+    // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
+    // As anotações dos campos acima continuam definindo o que pode entrar e sair no JSON.
     public Long getId() {
         return id;
     }
@@ -89,11 +103,11 @@ public class DuvidaDto {
         this.estado = estado;
     }
 
-    public boolean isFixada() {
+    public Boolean isFixada() {
         return fixada;
     }
 
-    public void setFixada(boolean fixada) {
+    public void setFixada(Boolean fixada) {
         this.fixada = fixada;
     }
 

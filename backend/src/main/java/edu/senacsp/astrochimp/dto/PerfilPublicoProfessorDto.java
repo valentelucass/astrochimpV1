@@ -5,6 +5,8 @@ import java.util.List;
 
 public class PerfilPublicoProfessorDto {
 
+    // Envia aos visitantes nome, descrição, foto, id e endereço público do professor junto dos materiais publicados;
+    // não inclui e-mail, senha, salas ou materiais privados.
     private Long id;
     private String nome;
     private String descricao;
@@ -30,6 +32,7 @@ public class PerfilPublicoProfessorDto {
         this.materiais = materiais;
     }
 
+    // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     public Long getId() {
         return id;
     }

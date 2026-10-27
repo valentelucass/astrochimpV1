@@ -5,6 +5,8 @@ import java.util.List;
 
 public class ResultadoPerguntaDto {
 
+    // Envia ao professor id e enunciado da pergunta atual, total de respondentes e contagem por alternativa na rodada
+    // em andamento da sala, identificada por quizSessaoId; não devolve as respostas individuais dos alunos.
     private Long perguntaId;
     private String enunciado;
     private long totalRespondentes;
@@ -24,6 +26,7 @@ public class ResultadoPerguntaDto {
         this.resultados = resultados;
     }
 
+    // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     public Long getPerguntaId() {
         return perguntaId;
     }

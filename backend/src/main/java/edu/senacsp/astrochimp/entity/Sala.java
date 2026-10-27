@@ -6,13 +6,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Guarda os dados e o andamento de cada sala no banco.
 @Entity
 public class Sala {
 
+    // O id identifica esta sala no banco.
     @Id
+    // O banco gera o id quando esta sala é salva pela primeira vez.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Exige um código para a sala e impede duas salas com o mesmo código.
     @Column(nullable = false, unique = true)
     private String codigo;
 
@@ -29,6 +33,7 @@ public class Sala {
 
     private LocalDateTime cronometroIniciadoEm;
 
+    // Cada sala tem um professor dono, que pode abrir várias salas.
     @ManyToOne
     private Professor professor;
 
@@ -42,12 +47,16 @@ public class Sala {
 
     private String quizSessaoId;
 
+    // Uma sala pode ter várias dúvidas; a ligação fica no campo sala de Duvida.
     @OneToMany(mappedBy = "sala")
     private List<Duvida> duvidas = new ArrayList<>();
 
+    // Uma sala pode ter vários alunos, e cada aluno pode participar de várias salas.
     @ManyToMany
+    // Guarda as participações na tabela sala_aluno, ligando salas e alunos.
     @JoinTable(
         name = "sala_aluno",
+        // @JoinColumn: A coluna sala_id indica em qual sala o aluno está participando.
         joinColumns = @JoinColumn(name = "sala_id"),
         inverseJoinColumns = @JoinColumn(name = "aluno_id"))
     private List<Aluno> alunos = new ArrayList<>();
@@ -66,6 +75,7 @@ public class Sala {
         inverseJoinColumns = @JoinColumn(name = "material_id"))
     private List<Material> materiaisFixados = new ArrayList<>();
 
+    // Os services usam estes get/is para ler os campos da entidade e set para preencher as mudanças antes de salvar.
     public Long getId() {
         return id;
     }

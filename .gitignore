@@ -1,0 +1,24 @@
+
+
+# Dependências e arquivos gerados
+node_modules/
+.expo/
+target/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+*.log
+
+# Configurações e arquivos privados do ambiente
+.env
+.env.*
+!.env.example
+application-local.properties
+uploads/
+data/
+
+# Configurações dos editores
+.idea/
+.vscode/
+.DS_Store

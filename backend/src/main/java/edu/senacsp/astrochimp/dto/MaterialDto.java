@@ -1,20 +1,29 @@
 package edu.senacsp.astrochimp.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
 public class MaterialDto {
 
+    // Recebe do professor os dados do material e as opções de publicação ou fixação, conforme a operação; devolve a
+    // professores, alunos ou visitantes título, conteúdo ou link de download e dados de exibição. Para arquivos, o
+    // service troca o caminho no servidor pelo link de download e informa a fixação na sala consultada.
+    // Id e data de criação só saem no JSON; o servidor define esses dados ao salvar o material.
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String titulo;
     private String tipo;
     private String conteudoOuUrl;
     private String detalhe;
-    private boolean publico;
-    private boolean fixado;
+    // Boolean distingue campo ausente (null) de false: tornar o material privado ou desafixá-lo exige false explícito.
+    private Boolean publico;
+    private Boolean fixado;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime criadoEm;
 
+    // Usa este construtor vazio ao ler o JSON de um material e depois preenche os campos pelos setters.
     @JsonCreator
     public MaterialDto() {
     }
@@ -38,6 +47,8 @@ public class MaterialDto {
         this.criadoEm = criadoEm;
     }
 
+    // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
+    // As anotações dos campos acima continuam definindo o que pode entrar e sair no JSON.
     public Long getId() {
         return id;
     }
@@ -78,19 +89,19 @@ public class MaterialDto {
         this.detalhe = detalhe;
     }
 
-    public boolean isPublico() {
+    public Boolean isPublico() {
         return publico;
     }
 
-    public void setPublico(boolean publico) {
+    public void setPublico(Boolean publico) {
         this.publico = publico;
     }
 
-    public boolean isFixado() {
+    public Boolean isFixado() {
         return fixado;
     }
 
-    public void setFixado(boolean fixado) {
+    public void setFixado(Boolean fixado) {
         this.fixado = fixado;
     }
 

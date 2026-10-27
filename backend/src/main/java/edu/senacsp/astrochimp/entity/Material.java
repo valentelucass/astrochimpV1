@@ -4,19 +4,24 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+// Guarda os dados dos materiais das aulas no banco.
 @Entity
 public class Material {
 
+    // O id identifica este material no banco.
     @Id
+    // O banco gera o id quando este material é salvo pela primeira vez.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Exige que o título do material tenha um valor no banco.
     @Column(nullable = false)
     private String titulo;
 
     @Column(nullable = false)
     private String tipo;
 
+    // Permite guardar conteúdo longo em conteudoOuUrl, como o código de um exemplo da aula.
     @Lob
     private String conteudoOuUrl;
 
@@ -26,9 +31,11 @@ public class Material {
 
     private LocalDateTime criadoEm;
 
+    // Cada material tem um professor dono, que pode ter vários materiais.
     @ManyToOne
     private Professor professor;
 
+    // Os services usam estes get/is para ler os campos da entidade e set para preencher as mudanças antes de salvar.
     public Long getId() {
         return id;
     }
