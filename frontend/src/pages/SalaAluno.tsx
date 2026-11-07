@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { View, Text, FlatList, Modal, Switch, StyleSheet, ScrollView } from 'react-native';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Botao from '../components/Botao';
-import Campo from '../components/Campo';
-import Mensagem from '../components/Mensagem';
-import api, { ErroApi } from '../services/api';
-import { abrirMaterial } from '../services/arquivos';
-import { formatarTempo, formatarData, iniciais } from '../services/formatacao';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
-import type { Sala, Aluno, Duvida, Material, Cronometro, PerguntaAluno } from '../types/modelos';
+import { useState, useEffect } from 'react'; // Importa os hooks do React para guardar os dados da aula e atualizá-los enquanto o aluno participa.
+import { View, Text, FlatList, Modal, Switch, StyleSheet, ScrollView } from 'react-native'; // Importa os elementos do React Native usados na lista, modais, opções, rolagem e estilos da sala.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura padrão sem duplicar a rolagem das listas.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar a sala e as ações disponíveis ao aluno.
+import Cartao from '../components/Cartao'; // Importa Cartao para separar cronômetro, dúvidas, materiais e atividades.
+import Botao from '../components/Botao'; // Importa Botao para enviar dúvidas, abrir conteúdos e entrar no quiz.
+import Campo from '../components/Campo'; // Importa Campo para receber o texto das dúvidas do aluno.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas e confirmações durante a aula.
+import api, { ErroApi } from '../services/api'; // Importa a API e seu erro identificado para atualizar a sala e tratar respostas do backend.
+import { abrirMaterial } from '../services/arquivos'; // Importa a função que abre links, códigos e arquivos compartilhados na sala.
+import { formatarTempo, formatarData, iniciais } from '../services/formatacao'; // Importa as formatações usadas no cronômetro, nas datas e nos avatares sem foto.
+import cores from '../styles/cores'; // Importa as cores do projeto para diferenciar áreas e estados da aula.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
+import type { Sala, Aluno, Duvida, Material, Cronometro, PerguntaAluno } from '../types/modelos'; // Importa somente os tipos que descrevem os dados acompanhados pelo aluno na sala.
 
 // Recebe a sala, o aluno com seu token e os caminhos de quiz, materiais e saída definidos pelo App.
 type Props = {

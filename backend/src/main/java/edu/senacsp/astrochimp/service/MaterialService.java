@@ -29,6 +29,7 @@ import java.util.UUID;
 // O Spring cria este service para cadastrar, publicar e baixar os materiais das aulas.
 @Service
 public class MaterialService {
+    private static final long TAMANHO_MAXIMO_ARQUIVO = 10L * 1024 * 1024;
     private final MaterialRepository materialRepository;
     private final SalaRepository salaRepository;
     private final AcessoService acessoService;
@@ -65,6 +66,10 @@ public class MaterialService {
         Professor professor = acessoService.professor(professorId);
         if (vazio(titulo) || arquivo == null || arquivo.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Título e arquivo são obrigatórios");
+        }
+        // Mantém o limite do arquivo mesmo quando o service é chamado sem passar pelo formulário HTTP.
+        if (arquivo.getSize() > TAMANHO_MAXIMO_ARQUIVO) {
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "Arquivo deve ter no máximo 10 MiB");
         }
         validarTamanho(titulo.trim(), "Título");
         String nomeSeguro = nomeSeguroDoArquivo(arquivo.getOriginalFilename());

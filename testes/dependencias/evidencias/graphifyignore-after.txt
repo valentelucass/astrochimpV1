@@ -1,0 +1,26 @@
+
+# local-ai-tools: dados privados e saídas locais
+**/.git/**
+**/.venv/**
+**/venv/**
+**/node_modules/**
+**/.expo/**
+**/dist/**
+**/build/**
+**/target/**
+**/coverage/**
+**/__pycache__/**
+**/graphify-out/**
+**/.env
+**/.env.*
+**/*.dpapi
+**/*.sqlite
+**/*.sqlite3
+**/*.db
+**/auth-tokens/**
+backend/data/**
+backend/docs/evidencias/**
+docs/evidence/**
+testes/dependencias/evidencias/**
+testes/dependencias/resumo.json
+testes/dependencias/manifesto-sha256.json

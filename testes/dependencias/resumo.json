@@ -1,0 +1,399 @@
+{
+  "project": "AstroChimp frontend",
+  "dateLocal": "2026-11-02",
+  "timeZone": "America/Sao_Paulo",
+  "generatedAt": "2026-11-02T19:48:35.648Z",
+  "environment": {
+    "node": "24.22.1",
+    "pnpm": "11.25.0",
+    "expo": "57.0.31",
+    "expoCLI": "57.0.32",
+    "reactNative": "0.86.3"
+  },
+  "before": {
+    "info": 0,
+    "low": 4,
+    "moderate": 5,
+    "high": 7,
+    "critical": 0
+  },
+  "after": {
+    "info": 0,
+    "low": 1,
+    "moderate": 2,
+    "high": 1,
+    "critical": 0
+  },
+  "countBefore": 16,
+  "countAfter": 4,
+  "fixed": 12,
+  "onlyDependencyChange": {
+    "package": "node-forge",
+    "from": "1.4.0",
+    "to": "1.4.2",
+    "manifestChanged": false,
+    "lockfileDiff": "5 insertions, 5 deletions"
+  },
+  "audits": [
+    {
+      "file": "audit-before.json",
+      "exitCode": 1,
+      "findingCount": 16
+    },
+    {
+      "file": "audit-prod-before.json",
+      "exitCode": 1,
+      "findingCount": 16
+    },
+    {
+      "file": "audit-after.json",
+      "exitCode": 1,
+      "findingCount": 4
+    },
+    {
+      "file": "audit-prod-after.json",
+      "exitCode": 1,
+      "findingCount": 4
+    }
+  ],
+  "validations": {
+    "install": 0,
+    "installSerialConfirmation": 0,
+    "typecheck": 0,
+    "expoInstallCheck": 0,
+    "frontendTests": {
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "newApplicationCases": 0
+    },
+    "exportAllPlatforms": 0,
+    "expoSigningSmoke": 0
+  },
+  "nativeDeviceTest": false,
+  "databaseTests": false,
+  "advisories": [
+    {
+      "id": "GHSA-86w9-cpqp-85rv",
+      "pnpmId": 1240912,
+      "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+      "package": "node-forge",
+      "severity": "high",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-86w9-cpqp-85rv"
+    },
+    {
+      "id": "GHSA-mrhx-c7xc-m3w5",
+      "pnpmId": 1243066,
+      "title": "Zod can exhaust memory while validating oversized constrained collections",
+      "package": "zod",
+      "severity": "high",
+      "beforeVersions": [
+        "3.25.76"
+      ],
+      "afterVersion": "3.25.76",
+      "vulnerableRange": "<4.6.6",
+      "fixedRange": ">=4.6.6",
+      "reportedPathCount": 12,
+      "exampleChains": [
+        ".>expo>@expo/cli>zod"
+      ],
+      "remaining": true,
+      "source": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5"
+    },
+    {
+      "id": "GHSA-gcqx-w48m-w2h4",
+      "pnpmId": 1243505,
+      "title": "deepmerge mergeObject() allows prototype poisoning of returned objects",
+      "package": "deepmerge",
+      "severity": "low",
+      "beforeVersions": [
+        "4.3.1"
+      ],
+      "afterVersion": "4.3.1",
+      "vulnerableRange": ">=4.2.0 <=4.3.1",
+      "fixedRange": null,
+      "reportedPathCount": 72,
+      "exampleChains": [
+        ".>expo>@expo/config>deepmerge",
+        ".>expo>@expo/cli>@expo/config>deepmerge",
+        ".>expo>@expo/metro-config>@expo/config>deepmerge"
+      ],
+      "remaining": true,
+      "source": "https://github.com/advisories/GHSA-gcqx-w48m-w2h4"
+    },
+    {
+      "id": "GHSA-g3hv-75wg-m249",
+      "pnpmId": 1244012,
+      "title": "minimatch has potential denial of service via globparts amplification",
+      "package": "minimatch",
+      "severity": "moderate",
+      "beforeVersions": [
+        "10.2.6"
+      ],
+      "afterVersion": "10.2.6",
+      "vulnerableRange": "<11.0.1",
+      "fixedRange": ">=11.0.1",
+      "reportedPathCount": 100,
+      "exampleChains": [
+        ".>expo>@expo/cli>glob>minimatch",
+        ".>expo>@expo/config>glob>minimatch",
+        ".>expo>@expo/fingerprint>minimatch"
+      ],
+      "remaining": true,
+      "source": "https://github.com/advisories/GHSA-g3hv-75wg-m249"
+    },
+    {
+      "id": "GHSA-3g3m-2fjr-6pw4",
+      "pnpmId": 1244013,
+      "title": "Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal",
+      "package": "glob",
+      "severity": "moderate",
+      "beforeVersions": [
+        "13.0.6"
+      ],
+      "afterVersion": "13.0.6",
+      "vulnerableRange": ">=9.0.0 <=14.0.1",
+      "fixedRange": ">=14.0.2",
+      "reportedPathCount": 100,
+      "exampleChains": [
+        ".>expo>@expo/cli>glob",
+        ".>expo>@expo/config>glob",
+        ".>expo>@expo/fingerprint>glob"
+      ],
+      "remaining": true,
+      "source": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4"
+    },
+    {
+      "id": "GHSA-4642-5mcj-2rqw",
+      "pnpmId": 1244014,
+      "title": "Forge: ASN.1 OID first arc truncation in asn1.oidToDer",
+      "package": "node-forge",
+      "severity": "low",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-4642-5mcj-2rqw"
+    },
+    {
+      "id": "GHSA-6wvx-3r32-xmcg",
+      "pnpmId": 1244015,
+      "title": "Forge: Prototype Pollution in forge.http cookie handling via a malicious Set-Cookie",
+      "package": "node-forge",
+      "severity": "moderate",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-6wvx-3r32-xmcg"
+    },
+    {
+      "id": "GHSA-525v-9gp9-w22h",
+      "pnpmId": 1244016,
+      "title": "Forge: TLS client crash when the server sends no certificate",
+      "package": "node-forge",
+      "severity": "moderate",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-525v-9gp9-w22h"
+    },
+    {
+      "id": "GHSA-7wch-p9px-956x",
+      "pnpmId": 1244017,
+      "title": "Forge: Regular expression denial of service in PEM decoding (pem.decode)",
+      "package": "node-forge",
+      "severity": "high",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-7wch-p9px-956x"
+    },
+    {
+      "id": "GHSA-h6cr-wjv9-3cpp",
+      "pnpmId": 1244018,
+      "title": "Forge: Denial of Service via infinite loop in BigInteger.modInverse() with negative input (incomplete fix of CVE-2026-33891)",
+      "package": "node-forge",
+      "severity": "low",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-h6cr-wjv9-3cpp"
+    },
+    {
+      "id": "GHSA-4487-j8r4-4g2f",
+      "pnpmId": 1244019,
+      "title": "Forge: verifyCertificateChain() removes trusted CA certificates with the same subject from the CA store",
+      "package": "node-forge",
+      "severity": "low",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-4487-j8r4-4g2f"
+    },
+    {
+      "id": "GHSA-5cwg-6vw7-rj6p",
+      "pnpmId": 1244020,
+      "title": "Forge: AES-GCM authentication bypass via unvalidated tagLength option",
+      "package": "node-forge",
+      "severity": "moderate",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-5cwg-6vw7-rj6p"
+    },
+    {
+      "id": "GHSA-jc66-7q78-782g",
+      "pnpmId": 1244021,
+      "title": "Forge: PKCS#12 MAC forgery and constant-key PBE via zero iteration count",
+      "package": "node-forge",
+      "severity": "high",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-jc66-7q78-782g"
+    },
+    {
+      "id": "GHSA-8hrf-8g6f-7xwp",
+      "pnpmId": 1244022,
+      "title": "Forge: Denial of service in TLS record processing via a record interleaved with a fragmented handshake message",
+      "package": "node-forge",
+      "severity": "high",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-8hrf-8g6f-7xwp"
+    },
+    {
+      "id": "GHSA-hqq3-7jhf-c5jx",
+      "pnpmId": 1244023,
+      "title": "Forge: Denial of service in TLS record processing via call stack exhaustion",
+      "package": "node-forge",
+      "severity": "high",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-hqq3-7jhf-c5jx"
+    },
+    {
+      "id": "GHSA-5x38-2vff-x55p",
+      "pnpmId": 1244024,
+      "title": "Forge: X.509 basicConstraints bypass in verifyCertificateChain() via deprecated extension OIDs 2.5.29.10 and 2.5.29.13",
+      "package": "node-forge",
+      "severity": "high",
+      "beforeVersions": [
+        "1.4.0"
+      ],
+      "afterVersion": "1.4.2",
+      "vulnerableRange": "<=1.4.0",
+      "fixedRange": ">=1.4.1",
+      "reportedPathCount": 24,
+      "exampleChains": [
+        ".>expo>@expo/cli>node-forge",
+        ".>expo>@expo/cli>@expo/code-signing-certificates>node-forge"
+      ],
+      "remaining": false,
+      "source": "https://github.com/advisories/GHSA-5x38-2vff-x55p"
+    }
+  ]
+}

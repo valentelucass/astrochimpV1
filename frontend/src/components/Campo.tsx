@@ -1,8 +1,8 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { View, Text, TextInput, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados para montar o rótulo, a entrada de texto e seus estilos.
+import cores from '../styles/cores'; // Importa as cores do projeto para deixar texto, borda e fundo iguais aos demais campos.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para reutilizar a aparência padrão dos rótulos.
 
-import type { TextInputProps, StyleProp, ViewStyle } from 'react-native';
+import type { TextInputProps, StyleProp, ViewStyle } from 'react-native'; // Importa somente os tipos do React Native para descrever as opções e o estilo externo do campo.
 
 // Omit reaproveita as opções do TextInput, como teclado e senha, retirando os nomes que definimos aqui.
 // valor é o texto atual; style muda a caixa externa do campo, sem substituir o estilo do texto digitado.

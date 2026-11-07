@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-11-02T19:50:31.785Z",
+  "method": "sources dos mapas Metro de produção; inclui sections recursivamente",
+  "targets": [
+    "node-forge",
+    "zod",
+    "deepmerge",
+    "minimatch",
+    "glob"
+  ],
+  "maps": [
+    {
+      "file": "_expo/static/js/android/index-817e1ca8d3dbe91a8ef17c63f962846a.hbc.map",
+      "sha256": "e0bc3bbaabbce6b9fc350041da0322652d83e9b8b6b66f9ed275e6f5324f6812",
+      "sourceCount": 683,
+      "matches": {
+        "node-forge": [],
+        "zod": [],
+        "deepmerge": [],
+        "minimatch": [],
+        "glob": []
+      }
+    },
+    {
+      "file": "_expo/static/js/ios/index-552812a7f75da48a659466f661eb81f5.hbc.map",
+      "sha256": "0b95da12441b178278d606dbb8b4f7064aec4a17781c7aa256355714448a7032",
+      "sourceCount": 685,
+      "matches": {
+        "node-forge": [],
+        "zod": [],
+        "deepmerge": [],
+        "minimatch": [],
+        "glob": []
+      }
+    },
+    {
+      "file": "_expo/static/js/web/index-251d992520912e8042e6d6ce51940665.js.map",
+      "sha256": "799a47ad8ef20e02c0ca1f8bb1602d529a5bec83a88cf992cb28f5b0c35e86c9",
+      "sourceCount": 387,
+      "matches": {
+        "node-forge": [],
+        "zod": [],
+        "deepmerge": [],
+        "minimatch": [],
+        "glob": []
+      }
+    }
+  ]
+}

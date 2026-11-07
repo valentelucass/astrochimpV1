@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'; // Importa os elementos do React Native que montam os textos, botões e estilos do cabeçalho.
+import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo para mostrar a seta de voltar e a ação opcional da direita.
+import cores from '../styles/cores'; // Importa as cores do projeto para aplicar a identidade visual aos ícones e ao cabeçalho.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para reutilizar a aparência de títulos e legendas.
 
-import type { ComponentProps } from 'react';
+import type { ComponentProps } from 'react'; // Importa somente o tipo das propriedades do React para limitar o nome do ícone recebido.
 
 // Cada tela informa seus títulos e pode oferecer uma ação à esquerda e outra à direita.
 type CabecalhoProps = {

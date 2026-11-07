@@ -3,7 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "allowJs": false,
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }

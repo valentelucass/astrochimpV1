@@ -1,0 +1,13 @@
+{
+  "node": "v24.22.1",
+  "expo": "57.0.31",
+  "cli": "57.0.32",
+  "cliPackages": {
+    "glob": "14.0.3",
+    "zod": "4.6.7",
+    "node-forge": "1.4.2"
+  },
+  "fingerprintMinimatch": "11.0.4",
+  "deepmerge": "4.3.1",
+  "safeArea": "5.7.0"
+}

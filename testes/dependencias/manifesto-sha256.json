@@ -1,0 +1,150 @@
+{
+  "generatedAt": "2026-11-02T19:50:31.898Z",
+  "files": [
+    {
+      "file": "evidencias/audit-after.json",
+      "bytes": 29382,
+      "sha256": "afc17908289669e0b101b82d080cf3f43fe441b1fe280e7f27494e381b634608"
+    },
+    {
+      "file": "evidencias/audit-before.json",
+      "bytes": 60232,
+      "sha256": "e33b44788150001e0d53d15f351f552c2f6752ad17c829711eb38f184cb4fca5"
+    },
+    {
+      "file": "evidencias/audit-prod-after.json",
+      "bytes": 29382,
+      "sha256": "308f695d734cda3d28289632664ea6eb9f31bf7deddc0e00c87b04bb1ed7eafb"
+    },
+    {
+      "file": "evidencias/audit-prod-before.json",
+      "bytes": 60232,
+      "sha256": "8ae2d11852163707a640ccda6083ac36a70f12531559e5ae93cec54da5c06fd9"
+    },
+    {
+      "file": "evidencias/bundle-evidence.cjs",
+      "bytes": 1603,
+      "sha256": "e07c7277d4476034c02341cc8e2c919e35b668c0f090a21d65df9eccfafad235"
+    },
+    {
+      "file": "evidencias/bundle-modules-after.json",
+      "bytes": 1287,
+      "sha256": "a81d7ded6ff58a7142d7d0995b57116134d00e38f04f88fbe12e02a5c796fbf9"
+    },
+    {
+      "file": "evidencias/dependency-source-evidence.json",
+      "bytes": 103111,
+      "sha256": "2599866d9e1e500b5ee563733aa379e2dc0e32c85a29c051839e8bf08a96b21f"
+    },
+    {
+      "file": "evidencias/expo-check-after.log",
+      "bytes": 29,
+      "sha256": "3b47e85d27d2de36267a75ebb6564b5e4f839e57a0b0b01556af9427b198f899"
+    },
+    {
+      "file": "evidencias/expo-cli-registry.json",
+      "bytes": 291,
+      "sha256": "2acae1d63a5a653fa1d8e81b9baa0eb27ba2dbe764d3932ea46e182b2c15719b"
+    },
+    {
+      "file": "evidencias/export-after.log",
+      "bytes": 11331,
+      "sha256": "9a95f85a41960b2390c2f61d90ae06ef3999d77a4b99d6372ae07e169426f5e8"
+    },
+    {
+      "file": "evidencias/graphify-update.log",
+      "bytes": 1108,
+      "sha256": "962be5c3445c02dbb806fc3579882e4f3a5664f3b13668b8b6101051bc380d87"
+    },
+    {
+      "file": "evidencias/graphifyignore-after.txt",
+      "bytes": 478,
+      "sha256": "ac4c007d90d1fe276d46dbd484be9e06b759294b930fab2170e6d16af0e73662"
+    },
+    {
+      "file": "evidencias/install-confirm.log",
+      "bytes": 170,
+      "sha256": "164c68b161e7813e06dda260b0f349d9d919fcad7900e69c012de0fec9ddee18"
+    },
+    {
+      "file": "evidencias/install.log",
+      "bytes": 1302,
+      "sha256": "7c712ae725c311e600c12b4b6f876f3916c41b0e093bc68bc587d2404953f9a9"
+    },
+    {
+      "file": "evidencias/lockfile.diff",
+      "bytes": 1246,
+      "sha256": "8dbe9b45220f2027ce9d9519aba2c0399a2bc7b07780e55f1572d1572c0cfee2"
+    },
+    {
+      "file": "evidencias/package-after.json",
+      "bytes": 944,
+      "sha256": "02f7a3f35f2a353e6c12f117a795f5e899f83dbe1859c198fa53f8b1558d97ab"
+    },
+    {
+      "file": "evidencias/package-before.json",
+      "bytes": 944,
+      "sha256": "02f7a3f35f2a353e6c12f117a795f5e899f83dbe1859c198fa53f8b1558d97ab"
+    },
+    {
+      "file": "evidencias/pnpm-lock-after.yaml",
+      "bytes": 189477,
+      "sha256": "f3ff550db741646df4dd76e6cc470bf681aa0f1ed37f7fd3f152f59e1373ff0b"
+    },
+    {
+      "file": "evidencias/pnpm-lock-before.yaml",
+      "bytes": 189477,
+      "sha256": "bef02997d074ef45a779b975b7936109cb96cf010437b4735b36d46569f6256b"
+    },
+    {
+      "file": "evidencias/registry-versions.json",
+      "bytes": 1218,
+      "sha256": "42581cc826f691f6a3f1ee852f071a0c2847903fec485bb46e6bd0dc4bbc30ff"
+    },
+    {
+      "file": "evidencias/signing-after.log",
+      "bytes": 217,
+      "sha256": "4e992bb1846f3101d9dfacd9b9957d1365467b4cbf443f43dc2b7b3bdd15c020"
+    },
+    {
+      "file": "evidencias/status-before-install.txt",
+      "bytes": 1118,
+      "sha256": "74e1f130204bbbb692e37310de87c6b59fcdbdc22fa3ced34b541e8f5ae192ac"
+    },
+    {
+      "file": "evidencias/tests-after.log",
+      "bytes": 876,
+      "sha256": "c64e4f5fd30a7e5811286a856c2200dd8293baffe8be0d1d135a6bdaff0b02d9"
+    },
+    {
+      "file": "evidencias/typecheck-after.log",
+      "bytes": 672,
+      "sha256": "67c7896224643746c9b1a66b9a32aa7675c9a6e6bca4fc42b0434fc954471986"
+    },
+    {
+      "file": "evidencias/verify-signing.cjs",
+      "bytes": 2327,
+      "sha256": "19de6c5278cc0665adc0065fd83bb397a66d2d26104366970cdabcd53c691c4e"
+    },
+    {
+      "file": "evidencias/why-after.json",
+      "bytes": 58130,
+      "sha256": "1049f4f63774b2f50e1c6a065dcfd75a86352df1be2a8e35d7c57293db9ad45e"
+    },
+    {
+      "file": "evidencias/why-before.json",
+      "bytes": 58130,
+      "sha256": "0596d52b0081787aed26d3b0604e2926f725bde7b16b21b8e77724db149c3dc6"
+    },
+    {
+      "file": "AstroChimp_Analise_dependencias_2026-11-02.md",
+      "bytes": 19273,
+      "sha256": "ff9e29788d4ede25f701824c8017142db1bf70523a1d68e32bb56cf2726a41b3"
+    },
+    {
+      "file": "resumo.json",
+      "bytes": 11895,
+      "sha256": "56a9cf783d9869f7354dab54289d0788114c911429996b400542a7ecaed03989"
+    }
+  ]
+}

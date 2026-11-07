@@ -1,0 +1,18 @@
+minimumReleaseAgeExclude:
+  - minimatch@11.0.4
+# Versões corrigidas, limitadas aos consumidores do Expo 57 validados nesta revisão.
+overrides:
+  '@expo/cli@57.0.32>zod': '4.6.7'
+  '@expo/cli@57.0.32>glob': '14.0.3'
+  '@expo/config@57.0.10>glob': '14.0.3'
+  '@expo/config-plugins@57.0.11>glob': '14.0.3'
+  '@expo/metro-config@57.0.13>glob': '14.0.3'
+  '@expo/fingerprint@0.20.14>glob': '14.0.3'
+  '@expo/fingerprint@0.20.14>minimatch': '11.0.4'
+
+# CVE-2026-93753 rejeitado oficialmente em 02/11/2026 por não descrever vulnerabilidade.
+# Registro: https://cveawg.mitre.org/api/cve/CVE-2026-93753
+# Remover esta exceção quando o registro npm deixar de publicar o aviso rejeitado.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-gcqx-w48m-w2h4

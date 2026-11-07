@@ -22,3 +22,6 @@ data/
 .idea/
 .vscode/
 .DS_Store
+
+# Mapas e caches locais do Graphify
+graphify-out/

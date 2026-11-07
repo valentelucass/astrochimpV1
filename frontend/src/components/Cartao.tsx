@@ -1,8 +1,8 @@
-import { View, StyleSheet } from 'react-native';
-import cores from '../styles/cores';
+import { View, StyleSheet } from 'react-native'; // Importa a caixa e o criador de estilos do React Native para desenhar o cartão reutilizável.
+import cores from '../styles/cores'; // Importa as cores do projeto para aplicar fundo e borda no padrão do aplicativo.
 
-import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { ReactNode } from 'react'; // Importa somente o tipo ReactNode para aceitar qualquer conteúdo React dentro do cartão.
+import type { StyleProp, ViewStyle } from 'react-native'; // Importa somente os tipos de estilo para permitir que cada tela ajuste a caixa do cartão.
 
 // children recebe o conteúdo entre <Cartao> e </Cartao>, como o texto e os botões de uma dúvida.
 type CartaoProps = { children: ReactNode; style?: StyleProp<ViewStyle>; corDaBorda?: string };

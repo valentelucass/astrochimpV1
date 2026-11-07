@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Text, View, Image } from 'react-native';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import Marca from '../components/Marca';
-import api from '../services/api';
-import estilos from '../styles/estilos';
+import { useState } from 'react'; // Importa useState do React para guardar e-mail, senha, erro e espera do login.
+import { Text, View, Image } from 'react-native'; // Importa os elementos do React Native usados para mostrar textos, imagem e caixas da tela.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão da tela.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar o título e a ação de voltar.
+import Cartao from '../components/Cartao'; // Importa Cartao para agrupar os campos de acesso do professor.
+import Campo from '../components/Campo'; // Importa Campo para receber o e-mail e a senha.
+import Botao from '../components/Botao'; // Importa Botao para entrar, voltar ou abrir o cadastro.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar dados inválidos ou falhas no acesso.
+import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
+import api from '../services/api'; // Importa o serviço da API para validar as credenciais no backend.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter os textos no padrão visual.
 
-import type { Professor, AcessoProfessor } from '../types/modelos';
+import type { Professor, AcessoProfessor } from '../types/modelos'; // Importa somente os tipos que descrevem o professor autenticado e suas credenciais.
 
 // O App fornece as ações de entrar na sessão, abrir o cadastro e voltar à tela anterior.
 type Props = {

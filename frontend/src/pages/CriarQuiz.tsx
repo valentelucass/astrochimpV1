@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import api from '../services/api';
-import type { Professor, Sala, AcessoProfessor } from '../types/modelos';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { useState } from 'react'; // Importa useState do React para guardar o quiz, suas perguntas e o resultado do envio.
+import { View, Text, Switch, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados para montar campos, opções, textos e estilos do quiz.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão da tela.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar o título e a ação de voltar.
+import Cartao from '../components/Cartao'; // Importa Cartao para separar os dados gerais e cada pergunta do quiz.
+import Campo from '../components/Campo'; // Importa Campo para receber título, enunciados e alternativas.
+import Botao from '../components/Botao'; // Importa Botao para adicionar perguntas e salvar o quiz.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar erros ou confirmar a criação.
+import api from '../services/api'; // Importa o serviço da API para enviar o quiz completo ao backend.
+import type { Professor, Sala, AcessoProfessor } from '../types/modelos'; // Importa somente os tipos que descrevem o professor, a sala e seu acesso.
+import cores from '../styles/cores'; // Importa as cores do projeto para destacar alternativas e opções do quiz.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
 // O tempo permanece texto durante a digitação; a conversão para número acontece ao preparar o pedido.
 type AlternativaFormulario = { texto: string; correta: boolean };

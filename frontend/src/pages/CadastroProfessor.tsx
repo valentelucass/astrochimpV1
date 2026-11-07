@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { Text } from 'react-native';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import Marca from '../components/Marca';
-import api from '../services/api';
-import estilos from '../styles/estilos';
+import { useState } from 'react'; // Importa useState do React para guardar os campos, o erro e a espera do cadastro.
+import { Text } from 'react-native'; // Importa Text do React Native para mostrar os textos de orientação do formulário.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão da tela.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar o título e a ação de voltar do cadastro.
+import Cartao from '../components/Cartao'; // Importa Cartao para agrupar visualmente os campos do novo professor.
+import Campo from '../components/Campo'; // Importa Campo para receber nome, e-mail, senha e endereço público.
+import Botao from '../components/Botao'; // Importa Botao para enviar o cadastro ou voltar para o login.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar erros encontrados durante o cadastro.
+import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
+import api from '../services/api'; // Importa o serviço da API para enviar os dados e criar a conta no backend.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
 import type {
   Professor,
   AcessoProfessor,
   CadastroProfessor as DadosCadastro,
-} from '../types/modelos';
+} from '../types/modelos'; // Importa somente os tipos usados para validar os dados enviados e a sessão criada.
 
 // O App recebe a conta criada com seu acesso e fornece a ação de voltar.
 type Props = {

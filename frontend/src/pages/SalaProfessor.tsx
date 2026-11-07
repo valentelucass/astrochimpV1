@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'; // Importa os hooks do React para guardar os dados da aula e atualizá-los enquanto o professor acompanha a sala.
 import {
   View,
   Text,
@@ -7,19 +7,19 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as Clipboard from 'expo-clipboard';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import api from '../services/api';
-import { formatarTempo, formatarData, iniciais } from '../services/formatacao';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+} from 'react-native'; // Importa os elementos do React Native usados nas listas, modais, rolagem, botões e estilos da sala.
+import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo para identificar dúvidas, alunos, respostas e ações da aula.
+import * as Clipboard from 'expo-clipboard'; // Importa a área de transferência do Expo para copiar o código de entrada da sala.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura padrão sem duplicar a rolagem das listas.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar a sala e as ações do professor.
+import Cartao from '../components/Cartao'; // Importa Cartao para separar cronômetro, dúvidas, alunos e resultados.
+import Campo from '../components/Campo'; // Importa Campo para receber respostas e valores definidos pelo professor.
+import Botao from '../components/Botao'; // Importa Botao para controlar a aula, responder dúvidas e abrir atividades.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas e confirmações durante a aula.
+import api from '../services/api'; // Importa o serviço da API para consultar e controlar os dados da sala no backend.
+import { formatarTempo, formatarData, iniciais } from '../services/formatacao'; // Importa as formatações usadas no cronômetro, nas datas e nos avatares sem foto.
+import cores from '../styles/cores'; // Importa as cores do projeto para diferenciar áreas, estados e resultados da aula.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 import type {
   AcessoProfessor,
   Cronometro,
@@ -28,7 +28,7 @@ import type {
   Professor,
   ResultadoQuiz,
   Sala,
-} from '../types/modelos';
+} from '../types/modelos'; // Importa somente os tipos que descrevem a sessão e os dados acompanhados pelo professor.
 
 // O App entrega a sala, o professor e seu login. As funções on... abrem outras telas ou saem desta aula.
 type Props = {

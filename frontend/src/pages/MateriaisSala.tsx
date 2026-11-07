@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
-import { View, Text, FlatList, Modal, ActivityIndicator, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import api from '../services/api';
-import type { Professor, Sala, AcessoProfessor, Material, Aluno } from '../types/modelos';
-import { abrirMaterial } from '../services/arquivos';
-import { formatarData } from '../services/formatacao';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { useEffect, useState } from 'react'; // Importa os hooks do React para guardar os materiais e buscá-los quando a tela abrir.
+import { View, Text, FlatList, Modal, ActivityIndicator, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados na lista, no modal, na espera e nos estilos da tela.
+import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo para representar os diferentes tipos de material.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura padrão sem duplicar a rolagem da lista.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar a sala e as ações de navegação.
+import Cartao from '../components/Cartao'; // Importa Cartao para apresentar cada material em uma caixa separada.
+import Botao from '../components/Botao'; // Importa Botao para abrir, baixar ou administrar materiais.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ao consultar ou abrir um conteúdo.
+import api from '../services/api'; // Importa o serviço da API para buscar materiais e seus acessos no backend.
+import type { Professor, Sala, AcessoProfessor, Material, Aluno } from '../types/modelos'; // Importa somente os tipos que descrevem os usuários, a sala e os materiais exibidos.
+import { abrirMaterial } from '../services/arquivos'; // Importa a função que decide como abrir links, códigos e arquivos em cada plataforma.
+import { formatarData } from '../services/formatacao'; // Importa a formatação de data para mostrar quando cada material foi publicado.
+import cores from '../styles/cores'; // Importa as cores do projeto para diferenciar ícones e tipos de conteúdo.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
 // Relaciona os tipos enviados pelo Spring aos ícones e nomes usados nos cartões.
 const icones: Record<string, 'link-outline' | 'code-slash-outline' | 'document-text-outline'> = {

@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import api, { ErroApi } from '../services/api';
-import { formatarTempo } from '../services/formatacao';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
-import type { Sala, Aluno, PerguntaAluno } from '../types/modelos';
+import { useState, useEffect } from 'react'; // Importa os hooks do React para guardar o quiz e atualizar seu tempo e suas respostas.
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados nas caixas, textos, alternativas pressionáveis e estilos do quiz.
+import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo para identificar alternativas, acertos e avisos.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão da atividade.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar a sala, o tempo e a ação de sair.
+import Cartao from '../components/Cartao'; // Importa Cartao para separar cada pergunta e o resultado final.
+import Botao from '../components/Botao'; // Importa Botao para confirmar respostas e avançar na atividade.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ao carregar ou enviar respostas.
+import api, { ErroApi } from '../services/api'; // Importa a API e seu erro identificado para consultar o quiz e tratar respostas do backend.
+import { formatarTempo } from '../services/formatacao'; // Importa a formatação do cronômetro para mostrar o tempo restante de forma legível.
+import cores from '../styles/cores'; // Importa as cores do projeto para diferenciar alternativas e resultados.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
+import type { Sala, Aluno, PerguntaAluno } from '../types/modelos'; // Importa somente os tipos que descrevem a sala, o aluno e as perguntas recebidas.
 
 // Recebe a sala, o aluno com seu token e o retorno à sala controlado pelo App.
 type Props = {

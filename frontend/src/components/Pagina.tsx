@@ -1,16 +1,15 @@
 import {
-  SafeAreaView,
   ScrollView,
   View,
   KeyboardAvoidingView,
   Platform,
-  StatusBar,
   StyleSheet,
-} from 'react-native';
-import cores from '../styles/cores';
+} from 'react-native'; // Importa os elementos do React Native que cuidam da rolagem, teclado, conteúdo e estilos da página.
+import { SafeAreaView } from 'react-native-safe-area-context'; // Importa a área segura que reserva espaço para as barras e recortes reais do dispositivo.
+import cores from '../styles/cores'; // Importa as cores do projeto para aplicar o fundo padrão em todas as páginas.
 
-import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { ReactNode } from 'react'; // Importa somente o tipo ReactNode para aceitar o conteúdo colocado dentro da página.
+import type { StyleProp, ViewStyle } from 'react-native'; // Importa somente os tipos de estilo para permitir ajustes externos no conteúdo da página.
 
 // children recebe a tela; rolar=false é usado quando ela já tem uma FlatList cuidando da rolagem.
 type PaginaProps = { children: ReactNode; rolar?: boolean; style?: StyleProp<ViewStyle> };
@@ -18,7 +17,7 @@ type PaginaProps = { children: ReactNode; rolar?: boolean; style?: StyleProp<Vie
 // Prepara o fundo e a área útil de todas as telas, incluindo o espaço que o teclado ocupa no iPhone.
 export default function Pagina({ children, rolar = true, style }: PaginaProps) {
   return (
-    // SafeAreaView respeita a área de segurança do sistema; KeyboardAvoidingView ajusta o espaço do teclado.
+    // A área segura afasta o conteúdo das barras do sistema; KeyboardAvoidingView ajusta o espaço do teclado.
     <SafeAreaView style={styles.fundo}>
       <KeyboardAvoidingView
         style={styles.pagina}
@@ -40,7 +39,7 @@ export default function Pagina({ children, rolar = true, style }: PaginaProps) {
   );
 }
 
-// StyleSheet.create centraliza a página e limita a largura da prévia; no Android afasta o topo da barra do sistema.
+// StyleSheet.create centraliza a página e limita a largura da prévia dentro da área segura.
 const styles = StyleSheet.create({
   fundo: { flex: 1, backgroundColor: '#EAF1F6' },
   pagina: {
@@ -49,7 +48,6 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 480,
     backgroundColor: cores.fundo,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   conteudo: { flexGrow: 1, padding: 24, paddingBottom: 36 },
   semRolagem: { flex: 1 },

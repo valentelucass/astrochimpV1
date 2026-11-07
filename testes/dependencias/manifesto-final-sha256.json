@@ -1,0 +1,160 @@
+{
+  "generatedAt": "2026-11-02T21:02:18.726Z",
+  "files": [
+    {
+      "file": "evidencias-remanescentes/audit-candidate-configured.json",
+      "bytes": 295,
+      "sha256": "8ecd1e7e361f7e67480f1b4930053afdaed996e838b86596dced2cf81bb81541"
+    },
+    {
+      "file": "evidencias-remanescentes/audit-candidate-raw.json",
+      "bytes": 7210,
+      "sha256": "4f17a751da8f4f95e72b3b6ee91bbd4b8ee20d0c74a85ce4fc9e7423a0f6fcf4"
+    },
+    {
+      "file": "evidencias-remanescentes/audit-final-configured.json",
+      "bytes": 295,
+      "sha256": "8ecd1e7e361f7e67480f1b4930053afdaed996e838b86596dced2cf81bb81541"
+    },
+    {
+      "file": "evidencias-remanescentes/audit-final-raw.json",
+      "bytes": 7210,
+      "sha256": "4f17a751da8f4f95e72b3b6ee91bbd4b8ee20d0c74a85ce4fc9e7423a0f6fcf4"
+    },
+    {
+      "file": "evidencias-remanescentes/audit-prod-final-configured.json",
+      "bytes": 295,
+      "sha256": "dcceafb5363493f97989127f1e231a3349c681cb3f18d81a2b44a88ed2653f09"
+    },
+    {
+      "file": "evidencias-remanescentes/audit-prod-final-raw.json",
+      "bytes": 7210,
+      "sha256": "9dd9a1c1064f9940808cf19aa8a925cff40fcc8d3d8e1f02cd1ed1a0f7598e64"
+    },
+    {
+      "file": "evidencias-remanescentes/audit-start.json",
+      "bytes": 29382,
+      "sha256": "afc17908289669e0b101b82d080cf3f43fe441b1fe280e7f27494e381b634608"
+    },
+    {
+      "file": "evidencias-remanescentes/CVE-2026-93753.json",
+      "bytes": 829,
+      "sha256": "686087e2f61bb3881ad97ad13f4c08cff3d7013c41cb04bd8f2a0f13c3ecbdf5"
+    },
+    {
+      "file": "evidencias-remanescentes/expo-check-applied.log",
+      "bytes": 29,
+      "sha256": "3b47e85d27d2de36267a75ebb6564b5e4f839e57a0b0b01556af9427b198f899"
+    },
+    {
+      "file": "evidencias-remanescentes/export-applied.log",
+      "bytes": 10948,
+      "sha256": "76956f76935960be8114a9ba6016d10c741f3125a347c193965f3276d7f2761b"
+    },
+    {
+      "file": "evidencias-remanescentes/export-candidate.log",
+      "bytes": 9157,
+      "sha256": "319de99f58f879cbb58a0d8c72c77b31c94c17b45ada7fb38da4bc6e69cbcb2c"
+    },
+    {
+      "file": "evidencias-remanescentes/final-package.json",
+      "bytes": 992,
+      "sha256": "4e0ac2a2ad70aed296273b879bf95976fa4a9f493d98bf726ba44e2d2cfa47eb"
+    },
+    {
+      "file": "evidencias-remanescentes/final-pnpm-lock.yaml",
+      "bytes": 190819,
+      "sha256": "7e023385ff88c8e0f2e18b262bee849bc78e309d5a8342f811a22d66bca44888"
+    },
+    {
+      "file": "evidencias-remanescentes/final-pnpm-workspace.yaml",
+      "bytes": 736,
+      "sha256": "c4f6dd249a022110fcde4ab92c3add81afd95c10c76d308996b5545aa6edaa32"
+    },
+    {
+      "file": "evidencias-remanescentes/fingerprint-candidate.log",
+      "bytes": 73,
+      "sha256": "4d38808122b18e25eb02ed78b2ffe815cc343f524270ac45320f79255d012206"
+    },
+    {
+      "file": "evidencias-remanescentes/frozen-install-final.log",
+      "bytes": 55,
+      "sha256": "dbd27c93446b4eafc35bae96e2b0b9123000b2d6b241239deac07801b624bdd0"
+    },
+    {
+      "file": "evidencias-remanescentes/install-applied.log",
+      "bytes": 493,
+      "sha256": "00ba1ee786d81c3a17dbf31d485dea1c77216b46b7df533201a5252d8d8c742b"
+    },
+    {
+      "file": "evidencias-remanescentes/install-candidate.log",
+      "bytes": 2225,
+      "sha256": "34fc0ace5e73751ff080e55093cbda034f2d6dc1085ba142fc1b00c1d1af86ee"
+    },
+    {
+      "file": "evidencias-remanescentes/lock-remanescentes.diff",
+      "bytes": 6308,
+      "sha256": "924d346877e6bc08203216e610b4b2ba35638427f440c74493d9b90afb99c2c7"
+    },
+    {
+      "file": "evidencias-remanescentes/lock-with-safearea.yaml",
+      "bytes": 190269,
+      "sha256": "adcc8e95091451238de270c07fd4c75c3d0916d0c00a64b5684e3ae829cb132a"
+    },
+    {
+      "file": "evidencias-remanescentes/override-checks-applied.log",
+      "bytes": 472,
+      "sha256": "d83b6e030f203add6d4fc704eed00c3566fca428d4c2adf98412d96f45013ae9"
+    },
+    {
+      "file": "evidencias-remanescentes/override-checks-candidate.json",
+      "bytes": 633,
+      "sha256": "2783cc2986ff8e951f4ce443a37299c6aff419c1c306f2b4782b68213c0c3751"
+    },
+    {
+      "file": "evidencias-remanescentes/override-checks.json",
+      "bytes": 565,
+      "sha256": "40d3f9fcc82de38588c5a309771d5131a438dedbe9bcf0e36aaa99f427c84ffa"
+    },
+    {
+      "file": "evidencias-remanescentes/override-checks.log",
+      "bytes": 472,
+      "sha256": "d83b6e030f203add6d4fc704eed00c3566fca428d4c2adf98412d96f45013ae9"
+    },
+    {
+      "file": "evidencias-remanescentes/package-with-safearea.json",
+      "bytes": 992,
+      "sha256": "4e0ac2a2ad70aed296273b879bf95976fa4a9f493d98bf726ba44e2d2cfa47eb"
+    },
+    {
+      "file": "evidencias-remanescentes/tests-applied.log",
+      "bytes": 845,
+      "sha256": "85f2548dca5063a4285021580f5884a68a3adc16d18d0bbea3725c895a906ec3"
+    },
+    {
+      "file": "evidencias-remanescentes/typecheck-applied.log",
+      "bytes": 8,
+      "sha256": "2095d5302e465922147e220c0389f7a923ea0c1509a23097f04b3c220798aef8"
+    },
+    {
+      "file": "evidencias-remanescentes/verify-overrides.cjs",
+      "bytes": 6881,
+      "sha256": "8793ec8fd5fde38c5a4560cbbebfb8e3cd5f3f0680dcf8a30982170be9b12d8c"
+    },
+    {
+      "file": "evidencias-remanescentes/versions-final.json",
+      "bytes": 240,
+      "sha256": "66f730906bce53ad1af689c4506f6dad5ed0ffb7e501694e99c2054a4ce11b04"
+    },
+    {
+      "file": "AstroChimp_Resolucao_4_alertas_2026-11-02.md",
+      "bytes": 10293,
+      "sha256": "b702815ff7e80a26061e0de6620fc39a8c93be4083bfae579ac450ec0ada8ae7"
+    },
+    {
+      "file": "resumo-final.json",
+      "bytes": 2508,
+      "sha256": "c438d209c9ba552f7919f4e3e9288550070b3f4cd42ec6fe13739dab4a8467aa"
+    }
+  ]
+}

@@ -1,25 +1,26 @@
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, BackHandler, Platform, Text, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { useFonts } from 'expo-font';
-import { Nunito_400Regular } from '@expo-google-fonts/nunito/400Regular';
-import { Nunito_700Bold } from '@expo-google-fonts/nunito/700Bold';
-import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold';
-import Inicio from './src/pages/Inicio';
-import LoginProfessor from './src/pages/LoginProfessor';
-import CadastroProfessor from './src/pages/CadastroProfessor';
-import PainelProfessor from './src/pages/PainelProfessor';
-import PerfilProfessor from './src/pages/PerfilProfessor';
-import PerfilPublico from './src/pages/PerfilPublico';
-import SalaProfessor from './src/pages/SalaProfessor';
-import SalaAluno from './src/pages/SalaAluno';
-import QuizAluno from './src/pages/QuizAluno';
-import MateriaisSala from './src/pages/MateriaisSala';
-import CriarMaterial from './src/pages/CriarMaterial';
-import CriarQuiz from './src/pages/CriarQuiz';
-import EscolherQuiz from './src/pages/EscolherQuiz';
-import cores from './src/styles/cores';
-import type { AcessoProfessor, Aluno, EntradaSala, Professor, Sala } from './src/types/modelos';
+import { useEffect, useState } from 'react'; // Importa os hooks do React para guardar a tela e a sessão e executar ações quando esses dados mudam.
+import { ActivityIndicator, BackHandler, Platform, Text, View } from 'react-native'; // Importa os elementos do React Native usados na espera inicial, no botão voltar e na estrutura visual do App.
+import { StatusBar } from 'expo-status-bar'; // Importa a barra de status do Expo para ajustar sua aparência ao visual do aplicativo.
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context'; // Importa o contexto e as medidas iniciais que informam às páginas o espaço ocupado pelas barras do dispositivo.
+import { useFonts } from 'expo-font'; // Importa o hook de fontes do Expo para carregar a família Nunito antes de mostrar as telas.
+import { Nunito_400Regular } from '@expo-google-fonts/nunito/400Regular'; // Importa o peso regular da Nunito para os textos comuns do aplicativo.
+import { Nunito_700Bold } from '@expo-google-fonts/nunito/700Bold'; // Importa o peso negrito da Nunito para rótulos e textos de destaque.
+import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold'; // Importa o peso extra negrito da Nunito para títulos e elementos de maior destaque.
+import Inicio from './src/pages/Inicio'; // Importa a tela inicial para permitir que o App a mostre como primeiro caminho.
+import LoginProfessor from './src/pages/LoginProfessor'; // Importa a tela de login para permitir a entrada do professor.
+import CadastroProfessor from './src/pages/CadastroProfessor'; // Importa a tela de cadastro para criar uma nova conta de professor.
+import PainelProfessor from './src/pages/PainelProfessor'; // Importa o painel para mostrar ao professor suas salas e ações principais.
+import PerfilProfessor from './src/pages/PerfilProfessor'; // Importa a tela de perfil para o professor consultar e alterar seus dados.
+import PerfilPublico from './src/pages/PerfilPublico'; // Importa o perfil público para mostrar os materiais visíveis de um professor.
+import SalaProfessor from './src/pages/SalaProfessor'; // Importa a sala do professor para acompanhar e controlar uma aula.
+import SalaAluno from './src/pages/SalaAluno'; // Importa a sala do aluno para participar da aula e usar seus recursos.
+import QuizAluno from './src/pages/QuizAluno'; // Importa a tela do quiz para o aluno responder às perguntas liberadas.
+import MateriaisSala from './src/pages/MateriaisSala'; // Importa a tela de materiais para consultar os conteúdos publicados na sala.
+import CriarMaterial from './src/pages/CriarMaterial'; // Importa a tela de criação de material para o professor publicar um conteúdo.
+import CriarQuiz from './src/pages/CriarQuiz'; // Importa a tela de criação de quiz para o professor cadastrar perguntas e respostas.
+import EscolherQuiz from './src/pages/EscolherQuiz'; // Importa a tela de escolha de quiz para o professor selecionar uma atividade da sala.
+import cores from './src/styles/cores'; // Importa as cores do projeto para estilizar a espera e as mensagens do componente principal.
+import type { AcessoProfessor, Aluno, EntradaSala, Professor, Sala } from './src/types/modelos'; // Importa somente os tipos dos dados que o App guarda e entrega às diferentes telas.
 
 // O TypeScript só aceita estes nomes ao trocar a página; isso evita escrever um nome de tela errado.
 type Tela =
@@ -280,9 +281,9 @@ export default function App() {
 
   // StatusBar deixa os ícones do sistema escuros sobre o fundo claro; pagina contém a tela escolhida acima.
   return (
-    <>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <StatusBar style="dark" />
       {pagina}
-    </>
+    </SafeAreaProvider>
   );
 }

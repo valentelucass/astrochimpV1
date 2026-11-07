@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
-import { View, Text, Image, Modal, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import Marca from '../components/Marca';
-import api from '../services/api';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { useEffect, useState } from 'react'; // Importa os hooks do React para guardar as salas e consultá-las quando o painel abrir.
+import { View, Text, Image, Modal, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados nas caixas, textos, imagem, modal e estilos do painel.
+import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo para identificar as ações e informações das salas.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão do painel.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar o professor e as ações principais.
+import Cartao from '../components/Cartao'; // Importa Cartao para separar cada sala e os formulários do painel.
+import Campo from '../components/Campo'; // Importa Campo para receber os dados usados na criação de uma sala.
+import Botao from '../components/Botao'; // Importa Botao para criar, abrir e administrar salas.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ou confirmações das ações.
+import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim do painel.
+import api from '../services/api'; // Importa o serviço da API para buscar e alterar as salas do professor.
+import cores from '../styles/cores'; // Importa as cores do projeto para destacar ícones, códigos e estados das salas.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
-import type { ComponentProps } from 'react';
-import type { Professor, AcessoProfessor, Sala, Material, Quiz } from '../types/modelos';
+import type { ComponentProps } from 'react'; // Importa somente o tipo das propriedades do React para validar nomes de ícones usados no painel.
+import type { Professor, AcessoProfessor, Sala, Material, Quiz } from '../types/modelos'; // Importa somente os tipos que descrevem o professor, seu acesso, suas salas e conteúdos.
 
 // Recebe o professor, as credenciais da sessão e as ações de navegação controladas pelo App.
 type Props = {

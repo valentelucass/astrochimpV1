@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react';
-import { View, Text, Image, Switch, Modal, StyleSheet } from 'react-native';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import Marca from '../components/Marca';
-import api, { ErroApi } from '../services/api';
-import { abrirMaterial } from '../services/arquivos';
-import { formatarData, iniciais } from '../services/formatacao';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { useEffect, useState } from 'react'; // Importa os hooks do React para guardar o perfil e buscar seus conteúdos quando a tela abrir.
+import { View, Text, Image, Switch, Modal, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados nas caixas, textos, imagem, opções, modal e estilos do perfil.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão do perfil.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar o título e as ações de navegação.
+import Cartao from '../components/Cartao'; // Importa Cartao para separar dados pessoais, materiais e quizzes.
+import Campo from '../components/Campo'; // Importa Campo para permitir a edição dos dados do professor.
+import Botao from '../components/Botao'; // Importa Botao para salvar alterações e administrar conteúdos.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ou confirmações das ações.
+import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim do perfil.
+import api, { ErroApi } from '../services/api'; // Importa a API e seu erro identificado para consultar dados e mostrar mensagens corretas do backend.
+import { abrirMaterial } from '../services/arquivos'; // Importa a função que abre links, códigos e arquivos publicados pelo professor.
+import { formatarData, iniciais } from '../services/formatacao'; // Importa as formatações usadas para datas e para as letras do avatar sem foto.
+import cores from '../styles/cores'; // Importa as cores do projeto para destacar seções, opções e conteúdos do perfil.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
-import type { Professor, AcessoProfessor, Material, Quiz } from '../types/modelos';
+import type { Professor, AcessoProfessor, Material, Quiz } from '../types/modelos'; // Importa somente os tipos que descrevem a sessão e os conteúdos exibidos no perfil.
 
 // Recebe o perfil e o acesso do professor; o App controla as outras telas e guarda as alterações.
 type Props = {

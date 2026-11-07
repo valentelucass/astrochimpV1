@@ -1,0 +1,13 @@
+{
+  "name": "@expo/cli",
+  "url": "https://registry.npmjs.org/%40expo%2Fcli",
+  "installed": "57.0.32",
+  "maxSDK57": "57.0.32",
+  "latest": "58.1.18",
+  "expo57CliSpecifier": "^57.0.32",
+  "sdk57Dependencies": {
+    "zod": "^3.25.76",
+    "glob": "^13.0.0",
+    "node-forge": "^1.3.3"
+  }
+}

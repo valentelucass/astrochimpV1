@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-11-02T21:02:18.557Z",
+  "dateLocal": "2026-11-02",
+  "timeZone": "America/Sao_Paulo",
+  "originalFindings": 16,
+  "fixedInFirstStage": 12,
+  "fixedInSecondStage": 3,
+  "totalFixedByVersionUpdates": 15,
+  "rejectedCVECount": 1,
+  "actionableRemaining": 0,
+  "secondStage": [
+    {
+      "package": "zod",
+      "before": "3.25.76",
+      "after": "4.6.7",
+      "advisory": "GHSA-mrhx-c7xc-m3w5",
+      "status": "fixed"
+    },
+    {
+      "package": "glob",
+      "before": "13.0.6",
+      "after": "14.0.3",
+      "advisory": "GHSA-3g3m-2fjr-6pw4",
+      "status": "fixed"
+    },
+    {
+      "package": "minimatch",
+      "before": "10.2.6",
+      "after": "11.0.4",
+      "advisory": "GHSA-g3hv-75wg-m249",
+      "status": "fixed"
+    },
+    {
+      "package": "deepmerge",
+      "before": "4.3.1",
+      "after": "4.3.1",
+      "advisory": "GHSA-gcqx-w48m-w2h4",
+      "cve": "CVE-2026-93753",
+      "status": "CVE_REJECTED_narrow_exception",
+      "cveOfficialSource": "https://cveawg.mitre.org/api/cve/CVE-2026-93753"
+    }
+  ],
+  "audits": {
+    "configured": {
+      "exit": 0,
+      "prodExit": 0,
+      "advisories": 0,
+      "metadataVulnerabilities": {
+        "info": 0,
+        "low": 1,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      }
+    },
+    "rawWithoutException": {
+      "exit": 1,
+      "prodExit": 1,
+      "advisories": 1,
+      "metadataVulnerabilities": {
+        "info": 0,
+        "low": 1,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      }
+    },
+    "note": "pnpm 11 mantém o aviso baixo rejeitado em metadata, inclusive após removê-lo de advisories pela exceção."
+  },
+  "validations": {
+    "installExit": 0,
+    "frozenInstallExit": 0,
+    "typecheckExit": 0,
+    "expoCheckExit": 0,
+    "frontendTests": {
+      "passed": 3,
+      "failed": 0,
+      "newADOFunctionalCases": 0
+    },
+    "exportAndroidIosWebExit": 0,
+    "targetedOverridesExit": 0,
+    "patternRegressionChecks": 61,
+    "candidateFingerprintExit": 0
+  },
+  "preservation": {
+    "packageUnchangedDuringApplication": true,
+    "safeAreaPreserved": "5.7.0",
+    "interfaceEdited": false,
+    "databaseTests": false,
+    "nativeDeviceTests": false
+  },
+  "versions": {
+    "node": "v24.22.1",
+    "expo": "57.0.31",
+    "cli": "57.0.32",
+    "cliPackages": {
+      "glob": "14.0.3",
+      "zod": "4.6.7",
+      "node-forge": "1.4.2"
+    },
+    "fingerprintMinimatch": "11.0.4",
+    "deepmerge": "4.3.1",
+    "safeArea": "5.7.0"
+  }
+}

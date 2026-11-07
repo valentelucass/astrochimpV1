@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import cores from '../styles/cores';
+import { View, Text, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados para montar a caixa e o texto do aviso.
+import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo para diferenciar visualmente mensagens de sucesso e de erro.
+import cores from '../styles/cores'; // Importa as cores do projeto para aplicar os tons de confirmação e de falha.
 
 // A página fornece o aviso e informa sucesso quando quer confirmar uma ação concluída.
 type MensagemProps = { texto: string; tipo?: 'erro' | 'sucesso' };

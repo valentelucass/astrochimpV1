@@ -1,5 +1,5 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
-import cores from '../styles/cores';
+import { View, Text, Image, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados para mostrar o mascote, o nome e a legenda da marca.
+import cores from '../styles/cores'; // Importa as cores do projeto para manter o nome e a legenda dentro da identidade visual.
 
 // A legenda é opcional e identifica a área do aplicativo, como o hub do professor.
 type MarcaProps = { legenda?: string };

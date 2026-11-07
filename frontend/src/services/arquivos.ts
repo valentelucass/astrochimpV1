@@ -1,9 +1,9 @@
-import type { Material, Acesso } from '../types/modelos';
-import { Linking, Platform } from 'react-native';
-import * as FileSystem from 'expo-file-system/legacy';
-import * as Sharing from 'expo-sharing';
-import * as Clipboard from 'expo-clipboard';
-import { ENDERECO_API, cabecalhosDeAcesso } from './api';
+import type { Material, Acesso } from '../types/modelos'; // Importa somente os tipos que descrevem o material aberto e as credenciais usadas no download.
+import { Linking, Platform } from 'react-native'; // Importa recursos do React Native para abrir links e escolher o tratamento adequado em cada plataforma.
+import * as FileSystem from 'expo-file-system/legacy'; // Importa o sistema de arquivos do Expo para baixar e guardar materiais no aparelho.
+import * as Sharing from 'expo-sharing'; // Importa o compartilhamento do Expo para entregar o arquivo baixado a outros aplicativos.
+import * as Clipboard from 'expo-clipboard'; // Importa a área de transferência do Expo para copiar materiais do tipo código.
+import { ENDERECO_API, cabecalhosDeAcesso } from './api'; // Importa o endereço e os cabeçalhos da API para baixar arquivos protegidos com a mesma autenticação.
 
 // Recebe o material escolhido e decide entre abrir um endereço, copiar código ou baixar um arquivo.
 // salaId acompanha o download quando o acesso do aluno depende da participação naquela aula.

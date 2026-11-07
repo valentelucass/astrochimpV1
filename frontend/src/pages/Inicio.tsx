@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { Image, Text, TextInput, StyleSheet } from 'react-native';
-import Pagina from '../components/Pagina';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import Marca from '../components/Marca';
-import api from '../services/api';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
-import type { EntradaSala } from '../types/modelos';
+import { useState } from 'react'; // Importa useState do React para guardar o código da sala e as mensagens de entrada.
+import { Image, Text, TextInput, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados para mostrar a imagem, os textos, a entrada e os estilos iniciais.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão da tela.
+import Cartao from '../components/Cartao'; // Importa Cartao para agrupar as opções de aluno e professor.
+import Campo from '../components/Campo'; // Importa Campo para receber o nome do aluno.
+import Botao from '../components/Botao'; // Importa Botao para entrar na sala ou abrir o acesso do professor.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ao procurar a sala.
+import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
+import api from '../services/api'; // Importa o serviço da API para localizar a sala e registrar a entrada do aluno.
+import cores from '../styles/cores'; // Importa as cores do projeto para estilizar a entrada do código e os destaques da tela.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
+import type { EntradaSala } from '../types/modelos'; // Importa somente o tipo que descreve os dados devolvidos quando o aluno entra na sala.
 
 // Recebe do App os caminhos de entrada do aluno e de abertura do acesso do professor.
 type Props = {

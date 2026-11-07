@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import Marca from '../components/Marca';
-import api from '../services/api';
-import { abrirMaterial } from '../services/arquivos';
-import { formatarData, iniciais } from '../services/formatacao';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { useEffect, useState } from 'react'; // Importa os hooks do React para guardar o perfil público e buscá-lo quando a tela abrir.
+import { View, Text, Image, StyleSheet } from 'react-native'; // Importa os elementos do React Native usados nas caixas, textos, imagem e estilos do perfil público.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão da tela.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar o professor visitado e a ação de voltar.
+import Cartao from '../components/Cartao'; // Importa Cartao para separar a apresentação e cada material público.
+import Botao from '../components/Botao'; // Importa Botao para abrir os conteúdos publicados.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ao carregar ou abrir um material.
+import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
+import api from '../services/api'; // Importa o serviço da API para buscar o perfil público pelo endereço informado.
+import { abrirMaterial } from '../services/arquivos'; // Importa a função que abre links, códigos e arquivos disponíveis ao visitante.
+import { formatarData, iniciais } from '../services/formatacao'; // Importa as formatações usadas para datas e para as letras do avatar sem foto.
+import cores from '../styles/cores'; // Importa as cores do projeto para destacar o professor e seus materiais.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
-import type { PerfilPublicoProfessor, Material } from '../types/modelos';
+import type { PerfilPublicoProfessor, Material } from '../types/modelos'; // Importa somente os tipos que descrevem o perfil público e seus materiais.
 
 // O App informa o endereço do professor que será consultado e a ação de voltar.
 type Props = { slug: string; onVoltar: () => void };

@@ -1,4 +1,4 @@
-import type { DocumentPickerAsset } from 'expo-document-picker';
+import type { DocumentPickerAsset } from 'expo-document-picker'; // Importa somente o tipo do arquivo escolhido para montar corretamente o envio de materiais.
 import type {
   Acesso,
   AcessoProfessor,
@@ -16,10 +16,12 @@ import type {
   NovoQuiz,
   PerguntaAluno,
   ResultadoQuiz,
-} from '../types/modelos';
-import { Platform } from 'react-native';
-import Constants from 'expo-constants';
-import { Base64 } from 'js-base64';
+} from '../types/modelos'; // Importa somente os tipos que descrevem os dados enviados e recebidos por todas as rotas da API.
+import { Platform } from 'react-native'; // Importa a plataforma do React Native para escolher o endereço correto do backend no celular e na web.
+import { File } from 'expo-file-system'; // Importa File para ler o arquivo local escolhido e enviá-lo no formulário do celular.
+import { fetch as fetchExpo } from 'expo/fetch'; // Importa o envio do Expo que aceita arquivos locais no formulário do celular.
+import Constants from 'expo-constants'; // Importa as informações do Expo para descobrir o computador que está executando o aplicativo.
+import { Base64 } from 'js-base64'; // Importa a conversão Base64 para montar o cabeçalho de autenticação do professor.
 
 // No celular, o endereço do Expo aponta para o computador que também executa o Spring.
 // EXPO_PUBLIC_API_URL permite informar outro endereço quando o backend estiver em outra máquina.
@@ -86,7 +88,9 @@ async function requisicao<T>(
   const controle = new AbortController();
   const limite = setTimeout(() => controle.abort(), 15000);
   try {
-    resposta = await fetch(ENDERECO_API + caminho, {
+    // Arquivos locais usam o envio do Expo; os demais pedidos mantêm o fetch da plataforma.
+    const enviar = dados instanceof FormData && Platform.OS !== 'web' ? fetchExpo : fetch;
+    resposta = await enviar(ENDERECO_API + caminho, {
       method: metodo,
       headers: cabecalhos,
       body: corpo,
@@ -135,16 +139,20 @@ async function requisicao<T>(
 function formularioDeArquivo(titulo: string, arquivo: DocumentPickerAsset) {
   const formulario = new FormData();
   formulario.append('titulo', titulo);
-  // O navegador fornece File; o celular fornece o endereço local uri, o nome e o tipo do arquivo.
+  // O navegador fornece File; no celular, File lê o arquivo local aceito pelo envio do Expo.
   if (Platform.OS === 'web') {
     if (!arquivo.file) throw new Error('Selecione o arquivo novamente.');
     formulario.append('arquivo', arquivo.file);
   } else {
-    formulario.append('arquivo', {
+    const arquivoLocal = new File(arquivo.uri);
+    // O Expo lê os bytes pelo File; os dados do seletor preservam o nome e o tipo originais.
+    const arquivoParaEnvio = {
       uri: arquivo.uri,
       name: arquivo.name,
       type: arquivo.mimeType || 'application/octet-stream',
-    });
+      bytes: () => arquivoLocal.bytes(),
+    };
+    formulario.append('arquivo', arquivoParaEnvio);
   }
   return formulario;
 }

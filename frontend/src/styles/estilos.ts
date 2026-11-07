@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import cores from './cores';
+import { StyleSheet } from 'react-native'; // Importa o StyleSheet do React Native para criar e validar os estilos compartilhados do aplicativo.
+import cores from './cores'; // Importa a paleta do projeto para que os estilos compartilhados usem sempre as mesmas cores.
 
 // StyleSheet.create reúne estilos que várias telas reutilizam, como títulos e textos de formulário.
 const estilos = StyleSheet.create({

@@ -4,7 +4,7 @@ const cores = {
   fundo: '#F5F7FA',
   branco: '#FFFFFF',
   texto: '#073345',
-  textoSuave: '#71838D',
+  textoSuave: '#556B76',
   // O azul aparece na marca e nos conteúdos; as variações servem para bordas e fundos suaves.
   azul: '#4C8DB6',
   azulEscuro: '#07516F',

@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import Pagina from '../components/Pagina';
-import Cabecalho from '../components/Cabecalho';
-import Cartao from '../components/Cartao';
-import Campo from '../components/Campo';
-import Botao from '../components/Botao';
-import Mensagem from '../components/Mensagem';
-import Marca from '../components/Marca';
-import api from '../services/api';
-import type { Professor, Sala, AcessoProfessor, Material } from '../types/modelos';
-import cores from '../styles/cores';
-import estilos from '../styles/estilos';
+import { useState } from 'react'; // Importa useState do React para guardar o formulário, o arquivo escolhido e o resultado do envio.
+import { View, Text, StyleSheet, Platform } from 'react-native'; // Importa os elementos visuais e a plataforma para preparar o arquivo desta tela.
+import * as DocumentPicker from 'expo-document-picker'; // Importa o seletor que preserva o nome, o tipo e os dados do arquivo escolhido.
+import Pagina from '../components/Pagina'; // Importa Pagina para aplicar a estrutura e a rolagem padrão da tela.
+import Cabecalho from '../components/Cabecalho'; // Importa Cabecalho para mostrar o título e a ação de voltar.
+import Cartao from '../components/Cartao'; // Importa Cartao para agrupar as opções e os campos do novo material.
+import Campo from '../components/Campo'; // Importa Campo para receber título, descrição, link ou código do material.
+import Botao from '../components/Botao'; // Importa Botao para escolher arquivo e confirmar a publicação.
+import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar sucesso ou falha ao publicar.
+import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
+import api from '../services/api'; // Importa o serviço da API para enviar o novo material ao backend.
+import type { Professor, Sala, AcessoProfessor, Material } from '../types/modelos'; // Importa somente os tipos que descrevem a sessão, a sala e o material criado.
+import cores from '../styles/cores'; // Importa as cores do projeto para estilizar as opções de tipo do material.
+import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
 // Recebe o professor e seu acesso; a sala é opcional, e os callbacks devolvem a navegação ao App.
 type Props = {
@@ -42,8 +42,9 @@ export default function CriarMaterial({ professor, acesso, sala, onVoltar, onSal
     setErro('');
     setSelecionando(true);
     try {
+      // No celular, usa a leitura concedida ao documento; copiar para o cache do seletor perde esse acesso no Expo Go.
       const resultado = await DocumentPicker.getDocumentAsync({
-        copyToCacheDirectory: true,
+        copyToCacheDirectory: Platform.OS === 'web',
         multiple: false,
       });
       // Cancelar mantém a escolha anterior; arquivos acima do limite são recusados antes do envio.
