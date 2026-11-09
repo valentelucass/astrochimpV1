@@ -12,7 +12,7 @@ import api from '../services/api'; // Importa o serviço da API para buscar e al
 import cores from '../styles/cores'; // Importa as cores do projeto para destacar ícones, códigos e estados das salas.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
-import type { ComponentProps } from 'react'; // Importa somente o tipo das propriedades do React para validar nomes de ícones usados no painel.
+import type { NomeIcone } from '../types/icones'; // Importa a lista simples de nomes de ícones usados nas contagens do painel.
 import type { Professor, AcessoProfessor, Sala, Material, Quiz } from '../types/modelos'; // Importa somente os tipos que descrevem o professor, seu acesso, suas salas e conteúdos.
 
 // Recebe o professor, as credenciais da sessão e as ações de navegação controladas pelo App.
@@ -110,7 +110,7 @@ export default function PainelProfessor({
   const contagens: {
     titulo: string;
     valor: number;
-    icone: ComponentProps<typeof Ionicons>['name'];
+    icone: NomeIcone;
     cor: string;
   }[] = [
     { titulo: 'PARTICIPANTES', valor: participantes, icone: 'people-outline', cor: cores.roxo },

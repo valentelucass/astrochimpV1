@@ -66,14 +66,6 @@ export type Duvida = {
   criadaEm: string;
 };
 
-// Cronômetro da atividade da sala: 120 em segundosTotais significa dois minutos definidos pelo professor.
-// segundosRestantes informa quanto ainda falta; ativo fica false quando a contagem para ou termina.
-export type Cronometro = {
-  segundosTotais: number | null;
-  segundosRestantes: number;
-  ativo: boolean;
-};
-
 // Conteúdo já salvo: conteudoOuUrl traz o código, o endereço do link ou a rota para baixar um arquivo.
 // publico libera o perfil para visitantes; fixado indica destaque na sala consultada.
 export type Material = {

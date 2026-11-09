@@ -2,7 +2,7 @@ import { TouchableOpacity, Text, ActivityIndicator, StyleSheet } from 'react-nat
 import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo para exibir a figura opcional ao lado do texto do botão.
 import cores from '../styles/cores'; // Importa as cores do projeto para manter fundos, bordas e textos no padrão visual.
 
-import type { ComponentProps } from 'react'; // Importa somente o tipo das propriedades do React para aceitar nomes válidos de ícones.
+import type { NomeIcone } from '../types/icones'; // Importa a lista simples de nomes de ícones usados pelo aplicativo.
 import type { StyleProp, ViewStyle } from 'react-native'; // Importa somente os tipos de estilo para permitir ajustes externos na caixa do botão.
 
 // As props escolhem o texto, a ação e a aparência do botão. O ponto de interrogação marca opções dispensáveis.
@@ -10,7 +10,7 @@ type BotaoProps = {
   titulo: string;
   onPress: () => void;
   cor?: 'verde' | 'azul' | 'laranja' | 'roxo' | 'claro';
-  icone?: ComponentProps<typeof Ionicons>['name'];
+  icone?: NomeIcone;
   carregando?: boolean;
   desabilitado?: boolean;
   pequeno?: boolean;
@@ -44,7 +44,9 @@ export default function Botao({
     claro: cores.borda,
   };
   // Fundos claros e verdes usam letras escuras para manter o texto e o ícone legíveis.
-  const corTexto = cor === 'claro' ? cores.azulEscuro : cor === 'verde' ? cores.texto : cores.branco;
+  let corTexto = cores.branco;
+  if (cor === 'claro') corTexto = cores.azulEscuro;
+  else if (cor === 'verde') corTexto = cores.texto;
   // Enquanto um pedido está carregando, recusamos outros toques no mesmo botão.
   const bloqueado = desabilitado || carregando;
 

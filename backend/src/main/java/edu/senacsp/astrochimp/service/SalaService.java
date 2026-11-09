@@ -1,6 +1,5 @@
 package edu.senacsp.astrochimp.service;
 
-import edu.senacsp.astrochimp.dto.CronometroDto;
 import edu.senacsp.astrochimp.dto.EntradaSalaDto;
 import edu.senacsp.astrochimp.dto.SalaDto;
 import edu.senacsp.astrochimp.entity.Aluno;
@@ -19,6 +18,7 @@ import java.util.UUID;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Optional;
 
 // O Spring cria este service para abrir salas, receber os alunos e controlar o cronômetro.
 @Service
@@ -90,10 +90,12 @@ public class SalaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome do aluno deve ter no máximo 255 caracteres");
         }
         String codigo = pedido.getCodigo().trim().toUpperCase(Locale.ROOT);
-        Sala sala = salaRepository.findByCodigo(codigo).orElse(null);
-        if (sala == null) {
+        // Optional guarda o resultado da busca; isEmpty identifica um código que não pertence a nenhuma sala.
+        Optional<Sala> resultado = salaRepository.findByCodigo(codigo);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Código de sala não encontrado");
         }
+        Sala sala = resultado.get();
         acessoService.exigirSalaAtiva(sala);
         // Do pedido usamos só código da sala e nome do aluno; geramos um novo token aqui.
         // O token identifica este aluno nas próximas requisições.
@@ -123,29 +125,29 @@ public class SalaService {
     }
 
     @Transactional
-    public CronometroDto iniciarCronometro(Long salaId, CronometroDto pedido) {
+    public int iniciarCronometro(Long salaId, Integer segundos) {
         Sala sala = acessoService.salaDoProfessor(salaId);
         acessoService.exigirSalaAtiva(sala);
-        if (pedido == null || pedido.getSegundosTotais() == null || pedido.getSegundosTotais() <= 0) {
+        if (segundos == null || segundos <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duração deve ser maior que zero");
         }
         // Do pedido usamos só o tempo total escolhido pelo professor.
         // O início é definido agora; os segundos restantes serão calculados na consulta.
-        sala.setCronometroSegundos(pedido.getSegundosTotais());
+        sala.setCronometroSegundos(segundos);
         sala.setCronometroIniciadoEm(LocalDateTime.now());
         salaRepository.save(sala);
         return cronometro(sala);
     }
 
     @Transactional(readOnly = true)
-    public CronometroDto consultarCronometro(Long salaId, String tokenAluno) {
+    public int consultarCronometro(Long salaId, String tokenAluno) {
         Sala sala = acessoService.salaComAcesso(salaId, tokenAluno);
         return cronometro(sala);
     }
 
     @Transactional
     // Limpa início e duração para que todos os participantes recebam a contagem como parada.
-    public CronometroDto pararCronometro(Long salaId) {
+    public int pararCronometro(Long salaId) {
         Sala sala = acessoService.salaDoProfessor(salaId);
         sala.setCronometroIniciadoEm(null);
         sala.setCronometroSegundos(null);
@@ -153,14 +155,15 @@ public class SalaService {
         return cronometro(sala);
     }
 
-    private CronometroDto cronometro(Sala sala) {
+    // Calcula somente os segundos restantes, sem montar um objeto de resposta.
+    private int cronometro(Sala sala) {
         if (sala.getCronometroIniciadoEm() == null || sala.getCronometroSegundos() == null) {
-            return new CronometroDto(null, 0, false);
+            return 0;
         }
         // A sala expirada não mantém uma contagem ativa, mesmo sem o professor apertar encerrar.
         if (!"ativa".equals(sala.getStatus()) ||
                 (sala.getExpiraEm() != null && !LocalDateTime.now().isBefore(sala.getExpiraEm()))) {
-            return new CronometroDto(sala.getCronometroSegundos(), 0, false);
+            return 0;
         }
         // segundosTotais é o tempo escolhido pelo professor, como 120 segundos.
         // iniciadoEm é o instante em que o professor iniciou esse cronômetro na sala.
@@ -175,7 +178,7 @@ public class SalaService {
         if (segundosRestantes < 0) {
             segundosRestantes = 0;
         }
-        return new CronometroDto(segundosTotais, (int) segundosRestantes, segundosRestantes > 0);
+        return (int) segundosRestantes;
     }
 
     private SalaDto resposta(Sala sala) {

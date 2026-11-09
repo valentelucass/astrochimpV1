@@ -7,19 +7,28 @@ import Cartao from '../components/Cartao'; // Importa Cartao para apresentar cad
 import Botao from '../components/Botao'; // Importa Botao para abrir, baixar ou administrar materiais.
 import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ao consultar ou abrir um conteúdo.
 import api from '../services/api'; // Importa o serviço da API para buscar materiais e seus acessos no backend.
-import type { Professor, Sala, AcessoProfessor, Material, Aluno } from '../types/modelos'; // Importa somente os tipos que descrevem os usuários, a sala e os materiais exibidos.
+import type { Professor, Sala, AcessoProfessor, Material, Aluno, Acesso } from '../types/modelos'; // Importa os tipos dos usuários, dos materiais e do acesso usado na sala.
+import type { NomeIcone } from '../types/icones'; // Importa a lista simples de ícones usados para representar materiais.
 import { abrirMaterial } from '../services/arquivos'; // Importa a função que decide como abrir links, códigos e arquivos em cada plataforma.
 import { formatarData } from '../services/formatacao'; // Importa a formatação de data para mostrar quando cada material foi publicado.
 import cores from '../styles/cores'; // Importa as cores do projeto para diferenciar ícones e tipos de conteúdo.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
-// Relaciona os tipos enviados pelo Spring aos ícones e nomes usados nos cartões.
-const icones: Record<string, 'link-outline' | 'code-slash-outline' | 'document-text-outline'> = {
-  link: 'link-outline',
-  codigo: 'code-slash-outline',
-  arquivo: 'document-text-outline',
-};
-const tipos: Record<string, string> = { link: 'LINK', codigo: 'CÓDIGO', arquivo: 'ARQUIVO' };
+// Escolhe o ícone conforme o tipo do material, usando um documento como opção padrão.
+function iconeDoMaterial(tipo: string): NomeIcone {
+  if (tipo === 'link') return 'link-outline';
+  if (tipo === 'codigo') return 'code-slash-outline';
+  if (tipo === 'arquivo') return 'document-text-outline';
+  return 'document-outline';
+}
+
+// Traduz os três tipos de material para os nomes mostrados nos cartões.
+function nomeDoTipo(tipo: string) {
+  if (tipo === 'link') return 'LINK';
+  if (tipo === 'codigo') return 'CÓDIGO';
+  if (tipo === 'arquivo') return 'ARQUIVO';
+  return tipo;
+}
 
 // Recebe a sala e a sessão do professor ou aluno; criar material só aparece quando o App fornece essa ação.
 type Props = {
@@ -41,14 +50,16 @@ export default function MateriaisSala({
   onCriarMaterial,
 }: Props) {
   // Alunos usam o token da entrada na sala; professores usam e-mail e senha.
-  const acessoAtual = aluno ? { tokenAluno: aluno.tokenAluno } : (acesso ?? null);
+  let acessoAtual: Acesso = null;
+  if (aluno) acessoAtual = { tokenAluno: aluno.tokenAluno };
+  else if (acesso) acessoAtual = acesso;
   // useState guarda a lista recebida e os avisos; os setters atualizam o que aparece sem trocar de página.
   const [materiais, setMateriais] = useState<Material[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
   // O id ocupado bloqueia ações simultâneas; tentativa pede uma nova consulta à sala.
-  const [ocupado, setOcupado] = useState<Material['id'] | null>(null);
+  const [ocupado, setOcupado] = useState<number | null>(null);
   const [tentativa, setTentativa] = useState(0);
   // A janela do perfil tem lista, carregamento e erro próprios para não misturar os avisos da sala.
   const [mostrarPerfil, setMostrarPerfil] = useState(false);
@@ -113,12 +124,13 @@ export default function MateriaisSala({
     setErro('');
     setSucesso('');
     try {
-      await api.fixarMaterial(sala.id, material.id, !material.fixado, acesso);
+      const atualizado = await api.fixarMaterial(sala.id, material.id, !material.fixado, acesso);
       // map monta outro array, trocando a fixação só do material que o servidor acabou de confirmar.
       setMateriais(
-        materiais.map((item) =>
-          item.id === material.id ? { ...item, fixado: !item.fixado } : item,
-        ),
+        materiais.map(function atualizarMaterial(item) {
+          if (item.id === material.id) return atualizado;
+          return item;
+        }),
       );
     } catch (e: unknown) {
       // Informa a falha sem alterar a fixação que estava na lista.
@@ -167,7 +179,12 @@ export default function MateriaisSala({
   }
 
   // Ordena uma cópia para mostrar fixados primeiro sem reorganizar o array guardado no estado.
-  const ordenados = [...materiais].sort((a, b) => Number(!!b.fixado) - Number(!!a.fixado));
+  const ordenados = materiais.slice();
+  ordenados.sort(function compararFixacao(primeiro, segundo) {
+    if (primeiro.fixado && !segundo.fixado) return -1;
+    if (!primeiro.fixado && segundo.fixado) return 1;
+    return 0;
+  });
   return (
     <Pagina rolar={false}>
       <Cabecalho titulo="Materiais da sala" subtitulo={sala.nomeAula} onVoltar={onVoltar} />
@@ -244,7 +261,7 @@ export default function MateriaisSala({
             <View style={styles.linha}>
               <View style={styles.icone}>
                 <Ionicons
-                  name={icones[item.tipo] || 'document-outline'}
+                  name={iconeDoMaterial(item.tipo)}
                   size={28}
                   color={cores.azulEscuro}
                 />
@@ -252,7 +269,7 @@ export default function MateriaisSala({
               <View style={styles.flex}>
                 <Text style={estilos.subtitulo}>{item.titulo}</Text>
                 <Text style={estilos.legenda}>
-                  {tipos[item.tipo] || item.tipo} • {formatarData(item.criadoEm)}
+                  {nomeDoTipo(item.tipo)} • {formatarData(item.criadoEm)}
                 </Text>
               </View>
             </View>
@@ -334,7 +351,7 @@ export default function MateriaisSala({
                 <Cartao>
                   <Text style={estilos.subtitulo}>{item.titulo}</Text>
                   <Text style={[estilos.legenda, estilos.espaco]}>
-                    {tipos[item.tipo]} • {formatarData(item.criadoEm)}
+                    {nomeDoTipo(item.tipo)} • {formatarData(item.criadoEm)}
                   </Text>
                   <Botao
                     titulo={publicado ? 'Já está na sala' : 'Enviar para sala'}

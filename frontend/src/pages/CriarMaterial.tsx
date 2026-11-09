@@ -9,6 +9,7 @@ import Botao from '../components/Botao'; // Importa Botao para escolher arquivo 
 import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar sucesso ou falha ao publicar.
 import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
 import api from '../services/api'; // Importa o serviço da API para enviar o novo material ao backend.
+import { enderecoWebValido } from '../services/textos'; // Confere se o link começa com http ou https e não contém espaços.
 import type { Professor, Sala, AcessoProfessor, Material } from '../types/modelos'; // Importa somente os tipos que descrevem a sessão, a sala e o material criado.
 import cores from '../styles/cores'; // Importa as cores do projeto para estilizar as opções de tipo do material.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
@@ -21,6 +22,13 @@ type Props = {
   onVoltar: () => void;
   onSalvo: () => void;
 };
+
+// Cada opção tem o valor enviado ao Spring e o nome mostrado no botão.
+const tiposDeMaterial: { valor: 'link' | 'codigo' | 'arquivo'; nome: string }[] = [
+  { valor: 'link', nome: 'Link' },
+  { valor: 'codigo', nome: 'Código' },
+  { valor: 'arquivo', nome: 'Arquivo' },
+];
 
 // Monta o formulário que salva um material no perfil ou compartilha diretamente com a sala.
 export default function CriarMaterial({ professor, acesso, sala, onVoltar, onSalvo }: Props) {
@@ -74,7 +82,7 @@ export default function CriarMaterial({ professor, acesso, sala, onVoltar, onSal
     if (!materialCriado && tipo === 'arquivo' && !arquivo) return setErro('Selecione um arquivo.');
     if (!materialCriado && tipo !== 'arquivo' && !conteudoOuUrl.trim())
       return setErro('Preencha o conteúdo do material.');
-    if (!materialCriado && tipo === 'link' && !/^https?:\/\/[^\s]+$/i.test(conteudoOuUrl.trim()))
+    if (!materialCriado && tipo === 'link' && !enderecoWebValido(conteudoOuUrl))
       return setErro('Informe um link completo, começando com http:// ou https://.');
     setSalvando(true);
     try {
@@ -141,20 +149,14 @@ export default function CriarMaterial({ professor, acesso, sala, onVoltar, onSal
         <Text style={estilos.rotulo}>TIPO DE MATERIAL</Text>
         {/* map transforma cada opção do array em um botão para escolher o tipo. */}
         <View style={styles.opcoes}>
-          {(
-            [
-              ['link', 'Link'],
-              ['codigo', 'Código'],
-              ['arquivo', 'Arquivo'],
-            ] as const
-          ).map(([valor, nome]) => (
+          {tiposDeMaterial.map((opcao) => (
             <Botao
-              key={valor}
-              titulo={nome}
+              key={opcao.valor}
+              titulo={opcao.nome}
               pequeno
-              cor={tipo === valor ? 'azul' : 'claro'}
+              cor={tipo === opcao.valor ? 'azul' : 'claro'}
               desabilitado={bloqueado}
-              onPress={() => setTipo(valor)}
+              onPress={() => setTipo(opcao.valor)}
             />
           ))}
         </View>

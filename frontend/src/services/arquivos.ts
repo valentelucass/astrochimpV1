@@ -4,6 +4,7 @@ import * as FileSystem from 'expo-file-system/legacy'; // Importa o sistema de a
 import * as Sharing from 'expo-sharing'; // Importa o compartilhamento do Expo para entregar o arquivo baixado a outros aplicativos.
 import * as Clipboard from 'expo-clipboard'; // Importa a área de transferência do Expo para copiar materiais do tipo código.
 import { ENDERECO_API, cabecalhosDeAcesso } from './api'; // Importa o endereço e os cabeçalhos da API para baixar arquivos protegidos com a mesma autenticação.
+import { enderecoWebValido, nomeArquivoSeguro } from './textos'; // Confere os links e prepara nomes de arquivo sem expressões regulares.
 
 // Recebe o material escolhido e decide entre abrir um endereço, copiar código ou baixar um arquivo.
 // salaId acompanha o download quando o acesso do aluno depende da participação naquela aula.
@@ -11,7 +12,7 @@ export async function abrirMaterial(material: Material, acesso: Acesso = null, s
   if (material.tipo === 'link') {
     // Só abrimos endereços de páginas http/https; isso recusa outros formatos colados no cadastro.
     const url = material.conteudoOuUrl.trim();
-    if (!/^https?:\/\//i.test(url))
+    if (!enderecoWebValido(url))
       throw new Error('Este material precisa de um endereço http ou https válido.');
     await Linking.openURL(url);
     return;
@@ -31,7 +32,7 @@ export async function abrirMaterial(material: Material, acesso: Acesso = null, s
     (salaId ? '?salaId=' + salaId : '');
   const headers = cabecalhosDeAcesso(acesso);
   // No upload, detalhe traz o nome original. Substituímos caracteres que não queremos no nome salvo no aparelho.
-  const nome = (material.detalhe || material.titulo || 'material').replace(/[^a-zA-Z0-9._-]/g, '_');
+  const nome = nomeArquivoSeguro(material.detalhe || material.titulo || 'material');
   if (Platform.OS === 'web') {
     // Na prévia, fetch baixa os bytes com a identificação do usuário e blob guarda esses bytes como arquivo.
     const resposta = await fetch(url, { headers });

@@ -53,19 +53,44 @@ export default function CriarQuiz({ professor, acesso, sala, onVoltar, onSalvo }
   const [erro, setErro] = useState('');
   const [salvando, setSalvando] = useState(false);
 
-  // map cria outro array: altera apenas o campo da pergunta indicada e conserva as demais.
-  function alterarPergunta<Campo extends keyof PerguntaFormulario>(
+  // Copia os dados de cada pergunta para não alterar diretamente o estado que o React está exibindo.
+  function copiarPerguntas() {
+    const copia: PerguntaFormulario[] = [];
+    for (const pergunta of perguntas) {
+      copia.push({
+        enunciado: pergunta.enunciado,
+        dificuldade: pergunta.dificuldade,
+        tempoLimiteSegundos: pergunta.tempoLimiteSegundos,
+        alternativas: pergunta.alternativas,
+      });
+    }
+    return copia;
+  }
+
+  // Altera somente um dos três campos de texto da pergunta escolhida.
+  function alterarPergunta(
     indice: number,
-    campo: Campo,
-    valor: PerguntaFormulario[Campo],
+    campo: 'enunciado' | 'dificuldade' | 'tempoLimiteSegundos',
+    valor: string,
   ) {
-    setPerguntas(
-      perguntas.map((pergunta, i) => (i === indice ? { ...pergunta, [campo]: valor } : pergunta)),
-    );
+    const copia = copiarPerguntas();
+    if (campo === 'enunciado') copia[indice].enunciado = valor;
+    else if (campo === 'dificuldade') copia[indice].dificuldade = valor;
+    else copia[indice].tempoLimiteSegundos = valor;
+    setPerguntas(copia);
+  }
+
+  // Substitui as alternativas de uma pergunta usando outra lista, sem modificar a lista anterior.
+  function alterarAlternativas(indice: number, alternativas: AlternativaFormulario[]) {
+    const copia = copiarPerguntas();
+    copia[indice].alternativas = alternativas;
+    setPerguntas(copia);
   }
   // Acrescenta uma pergunta independente ao final do formulário.
   function adicionarPergunta() {
-    setPerguntas([...perguntas, novaPergunta()]);
+    const copia = copiarPerguntas();
+    copia.push(novaPergunta());
+    setPerguntas(copia);
   }
   // Retira a pergunta escolhida; o botão impede excluir a única que restou.
   function removerPergunta(indice: number) {
@@ -73,36 +98,33 @@ export default function CriarQuiz({ professor, acesso, sala, onVoltar, onSalvo }
   }
   // Acrescenta uma opção vazia à pergunta; o botão limita a seis alternativas.
   function adicionarAlternativa(indice: number) {
-    alterarPergunta(indice, 'alternativas', [
-      ...perguntas[indice].alternativas,
-      { texto: '', correta: false },
-    ]);
+    const alternativas = perguntas[indice].alternativas.slice();
+    alternativas.push({ texto: '', correta: false });
+    alterarAlternativas(indice, alternativas);
   }
   // Retira a opção indicada; a tela mantém pelo menos duas em cada pergunta.
   function removerAlternativa(indice: number, alternativaIndice: number) {
-    alterarPergunta(
+    alterarAlternativas(
       indice,
-      'alternativas',
       perguntas[indice].alternativas.filter((alternativa, i) => i !== alternativaIndice),
     );
   }
   // Atualiza o texto de uma alternativa sem mudar a marcação da resposta correta.
   function alterarAlternativa(indice: number, alternativaIndice: number, texto: string) {
-    alterarPergunta(
+    // map cria outra lista: troca o texto da opção escolhida e mantém as demais.
+    alterarAlternativas(
       indice,
-      'alternativas',
       perguntas[indice].alternativas.map((alternativa, i) =>
-        i === alternativaIndice ? { ...alternativa, texto } : alternativa,
+        i === alternativaIndice ? { texto, correta: alternativa.correta } : alternativa,
       ),
     );
   }
   // Marca a opção escolhida e desmarca as outras alternativas da mesma pergunta.
   function marcarCorreta(indice: number, alternativaIndice: number) {
-    alterarPergunta(
+    alterarAlternativas(
       indice,
-      'alternativas',
       perguntas[indice].alternativas.map((alternativa, i) => ({
-        ...alternativa,
+        texto: alternativa.texto,
         correta: i === alternativaIndice,
       })),
     );
@@ -139,11 +161,11 @@ export default function CriarQuiz({ professor, acesso, sala, onVoltar, onSalvo }
       titulo: titulo.trim(),
       salvoNoPerfil: !sala || salvarNoPerfil,
       perguntas: perguntas.map((pergunta) => ({
-        ...pergunta,
+        dificuldade: pergunta.dificuldade,
         enunciado: pergunta.enunciado.trim(),
         tempoLimiteSegundos: Number(pergunta.tempoLimiteSegundos),
         alternativas: pergunta.alternativas.map((alternativa) => ({
-          ...alternativa,
+          correta: alternativa.correta,
           texto: alternativa.texto.trim(),
         })),
       })),

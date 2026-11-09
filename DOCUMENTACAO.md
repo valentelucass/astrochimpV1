@@ -225,7 +225,7 @@ O aluno recebe um token ao entrar na sala. O aplicativo envia esse valor no cabe
 
 Um DTO reúne os campos que uma operação precisa receber ou devolver. Isso ajuda a evitar que uma resposta exponha dados internos ou informações que aquele usuário não deve consultar. As validações de acesso continuam nos services.
 
-A versão atual mantém 11 DTOs, agrupados abaixo por finalidade:
+A versão atual mantém 10 DTOs, agrupados abaixo por finalidade:
 
 | DTO ou grupo | Motivo de uso |
 |---|---|
@@ -234,9 +234,12 @@ A versão atual mantém 11 DTOs, agrupados abaixo por finalidade:
 | SalaDto e EntradaSalaDto | Apresentam a aula e a participação que acabou de entrar, sem listar tokens dos outros alunos. |
 | DuvidaDto | Devolve texto, votos e estado; a montagem da resposta preserva o anonimato para os colegas. |
 | MaterialDto | Apresenta o conteúdo ou endereço de download, sem expor o caminho interno do arquivo. |
-| CronometroDto | Informa o tempo escolhido para a atividade, os segundos restantes e se a contagem está ativa. |
 | PerguntaAlunoDto e AlternativaAlunoDto | Mostram a pergunta e as opções ao aluno sem gabarito e representam a escolha enviada. |
 | ResultadoPerguntaDto e ResultadoAlternativaDto | Reúnem as contagens de respostas por alternativa na rodada consultada pelo professor. |
+
+O cronômetro recebe apenas a duração em segundos, como `120` no corpo JSON, e devolve um número com os segundos restantes. Zero indica que a contagem está parada ou terminou. As telas do professor e do aluno usam esse número diretamente, dispensando um DTO próprio.
+
+DTOs ajudam a limitar dados de entrada e saída. A proteção contra SQL Injection vem das consultas parametrizadas usadas no acesso ao banco, não do DTO.
 
 ### 7.2 Credenciais do ambiente
 

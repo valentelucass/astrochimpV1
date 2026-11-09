@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons'; // Importa os ícones do Expo par
 import cores from '../styles/cores'; // Importa as cores do projeto para aplicar a identidade visual aos ícones e ao cabeçalho.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para reutilizar a aparência de títulos e legendas.
 
-import type { ComponentProps } from 'react'; // Importa somente o tipo das propriedades do React para limitar o nome do ícone recebido.
+import type { NomeIcone } from '../types/icones'; // Importa a lista simples dos ícones que podem aparecer na ação do cabeçalho.
 
 // Cada tela informa seus títulos e pode oferecer uma ação à esquerda e outra à direita.
 type CabecalhoProps = {
@@ -11,7 +11,7 @@ type CabecalhoProps = {
   subtitulo?: string;
   onVoltar?: () => void;
   onAcao?: () => void;
-  acaoIcone?: ComponentProps<typeof Ionicons>['name'];
+  acaoIcone?: NomeIcone;
   acaoRotulo?: string;
 };
 

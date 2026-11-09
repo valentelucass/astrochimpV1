@@ -7,6 +7,7 @@ import Botao from '../components/Botao'; // Importa Botao para entrar na sala ou
 import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar falhas ao procurar a sala.
 import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
 import api from '../services/api'; // Importa o serviço da API para localizar a sala e registrar a entrada do aluno.
+import { codigoSalaValido, limparCodigoSala } from '../services/textos'; // Confere o código da sala e mantém somente as letras e os números permitidos.
 import cores from '../styles/cores'; // Importa as cores do projeto para estilizar a entrada do código e os destaques da tela.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 import type { EntradaSala } from '../types/modelos'; // Importa somente o tipo que descreve os dados devolvidos quando o aluno entra na sala.
@@ -30,7 +31,7 @@ export default function Inicio({ onEntrarAluno, onEntrarProfessor }: Props) {
   async function entrar() {
     // Evita repetir o pedido e exige seis letras ou números, além de um nome preenchido.
     if (carregando) return;
-    if (!/^[A-Z0-9]{6}$/.test(codigo) || !nomeAluno.trim()) {
+    if (!codigoSalaValido(codigo) || !nomeAluno.trim()) {
       setErro('Informe seu nome e o código da sala com 6 letras ou números.');
       return;
     }
@@ -41,7 +42,12 @@ export default function Inicio({ onEntrarAluno, onEntrarProfessor }: Props) {
       // O servidor confere a sala e devolve o token usado nas próximas ações do aluno.
       const entrada = await api.entrarSala(codigo, nomeAluno.trim());
       // App guarda a sessão somente em memória e escolhe a próxima tela.
-      onEntrarAluno({ ...entrada, nomeAluno: nomeAluno.trim() });
+      onEntrarAluno({
+        sala: entrada.sala,
+        alunoId: entrada.alunoId,
+        tokenAluno: entrada.tokenAluno,
+        nomeAluno: nomeAluno.trim(),
+      });
     } catch (falha) {
       // Aproveita a mensagem do servidor quando a falha é um Error conhecido.
       setErro(falha instanceof Error ? falha.message : 'Não foi possível entrar na sala.');
@@ -65,14 +71,7 @@ export default function Inicio({ onEntrarAluno, onEntrarProfessor }: Props) {
         <TextInput
           accessibilityLabel="Código da sala"
           value={codigo}
-          onChangeText={(texto) =>
-            setCodigo(
-              texto
-                .toUpperCase()
-                .replace(/[^A-Z0-9]/g, '')
-                .slice(0, 6),
-            )
-          }
+          onChangeText={(texto) => setCodigo(limparCodigoSala(texto))}
           maxLength={6}
           autoCapitalize="characters"
           autoCorrect={false}

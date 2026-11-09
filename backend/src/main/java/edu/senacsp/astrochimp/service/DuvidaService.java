@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 // O Spring cria este service para cuidar das dúvidas, dos votos e de quem pode ver o autor.
 @Service
@@ -32,7 +33,7 @@ public class DuvidaService {
     public DuvidaDto criar(Long salaId, String tokenAluno, DuvidaDto pedido) {
         Sala sala = acessoService.sala(salaId);
         acessoService.exigirSalaAtiva(sala);
-        Aluno aluno = acessoService.alunoDaSala(salaId, tokenAluno);
+        Aluno aluno = acessoService.alunoDaSala(sala, tokenAluno);
         if (pedido == null || pedido.getTexto() == null || pedido.getTexto().isBlank() || pedido.getTexto().length() > 280) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dúvida deve ter entre 1 e 280 caracteres");
         }
@@ -69,12 +70,14 @@ public class DuvidaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dúvida obrigatória");
         }
         // Duas requisições esperam sua vez para conferir e salvar votos nesta dúvida.
-        Duvida duvida = duvidaRepository.buscarParaAtualizar(duvidaId).orElse(null);
-        if (duvida == null) {
+        // Optional guarda a busca; isEmpty permite devolver 404 quando não existe uma dúvida com esse id.
+        Optional<Duvida> resultado = duvidaRepository.buscarParaAtualizar(duvidaId);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Dúvida não encontrada");
         }
+        Duvida duvida = resultado.get();
         acessoService.exigirSalaAtiva(duvida.getSala());
-        Aluno aluno = acessoService.alunoDaSala(duvida.getSala().getId(), tokenAluno);
+        Aluno aluno = acessoService.alunoDaSala(duvida.getSala(), tokenAluno);
         for (Aluno votante : duvida.getAlunosQueVotaram()) {
             if (votante.getId().equals(aluno.getId())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Aluno já votou nesta dúvida");
@@ -88,7 +91,7 @@ public class DuvidaService {
     // O dono da sala pode reabrir, marcar como respondida ou arquivar, usando apenas os três estados aceitos.
     public DuvidaDto mudarEstado(Long duvidaId, DuvidaDto pedido) {
         Duvida duvida = buscar(duvidaId);
-        acessoService.salaDoProfessor(duvida.getSala().getId());
+        acessoService.exigirProfessor(duvida.getSala().getProfessor());
         acessoService.exigirSalaAtiva(duvida.getSala());
         if (pedido == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estado inválido");
@@ -106,7 +109,7 @@ public class DuvidaService {
     // Destaca ou retira o destaque da dúvida; o estado de respondida/pendente continua separado dessa opção.
     public DuvidaDto fixar(Long duvidaId, DuvidaDto pedido) {
         Duvida duvida = buscar(duvidaId);
-        acessoService.salaDoProfessor(duvida.getSala().getId());
+        acessoService.exigirProfessor(duvida.getSala().getProfessor());
         acessoService.exigirSalaAtiva(duvida.getSala());
         if (pedido == null || pedido.isFixada() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe fixada");
@@ -120,11 +123,11 @@ public class DuvidaService {
         if (duvidaId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dúvida obrigatória");
         }
-        Duvida duvida = duvidaRepository.findById(duvidaId).orElse(null);
-        if (duvida == null) {
+        Optional<Duvida> resultado = duvidaRepository.findById(duvidaId);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Dúvida não encontrada");
         }
-        return duvida;
+        return resultado.get();
     }
 
     private DuvidaDto resposta(Duvida duvida, boolean paraProfessor) {

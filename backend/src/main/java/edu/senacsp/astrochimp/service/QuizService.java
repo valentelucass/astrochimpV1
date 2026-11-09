@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 // O Spring cria este service para montar o quiz, receber respostas e controlar as rodadas.
 @Service
@@ -84,11 +85,13 @@ public class QuizService {
         if (quizId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quiz obrigatório");
         }
-        Quiz quiz = quizRepository.findById(quizId).orElse(null);
-        if (quiz == null) {
+        // Optional guarda a busca; isEmpty identifica um id sem quiz cadastrado.
+        Optional<Quiz> resultado = quizRepository.findById(quizId);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz não encontrado");
         }
-        acessoService.professor(quiz.getProfessor().getId());
+        Quiz quiz = resultado.get();
+        acessoService.exigirProfessor(quiz.getProfessor());
         return quiz;
     }
 
@@ -116,9 +119,7 @@ public class QuizService {
     public void enviarQuizExistenteParaSala(Long salaId, Long quizId) {
         Sala sala = acessoService.salaDoProfessor(salaId);
         Quiz quiz = buscarPorId(quizId);
-        if (!sala.getProfessor().getId().equals(quiz.getProfessor().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Quiz pertence a outro professor");
-        }
+        // As duas consultas já conferiram que o professor conectado é dono da sala e do quiz.
         iniciarSessaoDeQuiz(sala, quiz);
     }
 
@@ -225,12 +226,13 @@ public class QuizService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sala obrigatória");
         }
         // Duas requisições esperam sua vez para conferir e salvar respostas nesta sala.
-        Sala sala = salaRepository.buscarParaAtualizar(salaId).orElse(null);
-        if (sala == null) {
+        Optional<Sala> salaEncontrada = salaRepository.buscarParaAtualizar(salaId);
+        if (salaEncontrada.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sala não encontrada");
         }
+        Sala sala = salaEncontrada.get();
         acessoService.exigirSalaAtiva(sala);
-        Aluno aluno = acessoService.alunoDaSala(salaId, tokenAluno);
+        Aluno aluno = acessoService.alunoDaSala(sala, tokenAluno);
         if (sala.getQuizEmAndamento() == null || sala.getQuizPerguntaAtual() == null || sala.getQuizSessaoId() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum quiz em andamento");
         }
@@ -238,10 +240,11 @@ public class QuizService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Alternativa obrigatória");
         }
         // Do pedido usamos só o id; o texto e a pergunta da alternativa vêm do banco.
-        QuizAlternativa alternativa = quizAlternativaRepository.findById(pedido.getId()).orElse(null);
-        if (alternativa == null) {
+        Optional<QuizAlternativa> alternativaEncontrada = quizAlternativaRepository.findById(pedido.getId());
+        if (alternativaEncontrada.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Alternativa não encontrada");
         }
+        QuizAlternativa alternativa = alternativaEncontrada.get();
 
         if (!alternativa.getPergunta().getId().equals(sala.getQuizPerguntaAtual().getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Alternativa não é da pergunta atual");

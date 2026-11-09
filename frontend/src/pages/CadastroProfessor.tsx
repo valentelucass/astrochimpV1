@@ -8,6 +8,7 @@ import Botao from '../components/Botao'; // Importa Botao para enviar o cadastro
 import Mensagem from '../components/Mensagem'; // Importa Mensagem para informar erros encontrados durante o cadastro.
 import Marca from '../components/Marca'; // Importa Marca para mostrar a identidade do AstroChimp no fim da tela.
 import api from '../services/api'; // Importa o serviço da API para enviar os dados e criar a conta no backend.
+import { emailValido, enderecoPublicoValido } from '../services/textos'; // Confere o e-mail e os caracteres aceitos no endereço público do professor.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
 import type {
@@ -36,12 +37,12 @@ export default function CadastroProfessor({ onEntrar, onVoltar }: Props) {
   async function cadastrar() {
     // Exige nome, e-mail válido e senha, sem reenviar um cadastro ainda em andamento.
     if (carregando) return;
-    if (!nome.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) || !senha.trim()) {
+    if (!nome.trim() || !emailValido(email) || !senha.trim()) {
       setErro('Preencha seu nome, um e-mail válido e uma senha.');
       return;
     }
     // O endereço é opcional, mas quando preenchido precisa servir como parte de uma URL.
-    if (slug.trim() && !/^[a-z0-9-]+$/.test(slug.trim())) {
+    if (slug.trim() && !enderecoPublicoValido(slug)) {
       setErro('No endereço público, use letras minúsculas, números e hífen.');
       return;
     }

@@ -34,7 +34,7 @@ export default function EscolherQuiz({
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   // Acompanha consulta, id do quiz em envio, mensagem de falha e o pedido de nova tentativa.
   const [carregando, setCarregando] = useState(true);
-  const [enviando, setEnviando] = useState<Quiz['id'] | null>(null);
+  const [enviando, setEnviando] = useState<number | null>(null);
   const [erro, setErro] = useState('');
   const [tentativa, setTentativa] = useState(0);
 

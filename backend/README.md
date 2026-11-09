@@ -21,7 +21,7 @@ Os services usam `if`, `for` e listas com `ArrayList`. O construtor recebe os re
 
 As entidades representam professores, salas, alunos, dúvidas, materiais, quizzes, perguntas, alternativas e respostas. Uma sala pode ter vários alunos e materiais. Um quiz possui perguntas, e cada pergunta possui alternativas. As respostas guardam o aluno e a rodada em que a escolha foi feita.
 
-Os 11 DTOs selecionam dados que podem ser recebidos ou devolvidos. Algumas classes atendem aos dois sentidos, e o service usa apenas os campos válidos para a operação solicitada.
+Os 10 DTOs selecionam dados que podem ser recebidos ou devolvidos. Algumas classes atendem aos dois sentidos, e o service usa apenas os campos válidos para a operação solicitada.
 
 | DTOs | Finalidade |
 |---|---|
@@ -29,11 +29,14 @@ Os 11 DTOs selecionam dados que podem ser recebidos ou devolvidos. Algumas class
 | `SalaDto`, `EntradaSalaDto` | Devolver dados da aula e o acesso do aluno que entrou, sem listar tokens de outros participantes |
 | `DuvidaDto` | Apresentar texto, votos e estado, preservando o anonimato na consulta dos alunos |
 | `MaterialDto` | Apresentar o conteúdo ou a rota de download, sem expor o caminho do arquivo no servidor |
-| `CronometroDto` | Informar a duração da atividade, os segundos restantes e se a contagem está ativa |
 | `PerguntaAlunoDto`, `AlternativaAlunoDto` | Apresentar a pergunta atual sem gabarito e receber a escolha do aluno |
 | `ResultadoPerguntaDto`, `ResultadoAlternativaDto` | Apresentar as contagens por alternativa na rodada consultada pelo professor |
 
 `@JsonProperty` define campos que só entram ou só saem no JSON. `@JsonIgnore` retira dados internos e ligações de volta entre entidades. Nas rotas do professor, o quiz usa `Quiz`, `QuizPergunta` e `QuizAlternativa`, com os campos internos protegidos e os valores permitidos copiados pelo service.
+
+O cronômetro usa somente números: o início recebe a duração em segundos no corpo JSON, como `120`, e as três rotas devolvem os segundos restantes, como `90`. O valor `0` indica contagem parada ou terminada. O aplicativo usa esse valor diretamente, sem DTO de cronômetro. O formato anterior com objeto (`{"segundos":120}`) foi substituído pelo número.
+
+DTOs limitam os dados recebidos e expostos. A proteção contra SQL Injection depende de consultas parametrizadas, como as usadas pelos repositórios, e não da presença de um DTO.
 
 Nos campos de publicação e fixação, `Boolean` diferencia um valor ausente (`null`) de uma escolha explícita (`false`). Os ids usam `Long`, e as coleções usam `List`. O código define a ordem das perguntas e as letras das alternativas ao salvar o quiz.
 
@@ -100,9 +103,9 @@ Os testes HTTP usam MockMvc. Os testes simultâneos verificam casos de duplicida
 | Aluno | `POST /api/salas/entrar` | Entrar pelo código |
 | Professor ou aluno | `GET /api/salas/{id}` | Consultar sala |
 | Professor | `PATCH /api/salas/{id}/encerrar` | Encerrar sala |
-| Professor | `POST /api/salas/{id}/cronometro` | Iniciar: `{"segundos":120}` |
-| Professor ou aluno | `GET /api/salas/{id}/cronometro` | Consultar tempo restante |
-| Professor | `DELETE /api/salas/{id}/cronometro` | Parar cronômetro |
+| Professor | `POST /api/salas/{id}/cronometro` | Iniciar com `120` no corpo JSON; devolver segundos restantes |
+| Professor ou aluno | `GET /api/salas/{id}/cronometro` | Consultar segundos restantes; `0` se parado ou terminado |
+| Professor | `DELETE /api/salas/{id}/cronometro` | Parar cronômetro e devolver `0` |
 | Aluno | `POST /api/salas/{id}/duvidas` | Criar: `{"texto":"Minha pergunta","anonima":true}` |
 | Aluno | `GET /api/salas/{id}/duvidas` | Listar por votos, sem revelar autor anônimo |
 | Professor | `GET /api/salas/{id}/duvidas/professor` | Listar com identidade dos autores |

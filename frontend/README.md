@@ -32,6 +32,8 @@ assets/                imagens do aplicativo
 
 Arquivos com JSX usam `.tsx`. Serviços, estilos e tipos usam `.ts`. O TypeScript ajuda a conferir campos e propriedades durante o desenvolvimento. A API continua responsável por validar os pedidos e proteger os dados.
 
+`src/services/textos.ts` confere e-mail, código da sala, endereço público, links e nomes de arquivo com `if`, `for` e métodos simples de texto, sem expressões regulares. `src/types/icones.ts` lista os nomes de ícones usados nas telas. Os campos e o formulário do quiz usam tipos com opções explícitas, sem tipos genéricos para escolher propriedades.
+
 O estado `tela`, no `App.tsx`, escolhe qual componente aparece. As páginas recebem dados e funções por props. A entrada do aluno, por exemplo, devolve a sala e seu token ao `App`, que abre o feed com essa participação.
 
 ## Telas

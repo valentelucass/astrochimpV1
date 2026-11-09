@@ -1,6 +1,7 @@
 package edu.senacsp.astrochimp;
 
 import edu.senacsp.astrochimp.entity.Aluno;
+import edu.senacsp.astrochimp.entity.Professor;
 import edu.senacsp.astrochimp.entity.Sala;
 import edu.senacsp.astrochimp.repository.AlunoRepository;
 import edu.senacsp.astrochimp.repository.ProfessorRepository;
@@ -9,6 +10,8 @@ import edu.senacsp.astrochimp.service.AcessoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -22,6 +25,7 @@ import static org.mockito.Mockito.*;
 class AcessoServiceTest {
     private AlunoRepository alunos;
     private SalaRepository salas;
+    private ProfessorRepository professores;
     private AcessoService acesso;
 
     @BeforeEach
@@ -29,7 +33,8 @@ class AcessoServiceTest {
         // Os repositórios simulados devolvem apenas os dados definidos em cada teste.
         alunos = mock(AlunoRepository.class);
         salas = mock(SalaRepository.class);
-        acesso = new AcessoService(mock(ProfessorRepository.class), salas, alunos);
+        professores = mock(ProfessorRepository.class);
+        acesso = new AcessoService(professores, salas, alunos);
     }
 
     @Test
@@ -92,5 +97,39 @@ class AcessoServiceTest {
         assertEquals(HttpStatus.FORBIDDEN, erro.getStatusCode());
         sala.getAlunos().add(aluno);
         assertSame(aluno, acesso.alunoDaSala(1L, "token-do-aluno"));
+    }
+
+    @Test
+    void salaJaConsultadaNaoPrecisaSerBuscadaNovamenteParaConferirAluno() {
+        Aluno aluno = new Aluno();
+        aluno.setId(10L);
+        aluno.setToken("token-do-aluno");
+        Sala sala = new Sala();
+        sala.getAlunos().add(aluno);
+        when(alunos.findByToken("token-do-aluno")).thenReturn(Optional.of(aluno));
+
+        assertSame(aluno, acesso.alunoDaSala(sala, "token-do-aluno"));
+        // O token ainda é consultado, mas a sala já recebida não exige outra busca no banco.
+        verify(alunos).findByToken("token-do-aluno");
+        verifyNoInteractions(salas, professores);
+    }
+
+    @Test
+    void donoJaCarregadoNaSalaNaoPrecisaSerBuscadoPeloId() {
+        Professor professor = new Professor();
+        professor.setId(1L);
+        professor.setEmail("ana@exemplo.com");
+        Sala sala = new Sala();
+        sala.setProfessor(professor);
+        when(salas.findById(2L)).thenReturn(Optional.of(sala));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("ana@exemplo.com", "senha", new ArrayList<>()));
+        try {
+            assertSame(sala, acesso.salaDoProfessor(2L));
+            // A comparação usa o e-mail do dono da sala; não repete a busca do professor pelo id.
+            verifyNoInteractions(professores);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 }

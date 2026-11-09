@@ -22,7 +22,6 @@ import cores from '../styles/cores'; // Importa as cores do projeto para diferen
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 import type {
   AcessoProfessor,
-  Cronometro,
   Duvida,
   PerguntaAluno,
   Professor,
@@ -55,8 +54,8 @@ export default function SalaProfessor({
   // dadosSala começa com a sala escolhida; duvidas recebe as perguntas que chegam dos alunos.
   const [dadosSala, setDadosSala] = useState(sala);
   const [duvidas, setDuvidas] = useState<Duvida[]>([]);
-  // O cronômetro mede uma atividade da turma; pergunta e resultado pertencem ao quiz, com seu próprio tempo.
-  const [cronometro, setCronometro] = useState<Cronometro | null>(null);
+  // Guarda os segundos restantes da atividade; zero indica contagem parada e null indica que ainda não foi consultada.
+  const [cronometro, setCronometro] = useState<number | null>(null);
   const [pergunta, setPergunta] = useState<PerguntaAluno | null>(null);
   const [resultado, setResultado] = useState<ResultadoQuiz | null>(null);
   // O filtro escolhe a lista; carregando cuida da primeira busca e ocupado bloqueia ações durante um pedido.
@@ -112,7 +111,8 @@ export default function SalaProfessor({
           setCronometro(tempo);
           setPergunta(atual);
           // Só junta contagens e pergunta com o mesmo id, para não mostrar respostas da pergunta anterior.
-          setResultado(votos?.perguntaId === atual?.perguntaId ? votos : null);
+          if (votos && atual && votos.perguntaId === atual.perguntaId) setResultado(votos);
+          else setResultado(null);
         }
         setErroConsulta('');
       } catch (falha) {
@@ -186,7 +186,9 @@ export default function SalaProfessor({
       // Espera pergunta e contagens ficarem prontas antes de trocar o painel apresentado.
       const novosResultados = atual ? await api.buscarResultadoQuiz(sala.id, acesso) : null;
       setPergunta(atual);
-      setResultado(novosResultados?.perguntaId === atual?.perguntaId ? novosResultados : null);
+      if (novosResultados && atual && novosResultados.perguntaId === atual.perguntaId)
+        setResultado(novosResultados);
+      else setResultado(null);
       setSucesso(atual ? 'Próxima pergunta enviada aos alunos.' : 'Quiz encerrado.');
     } catch (falha) {
       setErro(falha instanceof Error ? falha.message : 'Não foi possível controlar o quiz.');
@@ -312,7 +314,11 @@ export default function SalaProfessor({
     filtro === 'arquivadas' ? item.estado === 'arquivada' : item.estado !== 'arquivada',
   );
   // A lista filtrada põe fixadas primeiro e depois as mais votadas; a lista duvidas não é reordenada aqui.
-  visiveis.sort((a, b) => Number(b.fixada) - Number(a.fixada) || b.votos - a.votos);
+  visiveis.sort(function compararDuvidas(primeira, segunda) {
+    if (primeira.fixada && !segunda.fixada) return -1;
+    if (!primeira.fixada && segunda.fixada) return 1;
+    return segunda.votos - primeira.votos;
+  });
 
   // Pagina deixa a rolagem por conta da FlatList, que apresenta um cartão por dúvida e um topo com os controles.
   return (
@@ -371,10 +377,10 @@ export default function SalaProfessor({
                 <Text style={[estilos.subtitulo, styles.espaco]}>{pergunta.enunciado}</Text>
                 <Text style={estilos.legenda}>
                   {formatarTempo(pergunta.tempoRestanteSegundos)} para responder •{' '}
-                  {resultado?.totalRespondentes || 0} respostas
+                  {resultado ? resultado.totalRespondentes : 0} respostas
                 </Text>
                 {/* Cada linha mostra uma alternativa e quantos alunos a escolheram nesta pergunta e rodada. */}
-                {resultado?.resultados.map((item) => (
+                {resultado && resultado.resultados.map((item) => (
                   <View key={item.letra} style={styles.resultado}>
                     <Text style={[estilos.texto, styles.flex]}>
                       {item.letra}. {item.texto}
@@ -451,8 +457,8 @@ export default function SalaProfessor({
         </View>
         <Botao
           titulo={
-            cronometro?.ativo
-              ? 'CRONÔMETRO: ' + formatarTempo(cronometro.segundosRestantes)
+            cronometro !== null && cronometro > 0
+              ? 'CRONÔMETRO: ' + formatarTempo(cronometro)
               : 'INICIAR CRONÔMETRO'
           }
           pequeno
@@ -502,7 +508,7 @@ export default function SalaProfessor({
                     onPress={iniciarCronometro}
                     carregando={ocupado}
                   />
-                  {cronometro?.ativo ? (
+                  {cronometro !== null && cronometro > 0 ? (
                     <Botao
                       titulo="PARAR CRONÔMETRO"
                       cor="claro"

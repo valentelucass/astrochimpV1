@@ -2,13 +2,23 @@ import { View, Text, TextInput, StyleSheet } from 'react-native'; // Importa os 
 import cores from '../styles/cores'; // Importa as cores do projeto para deixar texto, borda e fundo iguais aos demais campos.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para reutilizar a aparência padrão dos rótulos.
 
-import type { TextInputProps, StyleProp, ViewStyle } from 'react-native'; // Importa somente os tipos do React Native para descrever as opções e o estilo externo do campo.
+import type { StyleProp, ViewStyle } from 'react-native'; // Importa os tipos usados somente no estilo externo do campo.
 
-// Omit reaproveita as opções do TextInput, como teclado e senha, retirando os nomes que definimos aqui.
-// valor é o texto atual; style muda a caixa externa do campo, sem substituir o estilo do texto digitado.
-type CampoProps = Omit<TextInputProps, 'style' | 'value'> & {
+// Lista as opções que os formulários usam; valor é o texto atual e onChangeText recebe a nova digitação.
+type CampoProps = {
   rotulo: string;
   valor: string;
+  onChangeText: (texto: string) => void;
+  placeholder?: string;
+  multiline?: boolean;
+  maxLength?: number;
+  secureTextEntry?: boolean;
+  editable?: boolean;
+  autoCorrect?: boolean;
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoComplete?: 'email' | 'new-password' | 'current-password' | 'off';
+  keyboardType?: 'default' | 'email-address' | 'url' | 'number-pad';
+  onSubmitEditing?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -20,13 +30,20 @@ export default function Campo({
   placeholder,
   multiline = false,
   style,
-  ...outrasPropriedades
+  maxLength,
+  secureTextEntry,
+  editable,
+  autoCorrect,
+  autoCapitalize,
+  autoComplete,
+  keyboardType,
+  onSubmitEditing,
 }: CampoProps) {
   return (
     <View style={[styles.campo, style]}>
       <Text style={[estilos.rotulo, styles.rotulo]}>{rotulo}</Text>
       {/* value mostra valor; onChangeText entrega o novo texto à página para ela atualizar seu estado. */}
-      {/* As outras opções incluem maxLength e secureTextEntry, escolhidas por cada formulário. */}
+      {/* Cada opção abaixo é recebida do formulário e entregue diretamente ao campo do React Native. */}
       <TextInput
         accessibilityLabel={rotulo}
         value={valor}
@@ -35,7 +52,14 @@ export default function Campo({
         placeholderTextColor="#9BA8AF"
         multiline={multiline}
         style={[styles.input, multiline && styles.multiline]}
-        {...outrasPropriedades}
+        maxLength={maxLength}
+        secureTextEntry={secureTextEntry}
+        editable={editable}
+        autoCorrect={autoCorrect}
+        autoCapitalize={autoCapitalize}
+        autoComplete={autoComplete}
+        keyboardType={keyboardType}
+        onSubmitEditing={onSubmitEditing}
       />
     </View>
   );

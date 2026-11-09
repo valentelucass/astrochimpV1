@@ -29,6 +29,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -513,22 +514,30 @@ class BackendIntegrationTest {
 
     @Test
     void cronometroESalaEncerradaPreservamRegras() throws Exception {
-        mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
-                .contentType(MediaType.APPLICATION_JSON).content("{}"))
-                .andExpect(status().isBadRequest());
-        mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
-                .contentType(MediaType.APPLICATION_JSON).content("{\"segundos\":120,\"segundosRestantes\":999999,\"ativo\":false}"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.segundosTotais").value(120))
-                .andExpect(jsonPath("$.segundosRestantes").value(not(999999)))
-                .andExpect(jsonPath("$.segundos").doesNotExist())
-                .andExpect(jsonPath("$.ativo").value(true));
+        // Uma sala sem cronômetro devolve zero; o início recebe somente a duração escolhida.
         mvc.perform(get("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.segundosRestantes").value(greaterThan(0)));
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(0));
+        mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
+                .contentType(MediaType.APPLICATION_JSON).content("120"))
+                .andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").value(greaterThan(0)))
+                .andExpect(jsonPath("$").value(lessThanOrEqualTo(120)));
+        assertEquals(120, jdbc.queryForObject("SELECT cronometro_segundos FROM sala WHERE id = ?", Integer.class, salaId));
+        mvc.perform(get("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno))
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(greaterThan(0)));
+        mvc.perform(get("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao))
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(greaterThan(0)));
+        // O token permite consultar, mas iniciar e parar continuam sendo ações exclusivas do professor.
+        mvc.perform(post("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno)
+                .contentType(MediaType.APPLICATION_JSON).content("30")).andExpect(status().isUnauthorized());
+        mvc.perform(delete("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno))
+                .andExpect(status().isUnauthorized());
         mvc.perform(patch("/api/salas/{id}/encerrar", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("encerrada"));
         mvc.perform(get("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.segundosTotais").value(nullValue()))
-                .andExpect(jsonPath("$.segundosRestantes").value(0)).andExpect(jsonPath("$.ativo").value(false));
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(0));
+        mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
+                .contentType(MediaType.APPLICATION_JSON).content("30")).andExpect(status().isConflict());
         mvc.perform(post("/api/salas/{id}/duvidas", salaId).header("X-Aluno-Token", tokenAluno)
                 .contentType(MediaType.APPLICATION_JSON).content("{\"texto\":\"Tarde demais\"}"))
                 .andExpect(status().isConflict());
@@ -623,7 +632,7 @@ class BackendIntegrationTest {
                 .andExpect(status().isConflict());
         assertEquals(alunosAntes, jdbc.queryForObject("SELECT COUNT(*) FROM aluno", Integer.class));
         mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
-                .contentType(MediaType.APPLICATION_JSON).content("{\"segundos\":30}"))
+                .contentType(MediaType.APPLICATION_JSON).content("30"))
                 .andExpect(status().isConflict());
         mvc.perform(post("/api/salas/{id}/duvidas", salaId).header("X-Aluno-Token", tokenAluno)
                 .contentType(MediaType.APPLICATION_JSON).content("{\"texto\":\"Pergunta\"}"))
@@ -632,22 +641,33 @@ class BackendIntegrationTest {
 
     @Test
     void cronometroRecusaDuracoesInvalidasExpiraEPermiteParar() throws Exception {
-        for (String pedido : new String[]{"{}", "{\"segundos\":0}", "{\"segundos\":-1}", "{\"segundos\":2147483648}"}) {
+        // Recusa corpo vazio, objeto antigo, valores ausentes, não numéricos ou fora do limite de Integer.
+        for (String pedido : new String[]{"", "{}", "{\"segundos\":30}", "null", "\"abc\"", "0", "-1", "2147483648"}) {
             mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
                     .contentType(MediaType.APPLICATION_JSON).content(pedido)).andExpect(status().isBadRequest());
         }
         mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
-                .contentType(MediaType.APPLICATION_JSON).content("{\"segundos\":30}"))
+                .contentType(MediaType.APPLICATION_JSON).content("30"))
                 .andExpect(status().isOk());
         jdbc.update("UPDATE sala SET cronometro_iniciado_em = ? WHERE id = ?",
                 java.time.LocalDateTime.now().minusMinutes(2), salaId);
         mvc.perform(get("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.segundosRestantes").value(0))
-                .andExpect(jsonPath("$.ativo").value(false));
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(0));
+        // Reinicia a atividade antes de testar a parada manual, para não parar apenas um tempo já esgotado.
+        mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
+                .contentType(MediaType.APPLICATION_JSON).content("30"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(greaterThan(0)));
         mvc.perform(delete("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.segundosTotais").value(nullValue()));
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(0));
+        assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM sala WHERE id = ? AND cronometro_segundos IS NULL AND cronometro_iniciado_em IS NULL", Integer.class, salaId));
         mvc.perform(get("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.segundosTotais").value(nullValue()));
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(0));
+        // O prazo da aula também encerra a contagem, mesmo que a duração da atividade ainda não tenha acabado.
+        mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, autenticacao)
+                .contentType(MediaType.APPLICATION_JSON).content("30")).andExpect(status().isOk());
+        jdbc.update("UPDATE sala SET expira_em = ? WHERE id = ?", java.time.LocalDateTime.now().minusMinutes(1), salaId);
+        mvc.perform(get("/api/salas/{id}/cronometro", salaId).header("X-Aluno-Token", tokenAluno))
+                .andExpect(status().isOk()).andExpect(jsonPath("$").value(0));
     }
 
     @Test
@@ -710,7 +730,7 @@ class BackendIntegrationTest {
                 .content("{\"publico\":true}"))
                 .andExpect(status().isForbidden());
         mvc.perform(post("/api/salas/{id}/cronometro", salaId).header(HttpHeaders.AUTHORIZATION, outroLogin)
-                .contentType(MediaType.APPLICATION_JSON).content("{\"segundos\":30}"))
+                .contentType(MediaType.APPLICATION_JSON).content("30"))
                 .andExpect(status().isForbidden());
         mvc.perform(get("/api/salas/{id}/quiz/resultado", salaId).header(HttpHeaders.AUTHORIZATION, outroLogin))
                 .andExpect(status().isForbidden());

@@ -15,9 +15,21 @@ export function formatarData(data: string | null | undefined) {
 // Monta as letras do avatar sem foto: Ana Souza vira AS; um nome vazio aparece como interrogação.
 export function iniciais(nome: string | null | undefined) {
   if (!nome || !nome.trim()) return '?';
-  // Separa as palavras mesmo se houver vários espaços e pega a primeira letra do primeiro e do último nome.
-  const partes = nome.trim().split(/\s+/);
-  let letras = partes[0][0];
-  if (partes.length > 1) letras += partes[partes.length - 1][0];
-  return letras.toUpperCase();
+  // Guarda a letra inicial de cada nome. Um espaço marca que a próxima letra inicia outro nome.
+  let primeira = '';
+  let ultima = '';
+  let quantidade = 0;
+  let inicioDoNome = true;
+  for (let i = 0; i < nome.length; i++) {
+    const caractere = nome[i];
+    if (caractere.trim() === '') inicioDoNome = true;
+    else if (inicioDoNome) {
+      if (quantidade === 0) primeira = caractere;
+      ultima = caractere;
+      quantidade++;
+      inicioDoNome = false;
+    }
+  }
+  if (quantidade === 1) return primeira.toUpperCase();
+  return (primeira + ultima).toUpperCase();
 }

@@ -10,6 +10,7 @@ import Marca from '../components/Marca'; // Importa Marca para mostrar a identid
 import api, { ErroApi } from '../services/api'; // Importa a API e seu erro identificado para consultar dados e mostrar mensagens corretas do backend.
 import { abrirMaterial } from '../services/arquivos'; // Importa a função que abre links, códigos e arquivos publicados pelo professor.
 import { formatarData, iniciais } from '../services/formatacao'; // Importa as formatações usadas para datas e para as letras do avatar sem foto.
+import { enderecoPublicoValido, enderecoWebValido } from '../services/textos'; // Confere o endereço público e o link opcional da foto com verificações simples.
 import cores from '../styles/cores'; // Importa as cores do projeto para destacar seções, opções e conteúdos do perfil.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
 
@@ -96,10 +97,13 @@ export default function PerfilProfessor({
     setSucesso('');
     try {
       // Confirma a visibilidade no servidor antes de mudar o interruptor local.
-      await api.publicarNoPerfil(professor.id, material.id, publico, acesso);
+      const atualizado = await api.publicarNoPerfil(professor.id, material.id, publico, acesso);
       // map percorre a lista e devolve uma nova versão, alterando apenas o material escolhido.
       setMateriais(
-        materiais.map((item) => (item.id === material.id ? { ...item, publico } : item)),
+        materiais.map(function atualizarMaterial(item) {
+          if (item.id === material.id) return atualizado;
+          return item;
+        }),
       );
       setSucesso(
         publico ? 'Material publicado no perfil público.' : 'Material agora está privado.',
@@ -149,11 +153,11 @@ export default function PerfilProfessor({
       setErroModal('Informe seu nome.');
       return;
     }
-    if (!/^[a-z0-9-]+$/.test(slug.trim())) {
+    if (!enderecoPublicoValido(slug)) {
       setErroModal('Use letras minúsculas, números e hífen no endereço público.');
       return;
     }
-    if (fotoUrl.trim() && !/^https?:\/\/\S+$/i.test(fotoUrl.trim())) {
+    if (fotoUrl.trim() && !enderecoWebValido(fotoUrl)) {
       setErroModal('Informe um endereço http ou https para a foto.');
       return;
     }

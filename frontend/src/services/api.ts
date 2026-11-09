@@ -8,7 +8,6 @@ import type {
   PerfilPublicoProfessor,
   Sala,
   EntradaSala,
-  Cronometro,
   Duvida,
   Material,
   NovoMaterial,
@@ -22,11 +21,12 @@ import { File } from 'expo-file-system'; // Importa File para ler o arquivo loca
 import { fetch as fetchExpo } from 'expo/fetch'; // Importa o envio do Expo que aceita arquivos locais no formulário do celular.
 import Constants from 'expo-constants'; // Importa as informações do Expo para descobrir o computador que está executando o aplicativo.
 import { Base64 } from 'js-base64'; // Importa a conversão Base64 para montar o cabeçalho de autenticação do professor.
+import { retirarBarraFinal } from './textos'; // Retira a barra final do endereço configurado antes de acrescentar as rotas da API.
 
 // No celular, o endereço do Expo aponta para o computador que também executa o Spring.
 // EXPO_PUBLIC_API_URL permite informar outro endereço quando o backend estiver em outra máquina.
 function enderecoDoBackend() {
-  if (process.env.EXPO_PUBLIC_API_URL) return process.env.EXPO_PUBLIC_API_URL.replace(/\/$/, '');
+  if (process.env.EXPO_PUBLIC_API_URL) return retirarBarraFinal(process.env.EXPO_PUBLIC_API_URL);
   if (Platform.OS === 'web' && typeof window !== 'undefined')
     return 'http://' + window.location.hostname + ':8080';
   let host = Constants.expoConfig && Constants.expoConfig.hostUri;
@@ -43,8 +43,12 @@ export const ENDERECO_API = enderecoDoBackend();
 
 // Monta a identificação que acompanha cada pedido; sem acesso, a rota é consultada como visitante.
 export function cabecalhosDeAcesso(acesso: Acesso = null) {
-  // Record<string, string> descreve um objeto com nomes e valores de texto, como Authorization e seu conteúdo.
-  const cabecalhos: Record<string, string> = {};
+  // Lista os três cabeçalhos de texto que o aplicativo pode enviar ao Spring.
+  const cabecalhos: {
+    Authorization?: string;
+    'X-Aluno-Token'?: string;
+    'Content-Type'?: string;
+  } = {};
   if (acesso && 'email' in acesso) {
     // O login Basic envia e-mail e senha no cabeçalho, no formato que o Spring já usa.
     cabecalhos.Authorization =
@@ -71,12 +75,12 @@ function mensagemDoStatus(status: number) {
 async function requisicao<T>(
   caminho: string,
   metodo = 'GET',
-  dados: object | null = null,
+  dados: object | number | null = null,
   acesso: Acesso = null,
 ): Promise<T> {
   const cabecalhos = cabecalhosDeAcesso(acesso);
   let corpo: string | FormData | undefined;
-  // Upload usa FormData para levar o arquivo; os outros pedidos enviam os campos como texto JSON.
+  // Upload usa FormData; os outros pedidos enviam um objeto ou número como texto JSON.
   // No upload, deixamos o próprio formulário definir o cabeçalho com as partes do arquivo.
   if (dados instanceof FormData) corpo = dados;
   else if (dados !== null) {
@@ -200,13 +204,13 @@ const api = {
     requisicao<Sala>('/api/salas/' + salaId + '/encerrar', 'PATCH', null, acesso),
   // segundos é o tempo da atividade que todos os participantes acompanharão na sala.
   iniciarCronometro: (salaId: number, segundos: number, acesso: AcessoProfessor) =>
-    requisicao<Cronometro>('/api/salas/' + salaId + '/cronometro', 'POST', { segundos }, acesso),
+    requisicao<number>('/api/salas/' + salaId + '/cronometro', 'POST', segundos, acesso),
   // O servidor calcula quanto falta desde o início; a tela não escolhe o tempo restante.
   buscarCronometro: (salaId: number, acesso: Acesso) =>
-    requisicao<Cronometro>('/api/salas/' + salaId + '/cronometro', 'GET', null, acesso),
-  // Remove a contagem da sala e devolve o cronômetro sem atividade.
+    requisicao<number>('/api/salas/' + salaId + '/cronometro', 'GET', null, acesso),
+  // Remove a contagem da sala e devolve zero segundos restantes.
   pararCronometro: (salaId: number, acesso: AcessoProfessor) =>
-    requisicao<Cronometro>('/api/salas/' + salaId + '/cronometro', 'DELETE', null, acesso),
+    requisicao<number>('/api/salas/' + salaId + '/cronometro', 'DELETE', null, acesso),
   // A rota do professor mostra autores; a rota do aluno esconde a identidade nas dúvidas anônimas.
   listarDuvidas: (salaId: number, acesso: Acesso, professor = false) =>
     requisicao<Duvida[]>(

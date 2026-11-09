@@ -31,7 +31,7 @@ pnpm test
 pnpm run typecheck
 ```
 
-`pnpm test` executa as funções de formatação com exemplos válidos e limites. `typecheck` confere os tipos do aplicativo e dos testes. Estes testes não substituem a verificação visual e de interação do aplicativo em celulares ou com usuários.
+`pnpm test` executa nove testes de formatação e de preparação/validação de textos, com exemplos válidos e limites. Inclui e-mail, código da sala, links, endereço público e nomes de arquivo. `typecheck` confere os tipos do aplicativo e dos testes. Estes testes não substituem a verificação visual e de interação do aplicativo em celulares ou com usuários.
 
 ## Resultado registrado em 02/11/2026
 

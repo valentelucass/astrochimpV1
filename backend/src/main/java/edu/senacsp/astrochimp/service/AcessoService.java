@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 // O Spring cria este service para conferir quem pode acessar o professor e a sala.
 @Service
@@ -35,10 +36,18 @@ public class AcessoService {
         if (professorId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor obrigatório");
         }
-        Professor professor = professorRepository.findById(professorId).orElse(null);
-        if (professor == null) {
+        // Optional representa uma busca que pode não encontrar registro; isEmpty confere essa ausência.
+        Optional<Professor> resultado = professorRepository.findById(professorId);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor não encontrado");
         }
+        Professor professor = resultado.get();
+        exigirProfessor(professor);
+        return professor;
+    }
+
+    // Confere o dono já carregado, sem buscar novamente o professor pelo id.
+    public void exigirProfessor(Professor professor) {
         Authentication login = SecurityContextHolder.getContext().getAuthentication();
         if (login == null || login instanceof AnonymousAuthenticationToken || !login.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login do professor obrigatório");
@@ -46,7 +55,6 @@ public class AcessoService {
         if (!professor.getEmail().equals(login.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso reservado ao professor dono");
         }
-        return professor;
     }
 
     // Localiza a sala ou devolve o motivo da recusa; a permissão é conferida pelos métodos que a utilizam.
@@ -54,17 +62,17 @@ public class AcessoService {
         if (salaId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sala obrigatória");
         }
-        Sala sala = salaRepository.findById(salaId).orElse(null);
-        if (sala == null) {
+        Optional<Sala> resultado = salaRepository.findById(salaId);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sala não encontrada");
         }
-        return sala;
+        return resultado.get();
     }
 
     // Combina as duas conferências anteriores para operações que só o dono da aula pode executar.
     public Sala salaDoProfessor(Long salaId) {
         Sala sala = sala(salaId);
-        professor(sala.getProfessor().getId());
+        exigirProfessor(sala.getProfessor());
         return sala;
     }
 
@@ -75,9 +83,9 @@ public class AcessoService {
         Sala sala = sala(salaId);
         // O aluno entra pelo token; o professor precisa estar logado e ser o dono.
         if (tokenAluno != null && !tokenAluno.isBlank()) {
-            alunoDaSala(salaId, tokenAluno);
+            alunoDaSala(sala, tokenAluno);
         } else {
-            professor(sala.getProfessor().getId());
+            exigirProfessor(sala.getProfessor());
         }
         return sala;
     }
@@ -85,19 +93,41 @@ public class AcessoService {
     @Transactional(readOnly = true)
     // Confere o token e procura o id do aluno na lista de participantes da sala solicitada.
     public Aluno alunoDaSala(Long salaId, String tokenAluno) {
+        Aluno aluno = buscarAluno(tokenAluno);
+        exigirParticipacao(sala(salaId), aluno);
+        return aluno;
+    }
+
+    @Transactional(readOnly = true)
+    // Usa a sala que a operação já consultou, sem repetir a busca por id.
+    public Aluno alunoDaSala(Sala sala, String tokenAluno) {
+        Aluno aluno = buscarAluno(tokenAluno);
+        exigirParticipacao(sala, aluno);
+        return aluno;
+    }
+
+    // Localiza o aluno e exige o token exatamente como foi gerado na entrada.
+    private Aluno buscarAluno(String tokenAluno) {
         if (tokenAluno == null || tokenAluno.isBlank()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token do aluno obrigatório");
         }
-        Aluno aluno = alunoRepository.findByToken(tokenAluno).orElse(null);
-        // A comparação do MySQL pode ignorar maiúsculas; o token precisa ser exatamente o recebido na entrada.
-        if (aluno == null || !tokenAluno.equals(aluno.getToken())) {
+        Optional<Aluno> resultado = alunoRepository.findByToken(tokenAluno);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token do aluno inválido");
         }
-        Sala sala = sala(salaId);
+        Aluno aluno = resultado.get();
+        // A comparação do MySQL pode ignorar maiúsculas; o token precisa ser exatamente o recebido na entrada.
+        if (!tokenAluno.equals(aluno.getToken())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token do aluno inválido");
+        }
+        return aluno;
+    }
+
+    private void exigirParticipacao(Sala sala, Aluno aluno) {
         // Ter um token válido não basta: o aluno também precisa fazer parte desta sala.
         for (Aluno participante : sala.getAlunos()) {
             if (participante.getId().equals(aluno.getId())) {
-                return aluno;
+                return;
             }
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Aluno não participa desta sala");

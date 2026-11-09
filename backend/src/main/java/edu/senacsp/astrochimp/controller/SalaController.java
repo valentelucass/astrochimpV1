@@ -1,13 +1,12 @@
 package edu.senacsp.astrochimp.controller;
 
-import edu.senacsp.astrochimp.dto.CronometroDto;
 import edu.senacsp.astrochimp.dto.EntradaSalaDto;
 import edu.senacsp.astrochimp.dto.SalaDto;
 import edu.senacsp.astrochimp.service.SalaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-// O Spring registra este controller para atender as rotas de salas e devolver os DTOs em JSON.
+// O Spring registra este controller para atender as rotas de salas e devolver os dados em JSON.
 @RestController
 // Faz as rotas desta classe começarem com /api/salas.
 @RequestMapping("/api/salas")
@@ -51,15 +50,16 @@ public class SalaController {
     }
 
     @PostMapping("/{id}/cronometro")
-    public CronometroDto iniciarCronometro(
+    public int iniciarCronometro(
             @PathVariable("id") Long salaId,
-            // O JSON pode enviar segundos, como 120, para preencher segundosTotais do cronômetro da sala.
-            @RequestBody CronometroDto pedido) {
-        return salaService.iniciarCronometro(salaId, pedido);
+            // O corpo JSON traz apenas um número, como 120, para definir a duração em segundos.
+            @RequestBody Integer segundos) {
+        return salaService.iniciarCronometro(salaId, segundos);
     }
 
     @GetMapping("/{id}/cronometro")
-    public CronometroDto consultarCronometro(
+    // Devolve os segundos restantes; zero indica que não há uma contagem ativa.
+    public int consultarCronometro(
             @PathVariable("id") Long salaId,
             @RequestHeader(value = "X-Aluno-Token", required = false) String tokenAluno) {
         return salaService.consultarCronometro(salaId, tokenAluno);
@@ -67,7 +67,7 @@ public class SalaController {
 
     // @DeleteMapping liga esta rota DELETE ao pedido para parar o cronômetro da sala.
     @DeleteMapping("/{id}/cronometro")
-    public CronometroDto pararCronometro(@PathVariable("id") Long salaId) {
+    public int pararCronometro(@PathVariable("id") Long salaId) {
         return salaService.pararCronometro(salaId);
     }
 }

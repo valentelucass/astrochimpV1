@@ -11,7 +11,7 @@ import { abrirMaterial } from '../services/arquivos'; // Importa a função que 
 import { formatarTempo, formatarData, iniciais } from '../services/formatacao'; // Importa as formatações usadas no cronômetro, nas datas e nos avatares sem foto.
 import cores from '../styles/cores'; // Importa as cores do projeto para diferenciar áreas e estados da aula.
 import estilos from '../styles/estilos'; // Importa os estilos compartilhados para manter textos e espaços no padrão visual.
-import type { Sala, Aluno, Duvida, Material, Cronometro, PerguntaAluno } from '../types/modelos'; // Importa somente os tipos que descrevem os dados acompanhados pelo aluno na sala.
+import type { Sala, Aluno, Duvida, Material, PerguntaAluno } from '../types/modelos'; // Importa somente os tipos que descrevem os dados acompanhados pelo aluno na sala.
 
 // Recebe a sala, o aluno com seu token e os caminhos de quiz, materiais e saída definidos pelo App.
 type Props = {
@@ -28,7 +28,8 @@ export default function SalaAluno({ sala, aluno, onQuiz, onMateriais, onSair }: 
   const [dadosSala, setDadosSala] = useState<Sala>(sala);
   const [duvidas, setDuvidas] = useState<Duvida[]>([]);
   const [materiais, setMateriais] = useState<Material[]>([]);
-  const [cronometro, setCronometro] = useState<Cronometro | null>(null);
+  // Guarda os segundos restantes; zero indica contagem parada e null indica que ainda não foi consultada.
+  const [cronometro, setCronometro] = useState<number | null>(null);
   const [quiz, setQuiz] = useState<PerguntaAluno | null>(null);
   // Separa a espera inicial, os erros das consultas e os avisos das ações do aluno.
   const [carregando, setCarregando] = useState(true);
@@ -127,8 +128,15 @@ export default function SalaAluno({ sala, aluno, onQuiz, onMateriais, onSair }: 
     try {
       // Acrescenta a dúvida devolvida sem duplicar seu id, depois limpa e fecha o formulário.
       const criada = await api.criarDuvida(sala.id, texto.trim(), anonima, acesso);
-      if (criada)
-        setDuvidas((atuais) => [criada, ...atuais.filter((item) => item.id !== criada.id)]);
+      if (criada) {
+        setDuvidas(function acrescentarDuvida(atuais) {
+          const atualizadas = [criada];
+          for (const duvida of atuais) {
+            if (duvida.id !== criada.id) atualizadas.push(duvida);
+          }
+          return atualizadas;
+        });
+      }
       setTexto('');
       setAnonima(false);
       setModal(false);
@@ -250,8 +258,8 @@ export default function SalaAluno({ sala, aluno, onQuiz, onMateriais, onSair }: 
                   : dadosSala.totalAlunos + ' participantes'}
               </Text>
               <Text style={styles.relogio}>
-                {cronometro && cronometro.ativo
-                  ? '◷ ' + formatarTempo(cronometro.segundosRestantes)
+                {cronometro !== null && cronometro > 0
+                  ? '◷ ' + formatarTempo(cronometro)
                   : 'Sem cronômetro ativo'}
               </Text>
             </View>

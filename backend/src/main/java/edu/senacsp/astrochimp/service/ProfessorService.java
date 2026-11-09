@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Locale;
 import java.util.UUID;
 import java.nio.charset.StandardCharsets;
@@ -72,13 +73,16 @@ public class ProfessorService {
         return resposta(acessoService.professor(professorId));
     }
 
-    // O login fornece o e-mail; encontramos seu id para usar a mesma consulta de perfil acima.
+    // Busca o perfil pelo e-mail e confere o acesso usando o próprio registro encontrado.
     public PerfilProfessorDto buscarPorEmail(String email) {
-        Professor professor = professorRepository.findByEmail(email).orElse(null);
-        if (professor == null) {
+        // Optional guarda o resultado da busca; isEmpty identifica um e-mail sem professor cadastrado.
+        Optional<Professor> resultado = professorRepository.findByEmail(email);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor não encontrado");
         }
-        return buscar(professor.getId());
+        Professor professor = resultado.get();
+        acessoService.exigirProfessor(professor);
+        return resposta(professor);
     }
 
     @Transactional
@@ -111,10 +115,11 @@ public class ProfessorService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Perfil não encontrado");
         }
         slug = slug.trim().toLowerCase(Locale.ROOT);
-        Professor professor = professorRepository.findBySlugPerfilPublico(slug).orElse(null);
-        if (professor == null) {
+        Optional<Professor> resultado = professorRepository.findBySlugPerfilPublico(slug);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Perfil não encontrado");
         }
+        Professor professor = resultado.get();
         List<MaterialDto> materiais = materialService.listarPublicos(professor.getId());
         return new PerfilPublicoProfessorDto(professor.getId(), professor.getNome(), professor.getDescricao(),
             professor.getFotoUrl(), professor.getSlugPerfilPublico(), materiais);

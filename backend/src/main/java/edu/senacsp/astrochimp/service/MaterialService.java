@@ -24,6 +24,7 @@ import java.nio.file.InvalidPathException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 // O Spring cria este service para cadastrar, publicar e baixar os materiais das aulas.
@@ -64,6 +65,11 @@ public class MaterialService {
     @Transactional
     public MaterialDto enviarArquivo(Long professorId, String titulo, MultipartFile arquivo) {
         Professor professor = acessoService.professor(professorId);
+        return resposta(salvarArquivo(professor, titulo, arquivo), false);
+    }
+
+    // Salva o arquivo com o professor já conferido, tanto no perfil quanto no envio direto para uma sala.
+    private Material salvarArquivo(Professor professor, String titulo, MultipartFile arquivo) {
         if (vazio(titulo) || arquivo == null || arquivo.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Título e arquivo são obrigatórios");
         }
@@ -84,7 +90,7 @@ public class MaterialService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Falha ao guardar arquivo", erro);
         }
         Material material = montarMaterial(professor, titulo, "arquivo", destino.toString(), nomeSeguro);
-        return resposta(materialRepository.save(material), false);
+        return materialRepository.save(material);
     }
 
     // readOnly indica que a consulta dos materiais do professor apenas lê os dados.
@@ -130,8 +136,11 @@ public class MaterialService {
     public MaterialDto enviarArquivoParaSala(Long salaId, String titulo, MultipartFile arquivo) {
         Sala sala = acessoService.salaDoProfessor(salaId);
         acessoService.exigirSalaAtiva(sala);
-        MaterialDto materialDto = enviarArquivo(sala.getProfessor().getId(), titulo, arquivo);
-        return publicarNaSala(salaId, materialDto.getId());
+        // O material acabou de ser criado para o dono desta sala; basta registrar a publicação.
+        Material material = salvarArquivo(sala.getProfessor(), titulo, arquivo);
+        sala.getMateriais().add(material);
+        salaRepository.save(sala);
+        return resposta(material, false);
     }
 
     @Transactional(readOnly = true)
@@ -202,7 +211,7 @@ public class MaterialService {
         }
         if (!material.isPublico()) {
             if (salaId == null) {
-                acessoService.professor(material.getProfessor().getId());
+                acessoService.exigirProfessor(material.getProfessor());
             } else {
                 Sala sala = acessoService.salaComAcesso(salaId, tokenAluno);
                 if (!contemMaterial(sala.getMateriais(), materialId)) {
@@ -238,11 +247,12 @@ public class MaterialService {
         if (materialId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Material obrigatório");
         }
-        Material material = materialRepository.findById(materialId).orElse(null);
-        if (material == null) {
+        // Optional guarda a busca; isEmpty indica que não há material com o id solicitado.
+        Optional<Material> resultado = materialRepository.findById(materialId);
+        if (resultado.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Material não encontrado");
         }
-        return material;
+        return resultado.get();
     }
 
     private Path caminhoDoArquivo(Material material) {
