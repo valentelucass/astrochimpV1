@@ -140,7 +140,33 @@ Ao aplicar novamente o mesmo quiz, o sistema cria outra rodada. Os resultados da
 
 <!-- quebra de página -->
 
-## 5. Arquitetura e organização
+## 5. Responsabilidades de Cada Integrante
+
+Plano de atribuição das tarefas.
+
+| Frente | Tarefa | Responsável |
+|---|---|---|
+| Backend | Modelagem das entidades JPA (Sala, Participante, Dúvida, Voto, Material, Cronômetro, Professor, Quiz) | Guilherme Lettieri |
+| Backend | Configuração do Spring Security (autenticação do professor, entrada de aluno por código) | Lucas Mateus Andrade |
+| Backend | Endpoints REST do Mural de Dúvidas (criar, votar, listar por votos, mudar estado) | Lucas Mateus Andrade |
+| Backend | Endpoints REST do Repositório de Materiais e Envio de Documentos (reuso do perfil / novo) | Lucas Mateus Andrade |
+| Backend | Endpoints REST do Quiz (criar, salvar no perfil, enviar para a sala, encerrar) | Guilherme Lettieri |
+| Backend | Endpoints REST do Cronômetro e dos Pins | Lucas Mateus Andrade |
+| Backend | Endpoints do Perfil do Professor (documentos, descrição, conteúdos públicos) | Lucas Mateus Andrade |
+| Mobile | Tela de entrada por código e cadastro/login do professor | Miguel Conceição |
+| Mobile | Tela "Sala Criada" (dashboard do professor) | Pedro Gabriel |
+| Mobile | Tela do Mural de Dúvidas (aluno e professor) | Pedro Gabriel |
+| Mobile | Tela do Repositório de Materiais / envio de documentos | Pedro Gabriel |
+| Mobile | Tela do Perfil do Professor (documentos, descrição, quizzes) | Miguel Conceição |
+| Mobile | Tela de Criação de Quiz | Guilherme Lettieri |
+| Mobile | Tela de exibição do Quiz sobreposto (visão do aluno) | Guilherme Lettieri |
+| Mobile | Tela do Cronômetro | Miguel Conceição |
+| Documentação / Design | Especificação de telas e fluxo de navegação | Guilherme Lettieri |
+| Documentação / Design | Identidade visual (logo, paleta de cores) | Guilherme Lettieri |
+
+<!-- quebra de página -->
+
+## 6. Arquitetura e organização
 
 O sistema tem três partes: o aplicativo apresenta as telas, a API executa as regras e o MySQL guarda os registros. O aplicativo conversa com a API por requisições HTTP e dados em JSON.
 
@@ -153,7 +179,7 @@ O sistema tem três partes: o aplicativo apresenta as telas, a API executa as re
 | Autenticação | Spring Security, HTTP Basic para o professor e token de participação para o aluno. |
 | Verificação | JUnit e MockMvc na API, checagem de tipos do TypeScript e exportação pelo Expo. |
 
-### 5.1 Pastas do backend
+### 6.1 Pastas do backend
 
 | Pasta | O que contém |
 |---|---|
@@ -164,11 +190,11 @@ O sistema tem três partes: o aplicativo apresenta as telas, a API executa as re
 | dto | Campos selecionados para entrada ou saída de dados. |
 | security | Configuração de autenticação e acesso às rotas. |
 
-### 5.2 Pastas do aplicativo
+### 6.2 Pastas do aplicativo
 
 O arquivo `App.tsx` guarda a sessão e controla a tela aberta. A pasta `src/pages` contém as telas; `src/components`, os elementos reutilizados; `src/services`, os pedidos à API e o tratamento de arquivos; `src/styles`, os estilos compartilhados; `src/types`, os tipos dos dados; e `assets`, as imagens.
 
-### 5.3 Exemplo de uma requisição
+### 6.3 Exemplo de uma requisição
 
 Ao enviar uma dúvida, a tela chama o serviço de API do aplicativo. O controller recebe o pedido, o service confere o aluno e a sala e o repository salva a pergunta no MySQL. A resposta retorna com os campos permitidos para quem fez a consulta.
 
@@ -176,7 +202,7 @@ Os services utilizam condições, laços e listas. No aplicativo, funções, arr
 
 <!-- quebra de página -->
 
-## 6. Dados do sistema
+## 7. Dados do sistema
 
 O banco principal se chama `astrochimp`. As entidades representam os registros usados pela aplicação. Algumas relações também geram tabelas auxiliares para ligar os dados.
 
@@ -192,7 +218,7 @@ O banco principal se chama `astrochimp`. As entidades representam os registros u
 | QuizAlternativa | Texto da opção, letra e indicação de resposta correta. |
 | QuizResposta | Aluno, alternativa escolhida e identificação da rodada em que respondeu. |
 
-### 6.1 Relações principais
+### 7.1 Relações principais
 
 Um professor pode ter várias salas, materiais e quizzes. Cada sala reúne seus participantes e dúvidas. Os materiais de um professor podem ser compartilhados em mais de uma sala.
 
@@ -200,7 +226,7 @@ Cada quiz possui perguntas, e cada pergunta possui alternativas. A resposta rela
 
 Os votos ligam alunos às dúvidas em que votaram. A fixação de materiais também pertence à sala, permitindo destacar um conteúdo em uma aula sem alterar sua apresentação nas outras.
 
-### 6.2 Onde os dados ficam
+### 7.2 Onde os dados ficam
 
 | Local | Conteúdo |
 |---|---|
@@ -213,7 +239,7 @@ O banco de testes é separado do banco de uso da aplicação. Suas tabelas são 
 
 <!-- quebra de página -->
 
-## 7. Acesso e proteção dos dados
+## 8. Acesso e proteção dos dados
 
 O professor utiliza e-mail e senha para autenticar seus pedidos. A senha da conta é armazenada como hash BCrypt, uma representação usada para conferir o login sem guardar a senha original. Ela não é devolvida nas respostas da API.
 
@@ -221,7 +247,7 @@ Depois do login, o servidor também confere se a sala, o material ou o quiz pert
 
 O aluno recebe um token ao entrar na sala. O aplicativo envia esse valor no cabeçalho `X-Aluno-Token` nas próximas requisições. A API confere se a participação pertence à sala consultada. Esse acesso não permite controlar as ações do professor.
 
-### 7.1 Por que existem DTOs
+### 8.1 Por que existem DTOs
 
 Um DTO reúne os campos que uma operação precisa receber ou devolver. Isso ajuda a evitar que uma resposta exponha dados internos ou informações que aquele usuário não deve consultar. As validações de acesso continuam nos services.
 
@@ -241,7 +267,7 @@ O cronômetro recebe apenas a duração em segundos, como `120` no corpo JSON, e
 
 DTOs ajudam a limitar dados de entrada e saída. A proteção contra SQL Injection vem das consultas parametrizadas usadas no acesso ao banco, não do DTO.
 
-### 7.2 Credenciais do ambiente
+### 8.2 Credenciais do ambiente
 
 A senha do MySQL pertence somente à configuração local do backend. Ela não deve aparecer no aplicativo, no repositório ou nesta documentação. O arquivo de ambiente do frontend informa apenas o endereço da API.
 
@@ -249,15 +275,15 @@ As credenciais da conta do professor e a senha do banco têm funções diferente
 
 <!-- quebra de página -->
 
-## 8. Configuração e execução local
+## 9. Configuração e execução local
 
-### 8.1 Preparar o ambiente
+### 9.1 Preparar o ambiente
 
 É necessário ter JDK 17 ou superior, Node.js e MySQL Server. O ambiente utilizado para o aplicativo usa Node.js 24. O Maven Wrapper já está no backend. O Workbench pode ser usado para consultar os registros, mas o serviço do MySQL Server precisa estar iniciado.
 
 A configuração padrão utiliza o MySQL na porta 3306 e cria o banco `astrochimp`. O usuário do banco precisa ter permissão para criar o banco e as tabelas.
 
-### 8.2 Configurar e iniciar o backend
+### 9.2 Configurar e iniciar o backend
 
 Na raiz do projeto, abra um terminal e execute:
 
@@ -276,7 +302,7 @@ Ainda na pasta `backend`, execute:
 
 A API fica disponível em `http://localhost:8080`. As variáveis `DB_URL`, `DB_USERNAME` e `DB_PASSWORD` também podem fornecer a conexão quando não houver configuração local.
 
-### 8.3 Instalar e abrir o aplicativo
+### 9.3 Instalar e abrir o aplicativo
 
 Em outro terminal, a partir da raiz do projeto:
 
@@ -290,19 +316,19 @@ No celular, use uma versão do Expo Go compatível com o SDK 57 e leia o QR Code
 
 Se a API estiver em outro endereço, copie `frontend/.env.example` para `frontend/.env.local`, ajuste `EXPO_PUBLIC_API_URL` e reinicie o Expo. No celular, `localhost` aponta para o próprio aparelho; use o endereço do computador que executa o backend.
 
-### 8.4 Outras formas de abrir
+### 9.4 Outras formas de abrir
 
 `npm run web` abre a prévia no navegador. `npm run android` usa um emulador Android já configurado. `npm run ios` precisa de macOS para abrir o simulador. Mantenha o MySQL e a API em execução para utilizar os dados do sistema.
 
 <!-- quebra de página -->
 
-## 9. Verificação da versão
+## 10. Verificação da versão
 
 A verificação registrada em 27 de outubro de 2026 inclui 36 testes de integração da API com MySQL, sem falhas. Os casos cobrem cadastro e autenticação, permissões, salas, dúvidas, anonimato, votos, arquivos, cronômetro, rodadas de quiz e respostas duplicadas.
 
 As 13 telas foram exercitadas na prévia do navegador, com sessões separadas de professor e aluno e integração com a API. Os fluxos incluíram entrada, criação de sala, dúvidas, votação, materiais, cronômetro, quiz e perfil. Essa verificação não substitui a execução do aplicativo em um aparelho.
 
-### 9.1 Repetir as verificações
+### 10.1 Repetir as verificações
 
 Na pasta `backend`, execute:
 
@@ -322,7 +348,7 @@ npx expo export --platform all
 
 A checagem de tipos, a conferência de dependências e a exportação para Android, iOS e web passaram na versão verificada. A exportação gera pacotes de código; não instala nem executa o aplicativo em um celular.
 
-## 10. Limitações e próximos passos
+## 11. Limitações e próximos passos
 
 As telas acompanham a aula por consultas HTTP a cada três segundos. Ainda não há atualização por WebSocket, recuperação de senha ou manutenção da sessão depois de fechar e reabrir o aplicativo.
 
@@ -330,7 +356,7 @@ A execução em aparelho físico ou emulador ainda precisa ser validada, especia
 
 Os próximos passos são concluir essa verificação no celular e avaliar melhorias a partir do uso em aula. O escopo atual concentra as atividades de uma sala; não inclui notas finais, frequência ou gestão completa de disciplinas.
 
-## 11. Referências e documentação complementar
+## 12. Referências e documentação complementar
 
 - [README do projeto](README.md), [documentação da API](backend/README.md) e [documentação do aplicativo](frontend/README.md): configuração, telas e rotas desta implementação.
 - [React Native](https://reactnative.dev/docs/getting-started) e [Expo](https://docs.expo.dev/): componentes e execução do aplicativo.
