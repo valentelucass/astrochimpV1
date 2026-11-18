@@ -25,43 +25,85 @@ public class ProfessorController {
         this.salaService = salaService;
     }
 
+
+
+
+
+
+
+
+
     // @PostMapping liga o POST /api/professores ao cadastro; o prefixo vem de @RequestMapping.
     @PostMapping
     // Devolve 201 para avisar que o professor foi cadastrado.
     @ResponseStatus(HttpStatus.CREATED)
+
     // @RequestBody: Monta PerfilProfessorDto com nome, e-mail e senha recebidos no JSON.
     public PerfilProfessorDto cadastrar(@RequestBody PerfilProfessorDto pedido) {
         return professorService.cadastrar(pedido);
     }
 
+
+
+
+
+
+
+
+
     // @GetMapping liga o GET /api/professores/{id} à consulta do perfil do professor.
     @GetMapping("/{id}")
     // @PathVariable: Pega o id no endereço e coloca em professorId.
-    public PerfilProfessorDto buscar(@PathVariable("id") Long professorId) {
+
+    public PerfilProfessorDto buscar(  // busca o perfil do professor pelo id
+        @PathVariable("id") Long professorId) {
         return professorService.buscar(professorId);
     }
 
+
+
+
+
+
+    // metodo para o login do professor, que retorna o perfil do professor logado
     @GetMapping("/me")
-    public PerfilProfessorDto conectado(Authentication login) {
+    public PerfilProfessorDto conectado(Authentication login) { // O Spring passa o login do professor que fez a requisição.
         // O Spring já conferiu o login Basic; o app não precisa pedir o id do professor na tela de entrada.
         return professorService.buscarPorEmail(login.getName());
     }
 
+
+
+
+
+    
     @GetMapping("/{id}/salas")
-    public List<SalaDto> salas(@PathVariable("id") Long professorId) {
+    public List<SalaDto> salas( // lista as salas do professor
+        @PathVariable("id") Long professorId) { 
         return salaService.listarDoProfessor(professorId);
     }
 
+
+
+
+
+
+
     // @PutMapping liga o PUT /api/professores/{id} à atualização do perfil do professor.
     @PutMapping("/{id}")
-    public PerfilProfessorDto atualizar(
+    public PerfilProfessorDto atualizar( // atualiza o perfil do professor
             @PathVariable("id") Long professorId,
             @RequestBody PerfilProfessorDto pedido) {
         return professorService.atualizar(professorId, pedido);
     }
 
+
+
+
+
     @GetMapping("/publico/{slug}")
-    public PerfilPublicoProfessorDto publico(@PathVariable String slug) {
+    public PerfilPublicoProfessorDto publico( // lista o perfil público do professor
+        @PathVariable String slug) { 
         return professorService.publico(slug);
     }
 }

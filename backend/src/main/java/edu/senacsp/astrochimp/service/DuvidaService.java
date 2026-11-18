@@ -45,7 +45,7 @@ public class DuvidaService {
         duvida.setAnonima(pedido.isAnonima());
         duvida.setEstado("pendente");
         duvida.setCriadaEm(LocalDateTime.now());
-        return resposta(duvidaRepository.save(duvida), false);
+        return resposta(duvidaRepository.save(duvida), false); // O false prepara a resposta para o aluno e oculta o autor se a dúvida for anônima.
     }
 
     // readOnly indica que a consulta das dúvidas e dos autores apenas lê os dados.

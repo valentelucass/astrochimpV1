@@ -18,18 +18,32 @@ public class SalaController {
         this.salaService = salaService;
     }
 
+
+
+
+
+
     // @PostMapping liga o POST /api/salas à criação da sala; o prefixo vem de @RequestMapping.
     @PostMapping
     // Devolve 201 para avisar que a sala foi criada.
     @ResponseStatus(HttpStatus.CREATED)
     // @RequestBody monta SalaDto com professorId e nomeAula recebidos no JSON.
-    public SalaDto criar(@RequestBody SalaDto pedido) {
+    public SalaDto criar( // cria a sala para o professor (Criar nova sala / criar e abrir sala)
+        @RequestBody SalaDto pedido) {
         return salaService.criar(pedido);
     }
 
+
+
+
+
+
+
+
     // @GetMapping liga o GET /api/salas/{id} à consulta dos dados da sala.
     @GetMapping("/{id}")
-    public SalaDto buscar(
+    public SalaDto buscar( // busca os dados da sala, seja para professor ou aluno
+
             // Pega o id no endereço e coloca em salaId.
             @PathVariable("id") Long salaId,
             // @RequestHeader lê X-Aluno-Token; sem esse cabeçalho, o service exige o login do professor dono da sala.
@@ -37,37 +51,58 @@ public class SalaController {
         return salaService.buscar(salaId, tokenAluno);
     }
 
+
+
+
+
     @PostMapping("/entrar")
     // O pedido traz codigo e nomeAluno; a resposta de entrada devolve os dados de acesso à sala.
-    public EntradaSalaDto entrar(@RequestBody EntradaSalaDto pedido) {
+    public EntradaSalaDto entrar( // entra na sala como aluno (Entrar na sala)
+        @RequestBody EntradaSalaDto pedido) {
         return salaService.entrar(pedido);
     }
 
+
+
+
+
     // @PatchMapping liga o PATCH /api/salas/{id}/encerrar ao encerramento da sala.
     @PatchMapping("/{id}/encerrar")
-    public SalaDto encerrar(@PathVariable("id") Long salaId) {
+    public SalaDto encerrar( // encerra a sala (Encerrar sala)
+        @PathVariable("id") Long salaId) {
         return salaService.encerrar(salaId);
     }
 
+
+
+
+
     @PostMapping("/{id}/cronometro")
-    public int iniciarCronometro(
+    public int iniciarCronometro( // inicia o cronômetro da sala (Iniciar cronômetro)
             @PathVariable("id") Long salaId,
             // O corpo JSON traz apenas um número, como 120, para definir a duração em segundos.
             @RequestBody Integer segundos) {
         return salaService.iniciarCronometro(salaId, segundos);
     }
 
+
+
+
     @GetMapping("/{id}/cronometro")
     // Devolve os segundos restantes; zero indica que não há uma contagem ativa.
-    public int consultarCronometro(
+    public int consultarCronometro( // consulta o cronômetro da sala (Consultar cronômetro)
             @PathVariable("id") Long salaId,
             @RequestHeader(value = "X-Aluno-Token", required = false) String tokenAluno) {
         return salaService.consultarCronometro(salaId, tokenAluno);
     }
 
+
+
+
     // @DeleteMapping liga esta rota DELETE ao pedido para parar o cronômetro da sala.
     @DeleteMapping("/{id}/cronometro")
-    public int pararCronometro(@PathVariable("id") Long salaId) {
+    public int pararCronometro( // para o cronômetro da sala (Parar cronômetro)
+        @PathVariable("id") Long salaId) {
         return salaService.pararCronometro(salaId);
     }
 }

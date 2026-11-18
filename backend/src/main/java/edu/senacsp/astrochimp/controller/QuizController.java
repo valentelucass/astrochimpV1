@@ -30,11 +30,15 @@ public class QuizController {
         this.quizService = quizService;
     }
 
+
+
+
+
     // @PostMapping liga o POST /api/professores/{professorId}/quizzes à criação do quiz.
     @PostMapping("/api/professores/{professorId}/quizzes")
     // Devolve 201 para avisar que o quiz foi criado.
     @ResponseStatus(HttpStatus.CREATED)
-    public Quiz criar(
+    public Quiz criar( // cria o quiz para o professor
             // @PathVariable lê professorId no endereço; o service confere se é o professor que está logado.
             @PathVariable Long professorId,
             // Monta um Quiz com o título, as perguntas e as alternativas recebidos no JSON.
@@ -42,61 +46,128 @@ public class QuizController {
         return quizService.criarQuiz(professorId, pedido);
     }
 
+
+
+
+
+
+
     // @GetMapping liga esta rota GET à consulta dos quizzes salvos no perfil do professor.
     @GetMapping("/api/professores/{professorId}/quizzes")
-    public List<Quiz> listarSalvos(@PathVariable Long professorId) {
+    public List<Quiz> listarSalvos( // lista os quizzes salvos no perfil do professor
+        @PathVariable Long professorId) {
         return quizService.listarQuizzesDoProfessor(professorId);
     }
 
+
+
+
+
+
+
+
     @GetMapping("/api/quizzes/{quizId}")
-    public Quiz detalhar(@PathVariable Long quizId) {
+    public Quiz detalhar( // detalha o quiz pelo id
+        @PathVariable Long quizId) {
         return quizService.buscar(quizId);
     }
 
+
+
+
+
+
+
+
     // @PatchMapping liga esta rota PATCH à alteração de salvoNoPerfil do quiz.
     @PatchMapping("/api/quizzes/{quizId}/salvar-no-perfil")
-    public Quiz alternarSalvoNoPerfil(
+    public Quiz alternarSalvoNoPerfil( // alterna o salvoNoPerfil do quiz, para salvar ou remover do perfil do professor
             @PathVariable Long quizId,
             // Lê salvar no endereço, como ?salvar=true, para decidir se o quiz fica no perfil.
             @RequestParam boolean salvar) {
         return quizService.alternarSalvoNoPerfil(quizId, salvar);
     }
 
+
+
+
+
+
+
+
+
     // @DeleteMapping liga o DELETE /api/quizzes/{quizId} ao pedido de exclusão do quiz.
     @DeleteMapping("/api/quizzes/{quizId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long quizId) {
+    public void excluir( // exclui o quiz do perfil do professor
+        @PathVariable Long quizId) {
         quizService.excluirQuiz(quizId);
     }
 
+
+
+
+
+
+
+
     @PostMapping("/api/salas/{salaId}/quiz/enviar-existente/{quizId}")
-    public void enviarQuizExistente(@PathVariable Long salaId, @PathVariable Long quizId) {
+    public void enviarQuizExistente( // envia um quiz já criado para a sala
+        @PathVariable Long salaId, 
+        @PathVariable Long quizId) {
         quizService.enviarQuizExistenteParaSala(salaId, quizId);
     }
 
+
+
+
+
+
+
     @PostMapping("/api/salas/{salaId}/quiz/criar-e-enviar")
-    public void criarEEnviar(
+    public void criarEEnviar( // cria o quiz e envia para a sala
             @PathVariable Long salaId,
             @RequestParam Long professorId,
             @RequestBody Quiz pedido) {
         quizService.criarEEnviarQuizParaSala(salaId, professorId, pedido);
     }
 
+
+
+
+
+
+
+
     @GetMapping("/api/salas/{salaId}/quiz/pergunta-atual")
-    public PerguntaAlunoDto perguntaAtual(
+    public PerguntaAlunoDto perguntaAtual( // retorna a pergunta atual do quiz da sala para professor ou aluno
             @PathVariable Long salaId,
             // @RequestHeader lê X-Aluno-Token; sem esse cabeçalho, o service exige o login do professor dono da sala.
             @RequestHeader(value = "X-Aluno-Token", required = false) String tokenAluno) {
         return quizService.obterPerguntaAtual(salaId, tokenAluno);
     }
 
+
+
+
+
+
+
+
     @PostMapping("/api/salas/{salaId}/quiz/proxima-pergunta")
-    public void proximaPergunta(@PathVariable Long salaId) {
+    public void proximaPergunta( // avança para a próxima pergunta do quiz da sala
+        @PathVariable Long salaId) {
         quizService.avancarProximaPergunta(salaId);
     }
 
+
+
+
+
+
+
     @PostMapping("/api/salas/{salaId}/quiz/resposta")
-    public void registrarResposta(
+    public void registrarResposta( // registra a resposta do aluno para a pergunta atual
             @PathVariable Long salaId,
             @RequestHeader("X-Aluno-Token") String tokenAluno,
             // alternativaId no JSON preenche id da alternativa que o aluno escolheu.
@@ -104,13 +175,26 @@ public class QuizController {
         quizService.registrarResposta(salaId, tokenAluno, pedido);
     }
 
+
+
+
+
+
+
     @GetMapping("/api/salas/{salaId}/quiz/resultado")
-    public ResultadoPerguntaDto resultado(@PathVariable Long salaId) {
+    public ResultadoPerguntaDto resultado( // retorna o resultado da pergunta atual para professor ou aluno
+        @PathVariable Long salaId) {
         return quizService.obterResultadoPerguntaAtual(salaId);
     }
 
+
+
+
+
+
     @PostMapping("/api/salas/{salaId}/quiz/encerrar")
-    public void encerrar(@PathVariable Long salaId) {
+    public void encerrar( // encerra o quiz da sala
+        @PathVariable Long salaId) {
         quizService.encerrarQuiz(salaId);
     }
 

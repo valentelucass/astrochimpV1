@@ -28,16 +28,21 @@ import static org.springframework.security.config.Customizer.withDefaults;
 // @Configuration faz o Spring ler esta classe para configurar o acesso às rotas e o login do professor.
 @Configuration
 public class SecurityConfig {
-    // @Bean registra o filtro SecurityFilterChain no Spring para definir o acesso às rotas e o login HTTP Basic.
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+
+
+
+
+    
+    @Bean // @Bean registra o filtro SecurityFilterChain no Spring para definir o acesso às rotas e o login HTTP Basic.
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { // Define quais requisições exigem autenticação e ativa o HTTP Basic.
         http.cors(withDefaults());
-        // Customizer entrega ao Spring um método de configuração, escrito aqui sem lambda.
+        // Customizer entrega ao Spring um método de configuração.
         http.csrf(new Customizer<CsrfConfigurer<HttpSecurity>>() {
             // @Override implementa o método de configuração esperado pelo Spring.
             @Override
-            public void customize(CsrfConfigurer<HttpSecurity> csrf) {
-                csrf.disable();
+            public void customize(CsrfConfigurer<HttpSecurity> csrf) { // CSRF (Cross-Site Request Forgery): pedido forjado por outro site em nome do usuário.
+                csrf.disable(); // Desativa a proteção CSRF contra pedidos forjados em nome do usuário
             }
         });
         http.authorizeHttpRequests(new Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry>() {
@@ -51,12 +56,21 @@ public class SecurityConfig {
                     .requestMatchers("/api/salas/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/duvidas/*/votos").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/materiais/*/arquivo").permitAll()
-                    .anyRequest().authenticated();
+                    .anyRequest().authenticated(); // As demais requisições exigem autenticação.
             }
         });
-        http.httpBasic(withDefaults());
-        return http.build();
+        http.httpBasic(withDefaults()); // Ativa HTTP Basic: recebe e-mail e senha no cabeçalho para autenticar.
+        return http.build(); // Monta e entrega ao Spring a cadeia de filtros de segurança.
     }
+
+
+
+
+    // GET /api/professores/me
+
+    // Método de entrada do Spring para buscar o professor pelo e-mail usado no login HTTP Basic.
+    // Este método é chamado pelo Spring Security quando um usuário tenta se autenticar com HTTP Basic.
+    // O e-mail é passado como parâmetro e o método retorna um objeto UserDetails com as informações do professor.
 
     @Bean
     public UserDetailsService userDetailsService(ProfessorRepository professorRepository) {
@@ -72,10 +86,14 @@ public class SecurityConfig {
                 }
                 Professor professor = resultado.get();
                 return User.withUsername(professor.getEmail())
-                    .password(professor.getSenha()).roles("PROFESSOR").build();
+                    .password(professor.getSenha()).roles("PROFESSOR").build(); // build() monta o User com e-mail, senha e papel PROFESSOR para o Spring conferir o login.
             }
         };
     }
+
+
+
+    // Configura o BCrypt usado para gerar e conferir o hash da senha.
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -83,9 +101,20 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+
+
+
+    // Define de quais endereços a versão web pode acessar a API pelo navegador.
+    // Este método configura o CORS (Cross-Origin Resource Sharing) para permitir que a versão web do Expo acesse a API.
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        // Permite que a prévia web do Expo envie os pedidos ao Spring em outra porta do mesmo computador.
+        
+
+        // corsConfigurationSource() permite que a prévia web do Expo, na porta 8081, faça requisições à API, na porta 8080. 
+        // Para o navegador, portas diferentes significam origens diferentes.
+
         CorsConfiguration configuracao = new CorsConfiguration();
         configuracao.setAllowedOrigins(List.of("http://localhost:8081", "http://127.0.0.1:8081"));
         configuracao.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));

@@ -17,10 +17,19 @@ public class DuvidaController {
         this.duvidaService = duvidaService;
     }
 
+
+
+
+
+
+
+
     // @PostMapping liga o POST /api/salas/{salaId}/duvidas ao método que pede a criação da dúvida.
     @PostMapping("/api/salas/{salaId}/duvidas")
+
     // Devolve 201 para avisar que a dúvida foi criada.
     @ResponseStatus(HttpStatus.CREATED)
+
     public DuvidaDto criar(
             // Pega salaId no endereço para saber em qual sala criar a dúvida.
             @PathVariable Long salaId,
@@ -31,32 +40,67 @@ public class DuvidaController {
         return duvidaService.criar(salaId, tokenAluno, pedido);
     }
 
+
+
+
+
+
+
+
+
+
     // @GetMapping liga o GET /api/salas/{salaId}/duvidas à consulta das dúvidas para os alunos.
     @GetMapping("/api/salas/{salaId}/duvidas")
     public List<DuvidaDto> listarAluno(
             @PathVariable Long salaId,
             @RequestHeader("X-Aluno-Token") String tokenAluno) {
-        return duvidaService.listar(salaId, tokenAluno, false);
+        return duvidaService.listar(salaId, tokenAluno, false); // false = não é professor
     }
+
+
+
+
+
 
     @GetMapping("/api/salas/{salaId}/duvidas/professor")
-    public List<DuvidaDto> listarProfessor(@PathVariable Long salaId) {
-        return duvidaService.listar(salaId, null, true);
+    public List<DuvidaDto> listarProfessor(
+            @PathVariable Long salaId) {
+        return duvidaService.listar(salaId, null, true); // true = é professor
     }
 
+
+
+
+
+
     @PostMapping("/api/duvidas/{id}/votos")
-    public DuvidaDto votar(@PathVariable("id") Long duvidaId, @RequestHeader("X-Aluno-Token") String tokenAluno) {
+    public DuvidaDto votar(
+        @PathVariable("id") Long duvidaId, 
+        @RequestHeader("X-Aluno-Token") String tokenAluno) {
         return duvidaService.votar(duvidaId, tokenAluno);
     }
 
+
+
+
+
     // @PatchMapping liga o PATCH /api/duvidas/{id}/estado à alteração do estado da dúvida.
-    @PatchMapping("/api/duvidas/{id}/estado")
-    public DuvidaDto mudarEstado(@PathVariable("id") Long duvidaId, @RequestBody DuvidaDto pedido) {
+    @PatchMapping("/api/duvidas/{id}/estado") // muda o estado da dúvida (aberta, respondida, fechada) para professor
+    public DuvidaDto mudarEstado(
+        @PathVariable("id") Long duvidaId, 
+        @RequestBody DuvidaDto pedido) {
         return duvidaService.mudarEstado(duvidaId, pedido);
     }
 
+
+
+
+
+
     @PatchMapping("/api/duvidas/{id}/fixacao")
-    public DuvidaDto fixar(@PathVariable("id") Long duvidaId, @RequestBody DuvidaDto pedido) {
+    public DuvidaDto fixar( // muda o estado da dúvida (fixada, não fixada) para professor
+        @PathVariable("id") Long duvidaId, 
+        @RequestBody DuvidaDto pedido) {
         return duvidaService.fixar(duvidaId, pedido);
     }
 }
