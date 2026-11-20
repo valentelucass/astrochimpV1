@@ -46,6 +46,20 @@ public class MaterialService {
         this.pastaArquivos = Path.of(pasta).toAbsolutePath().normalize();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // @Transactional confirma o cadastro do material ao concluir o método.
     // Se a operação lançar um erro como ResponseStatusException, o Spring desfaz suas mudanças no banco.
     @Transactional
@@ -62,11 +76,39 @@ public class MaterialService {
         return resposta(materialRepository.save(material), false);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Transactional
     public MaterialDto enviarArquivo(Long professorId, String titulo, MultipartFile arquivo) {
         Professor professor = acessoService.professor(professorId);
         return resposta(salvarArquivo(professor, titulo, arquivo), false);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Salva o arquivo com o professor já conferido, tanto no perfil quanto no envio direto para uma sala.
     private Material salvarArquivo(Professor professor, String titulo, MultipartFile arquivo) {
@@ -93,6 +135,18 @@ public class MaterialService {
         return materialRepository.save(material);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     // readOnly indica que a consulta dos materiais do professor apenas lê os dados.
     @Transactional(readOnly = true)
     public List<MaterialDto> listarProfessor(Long professorId) {
@@ -104,6 +158,15 @@ public class MaterialService {
         return materiais;
     }
 
+
+
+
+
+
+
+
+
+
     @Transactional(readOnly = true)
     // A página pública usa esta busca para receber somente conteúdos que o professor publicou para visitantes.
     public List<MaterialDto> listarPublicos(Long professorId) {
@@ -113,6 +176,14 @@ public class MaterialService {
         }
         return materiais;
     }
+
+
+
+
+
+
+
+
 
     @Transactional
     // Associa um material do professor a uma aula dele e recusa a mesma associação repetida.
@@ -131,6 +202,18 @@ public class MaterialService {
         return resposta(material, false);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     @Transactional
     // Faz upload e publicação na mesma operação; se uma etapa falhar, a transação não mantém só metade do pedido.
     public MaterialDto enviarArquivoParaSala(Long salaId, String titulo, MultipartFile arquivo) {
@@ -142,6 +225,15 @@ public class MaterialService {
         salaRepository.save(sala);
         return resposta(material, false);
     }
+
+
+
+
+
+
+
+
+
 
     @Transactional(readOnly = true)
     public List<MaterialDto> listarSala(Long salaId, String tokenAluno) {
@@ -160,6 +252,19 @@ public class MaterialService {
         fixados.addAll(naoFixados);
         return fixados;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Transactional
     // Só um conteúdo já enviado à aula pode entrar ou sair da lista de materiais fixados daquela sala.
@@ -184,6 +289,20 @@ public class MaterialService {
         return resposta(material, pedido.isFixado());
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Transactional
     // Confere o dono antes de liberar ou retirar este conteúdo da página pública do professor.
     public MaterialDto tornarPublico(
@@ -202,6 +321,16 @@ public class MaterialService {
         return resposta(materialRepository.save(material), false);
     }
 
+
+
+
+
+
+
+
+
+
+    
     @Transactional(readOnly = true)
     // Arquivo público aceita visitantes; arquivo privado exige o dono ou um participante da sala que o recebeu.
     public ArquivoDownload baixar(Long materialId, Long salaId, String tokenAluno) {

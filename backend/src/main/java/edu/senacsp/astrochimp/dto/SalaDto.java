@@ -7,9 +7,13 @@ import java.time.LocalDateTime;
 
 public class SalaDto {
 
-    // Recebe do professor professorId e nomeAula para abrir a sala. Devolve id, código, aula, estado, nome do professor
-    // e datas aos participantes, sem tokens dos alunos, e-mail ou senha do professor, nem o gabarito do quiz.
-    // Devolve o id da sala no JSON, mas ignora um id enviado; o mesmo vale para código, estado, nome do dono e datas.
+
+
+    // Recebe nome da aula e professorId para criar a sala e devolve os dados da aula sem os tokens dos alunos.
+    // Este DTO existe porque professorId precisa entrar no pedido de criação e ficar fora da resposta da sala.
+
+
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -27,12 +31,17 @@ public class SalaDto {
     private int totalAlunos;
     // Recebe o id do professor na criação, sem acrescentar professorId à resposta da sala.
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long professorId;
+    private Long professorId; // WRITE_ONLY. Entra no pedido de criação e fica fora da resposta da sala.
 
     // Cria uma SalaDto vazia ao ler o JSON de abertura da sala, preenchendo os campos de entrada pelos setters.
     @JsonCreator
     public SalaDto() {
     }
+
+
+
+
+
 
     public SalaDto(
             Long id,
@@ -50,6 +59,12 @@ public class SalaDto {
         this.criadaEm = criadaEm;
         this.expiraEm = expiraEm;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     // As anotações dos campos acima continuam definindo o que pode entrar e sair no JSON.

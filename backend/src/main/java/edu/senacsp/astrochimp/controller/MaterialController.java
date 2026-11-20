@@ -46,7 +46,7 @@ public class MaterialController {
 
 
 
-
+    // envia o arquivo para pasta UPLOAD
 
     @PostMapping(value = "/api/professores/{professorId}/materiais/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

@@ -7,16 +7,26 @@ import java.time.LocalDateTime;
 
 public class DuvidaDto {
 
-    // Recebe do aluno texto e anonimato e do professor estado ou fixação, conforme a operação; devolve a dúvida com a
-    // quantidade de votos, sem listar votantes. O service oculta id e nome do autor anônimo nas respostas aos alunos,
-    // mas permite que o professor veja o autor.
+
+
+    // Recebe os dados da dúvida e permite devolver a identidade do autor ao professor, mesmo quando ela é anônima para a turma.
+    // Este DTO existe porque autorId e autorNome precisam ficar ocultos para os alunos quando anonima é true.
+
+
+
     // Id, autor, votos e data só saem no JSON; um pedido não pode escolher quem escreveu ou quantos votos recebeu.
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String texto;
+
+
+    
     private boolean anonima;
+
+
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long autorId;
+    private Long autorId; // O service deixa o ID e o nome do autor nulos para alunos quando a dúvida é anônima.
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String autorNome;
     private String estado;
@@ -31,6 +41,11 @@ public class DuvidaDto {
     @JsonCreator
     public DuvidaDto() {
     }
+
+
+
+
+
 
     public DuvidaDto(
             Long id,
@@ -52,6 +67,12 @@ public class DuvidaDto {
         this.votos = votos;
         this.criadaEm = criadaEm;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     // As anotações dos campos acima continuam definindo o que pode entrar e sair no JSON.

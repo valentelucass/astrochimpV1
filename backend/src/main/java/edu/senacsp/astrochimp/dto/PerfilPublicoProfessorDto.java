@@ -5,17 +5,30 @@ import java.util.List;
 
 public class PerfilPublicoProfessorDto {
 
-    // Envia aos visitantes nome, descrição, foto, id e endereço público do professor junto dos materiais publicados;
-    // não inclui e-mail, senha, salas ou materiais privados.
+
+
+    // Mostra o perfil a visitantes com os materiais públicos e deixa e-mail, senha e materiais privados fora da resposta.
+    // Este DTO existe porque materiais deve conter só os itens públicos. Os atributos email e senha ficam fora do perfil público.
+
+
+
     private Long id;
     private String nome;
     private String descricao;
     private String fotoUrl;
     private String slugPerfilPublico;
-    private List<MaterialDto> materiais = new ArrayList<>();
+    private List<MaterialDto> materiais = new ArrayList<>(); // O service preenche a lista só com materiais marcados como públicos.
 
+
+
+    
     public PerfilPublicoProfessorDto() {
     }
+
+
+
+
+
 
     public PerfilPublicoProfessorDto(
             Long id,
@@ -31,6 +44,12 @@ public class PerfilPublicoProfessorDto {
         this.slugPerfilPublico = slugPerfilPublico;
         this.materiais = materiais;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     public Long getId() {

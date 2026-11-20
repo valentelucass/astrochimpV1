@@ -93,7 +93,7 @@ public class ProfessorController {
     // @PutMapping liga o PUT /api/professores/{id} à atualização do perfil do professor.
     @PutMapping("/{id}")
     // @RequestBody: Monta PerfilProfessorDto com nome, e-mail e senha recebidos no JSON.
-    public PerfilProfessorDto atualizar( // atualiza o perfil do professor (Atualizar)
+    public PerfilProfessorDto atualizar( // atualiza o perfil do professor (Atualizar - em minhas salas)
             @PathVariable("id") Long professorId,
             @RequestBody PerfilProfessorDto pedido) {
         return professorService.atualizar(professorId, pedido);

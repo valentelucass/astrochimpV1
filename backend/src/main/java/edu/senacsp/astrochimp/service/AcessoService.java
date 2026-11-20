@@ -31,6 +31,13 @@ public class AcessoService {
         this.alunoRepository = alunoRepository;
     }
 
+
+
+
+
+
+
+
     // Procura o perfil pedido e compara seu e-mail com o login atual, impedindo usar o id de outro professor.
     public Professor professor(Long professorId) {
         if (professorId == null) {
@@ -46,6 +53,12 @@ public class AcessoService {
         return professor;
     }
 
+
+
+
+
+
+
     // Confere o dono já carregado, sem buscar novamente o professor pelo id.
     public void exigirProfessor(Professor professor) {
         Authentication login = SecurityContextHolder.getContext().getAuthentication();
@@ -56,6 +69,13 @@ public class AcessoService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso reservado ao professor dono");
         }
     }
+
+
+
+
+
+
+
 
     // Localiza a sala ou devolve o motivo da recusa; a permissão é conferida pelos métodos que a utilizam.
     public Sala sala(Long salaId) {
@@ -69,6 +89,14 @@ public class AcessoService {
         return resultado.get();
     }
 
+
+
+
+
+
+
+
+
     // Combina as duas conferências anteriores para operações que só o dono da aula pode executar.
     public Sala salaDoProfessor(Long salaId) {
         Sala sala = sala(salaId);
@@ -76,6 +104,16 @@ public class AcessoService {
         return sala;
     }
 
+
+
+
+
+
+
+
+
+
+    
     // @Transactional mantém a consulta à sala e aos participantes na mesma transação.
     // readOnly indica que esta operação apenas lê os dados.
     @Transactional(readOnly = true)
@@ -90,6 +128,15 @@ public class AcessoService {
         return sala;
     }
 
+
+
+
+
+
+
+
+
+
     @Transactional(readOnly = true)
     // Confere o token e procura o id do aluno na lista de participantes da sala solicitada.
     public Aluno alunoDaSala(Long salaId, String tokenAluno) {
@@ -98,6 +145,13 @@ public class AcessoService {
         return aluno;
     }
 
+
+
+
+
+
+
+
     @Transactional(readOnly = true)
     // Usa a sala que a operação já consultou, sem repetir a busca por id.
     public Aluno alunoDaSala(Sala sala, String tokenAluno) {
@@ -105,6 +159,14 @@ public class AcessoService {
         exigirParticipacao(sala, aluno);
         return aluno;
     }
+
+
+
+
+
+
+
+
 
     // Localiza o aluno e exige o token exatamente como foi gerado na entrada.
     private Aluno buscarAluno(String tokenAluno) {
@@ -123,6 +185,12 @@ public class AcessoService {
         return aluno;
     }
 
+
+
+
+
+
+
     private void exigirParticipacao(Sala sala, Aluno aluno) {
         // Ter um token válido não basta: o aluno também precisa fazer parte desta sala.
         for (Aluno participante : sala.getAlunos()) {
@@ -133,6 +201,15 @@ public class AcessoService {
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Aluno não participa desta sala");
     }
 
+
+
+
+
+
+
+
+
+    
     // Uma sala salva ainda pode ter terminado: seu estado e seu horário limite precisam permitir a ação.
     public void exigirSalaAtiva(Sala sala) {
         boolean encerrada = !"ativa".equals(sala.getStatus());

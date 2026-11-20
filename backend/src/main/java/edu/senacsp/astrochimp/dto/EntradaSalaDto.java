@@ -5,18 +5,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EntradaSalaDto {
 
-    // Recebe do aluno código da sala e nomeAluno; devolve a sala, o id criado e tokenAluno para identificar esse aluno
-    // nas próximas requisições. Não permite escolher id ou token, nem inclui tokens dos outros participantes.
+
+
+    // Recebe código e nome para entrar na sala e devolve o token individual criado para aquele aluno.
+    // Este DTO existe porque tokenAluno só sai na resposta de entrada. codigo e nomeAluno só entram no pedido.
+
+
+
     // Sala, alunoId e tokenAluno só saem no JSON; o servidor define esses dados depois de conferir a entrada.
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private SalaDto sala;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long alunoId;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String tokenAluno;
+    private String tokenAluno; // READ_ONLY. O servidor gera e devolve o token. O aluno não pode defini-lo no pedido.
     // Código e nomeAluno são recebidos na entrada e não acrescentam campos ao JSON de resposta.
+
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String codigo;
+
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String nomeAluno;
 
@@ -25,11 +35,22 @@ public class EntradaSalaDto {
     public EntradaSalaDto() {
     }
 
+
+
+
+
+
     public EntradaSalaDto(SalaDto sala, Long alunoId, String tokenAluno) {
         this.sala = sala;
         this.alunoId = alunoId;
         this.tokenAluno = tokenAluno;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     // As anotações dos campos acima continuam definindo o que pode entrar e sair no JSON.

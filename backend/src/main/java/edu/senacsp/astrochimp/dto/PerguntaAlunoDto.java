@@ -5,8 +5,13 @@ import java.util.List;
 
 public class PerguntaAlunoDto {
 
-    // Envia ao aluno os ids do quiz e da pergunta atual, enunciado, dificuldade, posição no quiz, quantidade de
-    // perguntas, tempo restante e alternativas sem gabarito; não inclui as próximas perguntas.
+
+
+    // Envia só a pergunta da rodada atual e as opções necessárias para responder, com o gabarito fora da resposta.
+    // Este DTO existe porque alternativas deve mostrar as opções da pergunta atual sem revelar o atributo correta de cada opção.
+
+
+
     private Long quizId;
     private Long perguntaId;
     // Identifica a rodada para a tela liberar uma nova resposta quando o professor repetir o mesmo quiz.
@@ -16,10 +21,15 @@ public class PerguntaAlunoDto {
     private int numeroPergunta;
     private int totalPerguntas;
     private int tempoRestanteSegundos;
-    private List<AlternativaAlunoDto> alternativas = new ArrayList<>();
+    private List<AlternativaAlunoDto> alternativas = new ArrayList<>(); // Usa AlternativaAlunoDto, que não possui o campo correta.
 
     public PerguntaAlunoDto() {
     }
+
+
+
+
+
 
     public PerguntaAlunoDto(
             Long quizId,
@@ -39,6 +49,12 @@ public class PerguntaAlunoDto {
         this.tempoRestanteSegundos = tempoRestanteSegundos;
         this.alternativas = alternativas;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     public Long getQuizId() {

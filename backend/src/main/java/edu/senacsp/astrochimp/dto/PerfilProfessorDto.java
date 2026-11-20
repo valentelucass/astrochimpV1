@@ -5,16 +5,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PerfilProfessorDto {
 
-    // Recebe nome, e-mail, senha e endereço público no cadastro e devolve o perfil ao próprio professor sem a senha.
-    // Na atualização, o service usa somente nome, descrição, foto e endereço público, preservando id, e-mail e senha.
+
+
+    // Aceita a senha no cadastro e devolve o perfil do professor sem expor a senha no JSON.
+    // Este DTO existe porque senha precisa entrar no cadastro e ficar fora da resposta do perfil.
+
+
+
     // Devolve o id do professor, mas ignora um id enviado no JSON.
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String nome;
     private String email;
     // Aceita a senha no cadastro, mas nunca inclui senha no JSON de resposta, mesmo que o objeto tenha esse valor.
+
+
+
+
+
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String senha;
+    private String senha; // WRITE_ONLY. A senha entra no JSON do cadastro e fica fora da resposta.
+
+
+
+
+
+
+    
     private String descricao;
     private String fotoUrl;
     private String slugPerfilPublico;
@@ -23,6 +41,11 @@ public class PerfilProfessorDto {
     @JsonCreator
     public PerfilProfessorDto() {
     }
+
+
+
+
+
 
     public PerfilProfessorDto(
             Long id,
@@ -38,6 +61,12 @@ public class PerfilProfessorDto {
         this.fotoUrl = fotoUrl;
         this.slugPerfilPublico = slugPerfilPublico;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     // As anotações dos campos acima continuam definindo o que pode entrar e sair no JSON.

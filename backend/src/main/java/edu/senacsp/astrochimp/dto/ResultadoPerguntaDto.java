@@ -5,15 +5,25 @@ import java.util.List;
 
 public class ResultadoPerguntaDto {
 
-    // Envia ao professor id e enunciado da pergunta atual, total de respondentes e contagem por alternativa na rodada
-    // em andamento da sala, identificada por quizSessaoId; não devolve as respostas individuais dos alunos.
+
+
+    // Devolve ao professor o placar da pergunta atual sem incluir as respostas individuais dos alunos.
+    // Este DTO existe porque resultados reúne a contagem por alternativa sem enviar as respostas individuais dos alunos.
+
+
+
     private Long perguntaId;
     private String enunciado;
     private long totalRespondentes;
-    private List<ResultadoAlternativaDto> resultados = new ArrayList<>();
+    private List<ResultadoAlternativaDto> resultados = new ArrayList<>(); // Cada item traz uma opção e sua contagem, sem identificar quem respondeu.
 
     public ResultadoPerguntaDto() {
     }
+
+
+
+
+
 
     public ResultadoPerguntaDto(
             Long perguntaId,
@@ -25,6 +35,12 @@ public class ResultadoPerguntaDto {
         this.totalRespondentes = totalRespondentes;
         this.resultados = resultados;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     public Long getPerguntaId() {

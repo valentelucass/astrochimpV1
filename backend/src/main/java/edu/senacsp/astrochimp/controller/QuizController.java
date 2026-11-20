@@ -98,7 +98,7 @@ public class QuizController {
 
     // @DeleteMapping liga o DELETE /api/quizzes/{quizId} ao pedido de exclusão do quiz.
     @DeleteMapping("/api/quizzes/{quizId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Devolve 204 para avisar que o quiz foi excluído.
     public void excluir( // exclui o quiz do perfil do professor
         @PathVariable Long quizId) {
         quizService.excluirQuiz(quizId);
@@ -112,7 +112,7 @@ public class QuizController {
 
 
     @PostMapping("/api/salas/{salaId}/quiz/enviar-existente/{quizId}")
-    public void enviarQuizExistente( // envia um quiz já criado para a sala
+    public void enviarQuizExistente( // envia um quiz já criado para a sala (Enviar para sala / Enviar quiz existente para a sala)
         @PathVariable Long salaId, 
         @PathVariable Long quizId) {
         quizService.enviarQuizExistenteParaSala(salaId, quizId);
@@ -125,7 +125,7 @@ public class QuizController {
 
 
     @PostMapping("/api/salas/{salaId}/quiz/criar-e-enviar")
-    public void criarEEnviar( // cria o quiz e envia para a sala
+    public void criarEEnviar( // cria o quiz e envia para a sala (Criar e enviar quiz / Criar e enviar quiz para a sala)
             @PathVariable Long salaId,
             @RequestParam Long professorId,
             @RequestBody Quiz pedido) {
@@ -155,7 +155,7 @@ public class QuizController {
 
 
     @PostMapping("/api/salas/{salaId}/quiz/proxima-pergunta")
-    public void proximaPergunta( // avança para a próxima pergunta do quiz da sala
+    public void proximaPergunta( // avança para a próxima pergunta do quiz da sala (Próxima - botao ao lado encerrar quiz)
         @PathVariable Long salaId) {
         quizService.avancarProximaPergunta(salaId);
     }
@@ -167,7 +167,7 @@ public class QuizController {
 
 
     @PostMapping("/api/salas/{salaId}/quiz/resposta")
-    public void registrarResposta( // registra a resposta do aluno para a pergunta atual
+    public void registrarResposta( // registra a resposta do aluno para a pergunta atual (Confirmar resposta / Enviar resposta)
             @PathVariable Long salaId,
             @RequestHeader("X-Aluno-Token") String tokenAluno,
             // alternativaId no JSON preenche id da alternativa que o aluno escolheu.
@@ -193,7 +193,7 @@ public class QuizController {
 
 
     @PostMapping("/api/salas/{salaId}/quiz/encerrar")
-    public void encerrar( // encerra o quiz da sala
+    public void encerrar( // encerra o quiz da sala (Encerrar quiz / Encerrar quiz da sala)
         @PathVariable Long salaId) {
         quizService.encerrarQuiz(salaId);
     }

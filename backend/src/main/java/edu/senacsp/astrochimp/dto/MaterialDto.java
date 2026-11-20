@@ -7,15 +7,19 @@ import java.time.LocalDateTime;
 
 public class MaterialDto {
 
-    // Recebe do professor os dados do material e as opções de publicação ou fixação, conforme a operação; devolve a
-    // professores, alunos ou visitantes título, conteúdo ou link de download e dados de exibição. Para arquivos, o
-    // service troca o caminho no servidor pelo link de download e informa a fixação na sala consultada.
+
+
+    // Devolve o conteúdo que o app pode abrir sem expor o caminho do arquivo no servidor.
+    // Este DTO existe porque conteudoOuUrl precisa devolver a rota de download no lugar do caminho interno quando o material é um arquivo.
+
+
+
     // Id e data de criação só saem no JSON; o servidor define esses dados ao salvar o material.
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String titulo;
     private String tipo;
-    private String conteudoOuUrl;
+    private String conteudoOuUrl; // Se for arquivo, o service devolve a rota de download no lugar do caminho salvo.
     private String detalhe;
     // Boolean distingue campo ausente (null) de false: tornar o material privado ou desafixá-lo exige false explícito.
     private Boolean publico;
@@ -27,6 +31,11 @@ public class MaterialDto {
     @JsonCreator
     public MaterialDto() {
     }
+
+
+
+
+
 
     public MaterialDto(
             Long id,
@@ -46,6 +55,12 @@ public class MaterialDto {
         this.fixado = fixado;
         this.criadoEm = criadoEm;
     }
+
+
+
+
+
+
 
     // Neste DTO, get/is leem os campos da resposta e set preenche os valores do objeto Java.
     // As anotações dos campos acima continuam definindo o que pode entrar e sair no JSON.
