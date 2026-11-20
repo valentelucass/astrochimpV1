@@ -94,7 +94,8 @@ public class MaterialController {
 
     @PostMapping(value = "/api/salas/{salaId}/materiais/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public MaterialDto enviarParaSala( // envia o arquivo do material para a sala, tornando-o visível para os alunos (Já está na sala/ Enviar para sala)
+    public MaterialDto enviarParaSala( // envia o arquivo do material para a sala, tornando-o visível para os alunos 
+                                        // (Já está na sala/ Enviar para sala / Salvar e enviar para sala)
             @PathVariable Long salaId,
             @RequestParam String titulo,
             @RequestParam MultipartFile arquivo) {

@@ -38,7 +38,7 @@ public class QuizController {
     @PostMapping("/api/professores/{professorId}/quizzes")
     // Devolve 201 para avisar que o quiz foi criado.
     @ResponseStatus(HttpStatus.CREATED)
-    public Quiz criar( // cria o quiz para o professor
+    public Quiz criar( // cria o quiz para o professor (Criar quiz / Criar e enviar quiz / Criar e salvar quiz)
             // @PathVariable lê professorId no endereço; o service confere se é o professor que está logado.
             @PathVariable Long professorId,
             // Monta um Quiz com o título, as perguntas e as alternativas recebidos no JSON.

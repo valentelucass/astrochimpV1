@@ -38,8 +38,9 @@ public class ProfessorController {
     // Devolve 201 para avisar que o professor foi cadastrado.
     @ResponseStatus(HttpStatus.CREATED)
 
-    // @RequestBody: Monta PerfilProfessorDto com nome, e-mail e senha recebidos no JSON.
-    public PerfilProfessorDto cadastrar(@RequestBody PerfilProfessorDto pedido) {
+    // @RequestBody: Monta PerfilProfessorDto com nome, e-mail e senha recebidos no JSON. (Criar minha conta)
+    public PerfilProfessorDto cadastrar(
+        @RequestBody PerfilProfessorDto pedido) {
         return professorService.cadastrar(pedido);
     }
 
@@ -91,7 +92,8 @@ public class ProfessorController {
 
     // @PutMapping liga o PUT /api/professores/{id} à atualização do perfil do professor.
     @PutMapping("/{id}")
-    public PerfilProfessorDto atualizar( // atualiza o perfil do professor
+    // @RequestBody: Monta PerfilProfessorDto com nome, e-mail e senha recebidos no JSON.
+    public PerfilProfessorDto atualizar( // atualiza o perfil do professor (Atualizar)
             @PathVariable("id") Long professorId,
             @RequestBody PerfilProfessorDto pedido) {
         return professorService.atualizar(professorId, pedido);

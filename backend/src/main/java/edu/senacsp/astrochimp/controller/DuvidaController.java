@@ -51,7 +51,7 @@ public class DuvidaController {
 
     // @GetMapping liga o GET /api/salas/{salaId}/duvidas à consulta das dúvidas para os alunos.
     @GetMapping("/api/salas/{salaId}/duvidas")
-    public List<DuvidaDto> listarAluno(
+    public List<DuvidaDto> listarAluno( // lista as dúvidas para o aluno
             @PathVariable Long salaId,
             @RequestHeader("X-Aluno-Token") String tokenAluno) {
         return duvidaService.listar(salaId, tokenAluno, false); // false = não é professor
@@ -63,7 +63,7 @@ public class DuvidaController {
 
 
     @GetMapping("/api/salas/{salaId}/duvidas/professor")
-    public List<DuvidaDto> listarProfessor(
+    public List<DuvidaDto> listarProfessor( // lista as dúvidas para o professor
             @PathVariable Long salaId) {
         return duvidaService.listar(salaId, null, true); // true = é professor
     }
@@ -85,8 +85,8 @@ public class DuvidaController {
 
 
     // @PatchMapping liga o PATCH /api/duvidas/{id}/estado à alteração do estado da dúvida.
-    @PatchMapping("/api/duvidas/{id}/estado") // muda o estado da dúvida (aberta, respondida, fechada) para professor
-    public DuvidaDto mudarEstado(
+    @PatchMapping("/api/duvidas/{id}/estado") 
+    public DuvidaDto mudarEstado( // muda o estado da dúvida (aberta, respondida, fechada) para professor
         @PathVariable("id") Long duvidaId, 
         @RequestBody DuvidaDto pedido) {
         return duvidaService.mudarEstado(duvidaId, pedido);

@@ -31,7 +31,7 @@ public class SecurityConfig {
 
 
 
-
+    // Primeiro método serve para definir quais rotas exigem autenticação e ativar o login HTTP Basic.
 
     
     @Bean // @Bean registra o filtro SecurityFilterChain no Spring para definir o acesso às rotas e o login HTTP Basic.
@@ -66,7 +66,7 @@ public class SecurityConfig {
 
 
 
-    // GET /api/professores/me
+    // Segundo método serve para definir como o Spring vai buscar o professor no banco de dados pelo e-mail usado no login HTTP Basic.
 
     // Método de entrada do Spring para buscar o professor pelo e-mail usado no login HTTP Basic.
     // Este método é chamado pelo Spring Security quando um usuário tenta se autenticar com HTTP Basic.
@@ -93,6 +93,9 @@ public class SecurityConfig {
 
 
 
+
+
+    // Terceiro método serve para definir como o Spring vai gerar e conferir o hash da senha do professor.
     // Configura o BCrypt usado para gerar e conferir o hash da senha.
 
     @Bean
@@ -105,7 +108,8 @@ public class SecurityConfig {
 
 
 
-    // Define de quais endereços a versão web pode acessar a API pelo navegador.
+
+    // Quarto método serve para definir de quais endereços a versão web pode acessar a API pelo navegador.
     // Este método configura o CORS (Cross-Origin Resource Sharing) para permitir que a versão web do Expo acesse a API.
 
     @Bean
