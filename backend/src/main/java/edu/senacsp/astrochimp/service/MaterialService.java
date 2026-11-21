@@ -352,6 +352,16 @@ public class MaterialService {
         return new ArquivoDownload(new FileSystemResource(caminho), material.getDetalhe());
     }
 
+
+
+
+
+
+
+
+
+
+
     // Guarda o arquivo e o nome que o controller usa no cabeçalho do download.
     public static class ArquivoDownload {
         private final Resource arquivo;
@@ -371,6 +381,19 @@ public class MaterialService {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Concentra a busca por id usada nas publicações e no download, com erro claro para material inexistente.
     private Material buscar(Long materialId) {
         if (materialId == null) {
@@ -383,6 +406,20 @@ public class MaterialService {
         }
         return resultado.get();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private Path caminhoDoArquivo(Material material) {
         if (vazio(material.getConteudoOuUrl())) {
@@ -401,6 +438,17 @@ public class MaterialService {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+    
     private void apagarArquivoSeTransacaoFalhar(Path destino) {
         // O Spring chama afterCompletion depois de confirmar ou desfazer a transação inteira,
         // inclusive quando enviarArquivo é usado para publicar o material em uma sala.
@@ -420,6 +468,18 @@ public class MaterialService {
         });
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     // Prepara o registro com o professor conferido e a data atual; id e publicação não são escolhidos pelo pedido.
     private Material montarMaterial(Professor professor, String titulo, String tipo, String conteudo, String detalhe) {
         Material material = new Material();
@@ -431,6 +491,19 @@ public class MaterialService {
         material.setCriadoEm(LocalDateTime.now());
         return material;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private String nomeSeguroDoArquivo(String nomeOriginal) {
         if (nomeOriginal == null) {
@@ -444,6 +517,19 @@ public class MaterialService {
         return nomeSeguro;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Percorre os ids da lista para saber se o conteúdo já foi enviado ou já está fixado na sala.
     private boolean contemMaterial(List<Material> materiais, Long materialId) {
         for (Material material : materiais) {
@@ -453,6 +539,16 @@ public class MaterialService {
         }
         return false;
     }
+
+
+
+
+
+
+
+
+
+
 
     private MaterialDto resposta(Material material, boolean fixado) {
         // O caminho do arquivo fica no servidor. Na resposta mandamos só o endereço de download.
@@ -464,10 +560,28 @@ public class MaterialService {
             conteudo, material.getDetalhe(), material.isPublico(), fixado, material.getCriadoEm());
     }
 
+
+
+
+
+
+
+
+
     // Trata null e texto só com espaços como falta de preenchimento nos campos obrigatórios.
     private boolean vazio(String texto) {
         return texto == null || texto.isBlank();
     }
+
+
+
+
+
+
+
+
+
+    
 
     private void validarTamanho(String texto, String campo) {
         // Título e detalhe são colunas de até 255 caracteres; o conteúdo do material pode ser longo.
