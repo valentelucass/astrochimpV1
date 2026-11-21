@@ -24,7 +24,7 @@ public class PerfilProfessorDto {
 
 
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // WRITE_ONLY: aceita a senha no cadastro, mas nunca inclui senha no JSON de resposta.
     private String senha; // WRITE_ONLY. A senha entra no JSON do cadastro e fica fora da resposta.
 
 

@@ -30,7 +30,7 @@ public class DuvidaController {
     // Devolve 201 para avisar que a dúvida foi criada.
     @ResponseStatus(HttpStatus.CREATED)
 
-    public DuvidaDto criar(
+    public DuvidaDto criar( // cria a dúvida para o aluno
             // Pega salaId no endereço para saber em qual sala criar a dúvida.
             @PathVariable Long salaId,
             // Lê X-Aluno-Token no cabeçalho para identificar o aluno.

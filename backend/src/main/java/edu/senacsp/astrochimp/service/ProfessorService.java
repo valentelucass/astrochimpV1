@@ -37,6 +37,14 @@ public class ProfessorService {
         this.acessoService = acessoService;
     }
 
+
+
+
+
+
+
+
+
     // @Transactional confirma o cadastro do professor ao concluir o método.
     // Se a operação lançar um erro como ResponseStatusException, o Spring desfaz suas mudanças no banco.
     @Transactional
@@ -68,10 +76,35 @@ public class ProfessorService {
         return resposta(professorRepository.save(professor));
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     // AcessoService exige que o perfil consultado pertença ao professor conectado.
     public PerfilProfessorDto buscar(Long professorId) {
         return resposta(acessoService.professor(professorId));
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Busca o perfil pelo e-mail e confere o acesso usando o próprio registro encontrado.
     public PerfilProfessorDto buscarPorEmail(String email) {
@@ -84,6 +117,18 @@ public class ProfessorService {
         acessoService.exigirProfessor(professor);
         return resposta(professor);
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Transactional
     public PerfilProfessorDto atualizar(Long professorId, PerfilProfessorDto pedido) {
@@ -108,6 +153,17 @@ public class ProfessorService {
         return resposta(professorRepository.save(professor));
     }
 
+
+
+
+
+
+
+
+
+
+
+
     // readOnly indica que a consulta do perfil e dos materiais públicos apenas lê os dados.
     @Transactional(readOnly = true)
     public PerfilPublicoProfessorDto publico(String slug) {
@@ -125,11 +181,35 @@ public class ProfessorService {
             professor.getFotoUrl(), professor.getSlugPerfilPublico(), materiais);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     // Monta a resposta do próprio professor com seus dados de apresentação e e-mail, sem copiar a senha.
     private PerfilProfessorDto resposta(Professor professor) {
         return new PerfilProfessorDto(professor.getId(), professor.getNome(), professor.getEmail(),
             professor.getDescricao(), professor.getFotoUrl(), professor.getSlugPerfilPublico());
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Slug é o nome do endereço público. Criamos um quando o cadastro não informa e recusamos nomes já usados.
     private String slugNovo(String slugInformado) {
@@ -149,11 +229,32 @@ public class ProfessorService {
         return slug;
     }
 
+
+
+
+
+
+
+
+
+
+
+
     // Considera ausente tanto null quanto um texto composto apenas por espaços.
     private boolean vazio(String texto) {
         return texto == null || texto.isBlank();
     }
 
+
+
+
+
+
+
+
+
+
+    
     private void validarTamanho(String texto, String campo) {
         // Esses campos de Professor usam colunas de até 255 caracteres no MySQL.
         if (texto != null && texto.length() > 255) {

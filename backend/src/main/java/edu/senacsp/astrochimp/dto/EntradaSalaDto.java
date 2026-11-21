@@ -18,8 +18,8 @@ public class EntradaSalaDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long alunoId;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String tokenAluno; // READ_ONLY. O servidor gera e devolve o token. O aluno não pode defini-lo no pedido.
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // READ_ONLY. O servidor gera e devolve o token. O aluno não pode defini-lo no pedido.
+    private String tokenAluno;
     // Código e nomeAluno são recebidos na entrada e não acrescentam campos ao JSON de resposta.
 
 
@@ -27,7 +27,7 @@ public class EntradaSalaDto {
     private String codigo;
 
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // WRITE_ONLY. O aluno envia seu nome na entrada, mas o servidor não devolve esse campo no JSON de resposta.
     private String nomeAluno;
 
     // Cria uma EntradaSalaDto vazia para ler código e nomeAluno enviados no JSON de entrada na sala.

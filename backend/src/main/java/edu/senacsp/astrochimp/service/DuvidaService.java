@@ -27,6 +27,18 @@ public class DuvidaService {
         this.acessoService = acessoService;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     // @Transactional confirma o cadastro da dúvida ao concluir o método.
     // Se a operação lançar um erro como ResponseStatusException, o Spring desfaz suas mudanças no banco.
     @Transactional
@@ -48,6 +60,20 @@ public class DuvidaService {
         return resposta(duvidaRepository.save(duvida), false); // O false prepara a resposta para o aluno e oculta o autor se a dúvida for anônima.
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // readOnly indica que a consulta das dúvidas e dos autores apenas lê os dados.
     @Transactional(readOnly = true)
     public List<DuvidaDto> listar(Long salaId, String tokenAluno, boolean paraProfessor) {
@@ -63,6 +89,21 @@ public class DuvidaService {
         }
         return duvidas;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Transactional
     public DuvidaDto votar(Long duvidaId, String tokenAluno) {
@@ -87,6 +128,19 @@ public class DuvidaService {
         return resposta(duvidaRepository.save(duvida), false);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Transactional
     // O dono da sala pode reabrir, marcar como respondida ou arquivar, usando apenas os três estados aceitos.
     public DuvidaDto mudarEstado(Long duvidaId, DuvidaDto pedido) {
@@ -105,6 +159,19 @@ public class DuvidaService {
         return resposta(duvidaRepository.save(duvida), true);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Transactional
     // Destaca ou retira o destaque da dúvida; o estado de respondida/pendente continua separado dessa opção.
     public DuvidaDto fixar(Long duvidaId, DuvidaDto pedido) {
@@ -118,6 +185,18 @@ public class DuvidaService {
         return resposta(duvidaRepository.save(duvida), true);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     // Compartilha a busca usada pelas alterações e devolve 404 se a pergunta solicitada não existir.
     private Duvida buscar(Long duvidaId) {
         if (duvidaId == null) {
@@ -130,6 +209,18 @@ public class DuvidaService {
         return resultado.get();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+    
     private DuvidaDto resposta(Duvida duvida, boolean paraProfessor) {
         // O professor pode ver o autor. Os alunos só veem o nome quando a dúvida não é anônima.
         Long autorId = null;
