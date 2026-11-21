@@ -34,6 +34,17 @@ public class SalaService {
         this.acessoService = acessoService;
     }
 
+
+
+
+
+
+
+
+
+
+
+
     // @Transactional confirma o cadastro da sala ao concluir o método.
     // Se a operação lançar um erro como ResponseStatusException, o Spring desfaz suas mudanças no banco.
     @Transactional
@@ -62,6 +73,17 @@ public class SalaService {
         return resposta(salaRepository.save(sala));
     }
 
+
+
+
+
+
+
+
+
+
+
+
     // readOnly indica que a consulta da sala apenas lê os dados.
     @Transactional(readOnly = true)
     public SalaDto buscar(Long salaId, String tokenAluno) {
@@ -69,6 +91,18 @@ public class SalaService {
         Sala sala = acessoService.salaComAcesso(salaId, tokenAluno);
         return resposta(sala);
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Transactional(readOnly = true)
     // O painel recebe apenas as aulas do professor conectado, da mais recente para a mais antiga.
@@ -80,6 +114,17 @@ public class SalaService {
         }
         return salas;
     }
+
+
+
+
+
+
+
+
+
+
+
 
     @Transactional
     public EntradaSalaDto entrar(EntradaSalaDto pedido) {
@@ -110,6 +155,15 @@ public class SalaService {
         return new EntradaSalaDto(resposta(sala), aluno.getId(), aluno.getToken());
     }
 
+
+
+
+
+
+
+
+
+
     @Transactional
     // Finaliza a aula e limpa seus controles em andamento; dúvidas, materiais e respostas salvas permanecem no banco.
     public SalaDto encerrar(Long salaId) {
@@ -123,6 +177,16 @@ public class SalaService {
         sala.setQuizSessaoId(null);
         return resposta(salaRepository.save(sala));
     }
+
+
+
+
+
+
+
+
+
+
 
     @Transactional
     public int iniciarCronometro(Long salaId, Integer segundos) {
@@ -139,11 +203,30 @@ public class SalaService {
         return cronometro(sala);
     }
 
+
+
+
+
+
+
+
+
+
     @Transactional(readOnly = true)
     public int consultarCronometro(Long salaId, String tokenAluno) {
         Sala sala = acessoService.salaComAcesso(salaId, tokenAluno);
         return cronometro(sala);
     }
+
+
+
+
+
+
+
+
+
+
 
     @Transactional
     // Limpa início e duração para que todos os participantes recebam a contagem como parada.
@@ -154,6 +237,15 @@ public class SalaService {
         salaRepository.save(sala);
         return cronometro(sala);
     }
+
+
+
+
+
+
+
+
+
 
     // Calcula somente os segundos restantes, sem montar um objeto de resposta.
     private int cronometro(Sala sala) {
@@ -181,6 +273,14 @@ public class SalaService {
         return (int) segundosRestantes;
     }
 
+
+
+
+
+
+
+
+    
     private SalaDto resposta(Sala sala) {
         SalaDto dados = new SalaDto(sala.getId(), sala.getCodigo(), sala.getNomeAula(), sala.getStatus(),
             sala.getProfessor().getNome(), sala.getCriadaEm(), sala.getExpiraEm());
